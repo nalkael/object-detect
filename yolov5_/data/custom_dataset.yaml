@@ -1,0 +1,11 @@
+# custom_data.yaml
+
+train: /home/rdluhu/Dokumente/yolov5/custom_dataset/images/train
+val: /home/rdluhu/Dokumente/yolov5/custom_dataset/images/val
+
+# number of classes
+nc: 7
+
+# class names
+names: ['Kanalschachtdeckel', 'Versorgungsschacht', 'Wasserschieberdeckel', 
+'Gasschieberdeckel', 'Unterflurhydrant', 'Sinkkaesten', 'Other']

@@ -1,0 +1,2 @@
+
+write a general python program to save the traning result into file and plot it grapically
