@@ -1,16 +1,33 @@
 import os
+os.environ['OPENCV_IO_MAX_IMAGE_PIXELS'] = str(pow(2,40))
 import shutil
 import cv2
 import numpy as np
 
 # just for simple test
-sample_image = '/home/rdluhu/Dokumente/data von marcus/20230808_FR_Merianstr_Rheinstr/20230808_FR_Merianstr_Rheinstr_transparent_mosaic_group1.tif'
-print(os.path.exists(sample_image))
+
+#sample_image = '/home/rdluhu/Dokumente/data von marcus/20220203_FR_Wirthstrasse/20220203_FR_Wirthstrasse_transparent_mosaic_group1.tif'
+#sample_image = '/home/rdluhu/Dokumente/data von marcus/20221014_BN_Betriebsgelände_OG/20221014_BN_Betriebsgelände_OG_transparent_mosaic_group1.tif'
+#sample_image = '/home/rdluhu/Dokumente/data von marcus/20221123_Fehrenbachallee/20221123_Fehrenbachallee_transparent_mosaic_group1.tif'
+#sample_image = '/home/rdluhu/Dokumente/data von marcus/20221027_FR_Habsburger_Str/20221027_FR_Habsburger_Str_transparent_mosaic_group1.tif'
+#sample_image = '/home/rdluhu/Dokumente/data von marcus/20230808_FR_Merianstr_Rheinstr/20230808_FR_Merianstr_Rheinstr_transparent_mosaic_group1.tif'
+sample_image = '/home/rdluhu/Dokumente/data von marcus/20240228_FR_Mathias-Blank_Str/20240228_FR_Mathias-Blank_Str_transparent_mosaic_group1.tif'
+#sample_image_folder = '20220203_FR_Wirthstrasse'
+#sample_image_folder = '20221014_BN_Betriebsgelände_OG'
+#sample_image_folder = '20221123_Fehrenbachallee'
+#sample_image_folder = '20221027_FR_Habsburger_Str'
+#sample_image_folder = '20230808_FR_Merianstr_Rheinstr'
+sample_image_folder = '20240228_FR_Mathias-Blank_Str'
+
+
+
+if os.path.exists(sample_image):
+    print(f'Image {sample_image}')
 
 img = cv2.imread(sample_image)
 height, width = img.shape[:2]
 
-print(f'{height}, {width}')
+print(f'height: {height}, width: {width}')
 
 file_size_bytes = os.path.getsize(sample_image)
 file_size_mb = file_size_bytes / (1024 * 1024)
@@ -50,7 +67,7 @@ def cut_img_into_tiles(img_path, output_dir, tile_width, tile_height, overlap_ra
             tile_tmp = img[y:y_end, x:x_end]
 
             # save tile under output path
-            tile_tmp_path = os.path.join(output_dir, f'tile_{tile_num}{img_ext}')
+            tile_tmp_path = os.path.join(output_dir, f'tile_{y}_{x}.png')
             cv2.imwrite(tile_tmp_path, tile_tmp)
             print(f'tile saved as {tile_tmp_path}')
 
@@ -64,7 +81,7 @@ def cut_img_into_tiles(img_path, output_dir, tile_width, tile_height, overlap_ra
 
 # test the function
 img_path = sample_image
-output_dir = '/home/rdluhu/Dokumente/tile_img_dir_2'
+output_dir = os.path.join('/home/rdluhu/Dokumente/tile_img_dir', sample_image_folder)
 shutil.rmtree(output_dir, ignore_errors=True)
 tile_height = 640
 tile_width = 640
@@ -73,3 +90,5 @@ cut_img_into_tiles(img_path, output_dir, tile_height, tile_width, 0.1)
 #img_temp = '/home/rdluhu/Dokumente/tile_img_dir/tile_325.tif'
 #img_tensor = cv2.imread(img_temp)
 #print(img_tensor)
+
+# add a main function for external function to handle
