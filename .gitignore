@@ -156,3 +156,6 @@ Virtualenv/
 
 # Orthomosaic folder
 orthomosaic/
+
+# tiles folder
+tile

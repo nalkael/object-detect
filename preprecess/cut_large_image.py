@@ -1,25 +1,24 @@
 import os
-os.environ['OPENCV_IO_MAX_IMAGE_PIXELS'] = str(pow(2,40))
+
+os.environ['OPENCV_IO_MAX_IMAGE_PIXELS'] = str(pow(2, 40))
 import shutil
 import cv2
 import numpy as np
 
 # just for simple test
 
-#sample_image = '/home/rdluhu/Dokumente/data von marcus/20220203_FR_Wirthstrasse/20220203_FR_Wirthstrasse_transparent_mosaic_group1.tif'
-#sample_image = '/home/rdluhu/Dokumente/data von marcus/20221014_BN_Betriebsgelände_OG/20221014_BN_Betriebsgelände_OG_transparent_mosaic_group1.tif'
-#sample_image = '/home/rdluhu/Dokumente/data von marcus/20221123_Fehrenbachallee/20221123_Fehrenbachallee_transparent_mosaic_group1.tif'
-#sample_image = '/home/rdluhu/Dokumente/data von marcus/20221027_FR_Habsburger_Str/20221027_FR_Habsburger_Str_transparent_mosaic_group1.tif'
-#sample_image = '/home/rdluhu/Dokumente/data von marcus/20230808_FR_Merianstr_Rheinstr/20230808_FR_Merianstr_Rheinstr_transparent_mosaic_group1.tif'
-sample_image = '/home/rdluhu/Dokumente/data von marcus/20240228_FR_Mathias-Blank_Str/20240228_FR_Mathias-Blank_Str_transparent_mosaic_group1.tif'
-#sample_image_folder = '20220203_FR_Wirthstrasse'
-#sample_image_folder = '20221014_BN_Betriebsgelände_OG'
-#sample_image_folder = '20221123_Fehrenbachallee'
-#sample_image_folder = '20221027_FR_Habsburger_Str'
-#sample_image_folder = '20230808_FR_Merianstr_Rheinstr'
-sample_image_folder = '20240228_FR_Mathias-Blank_Str'
-
-
+# sample_image = '../orthomosaic/20220203_FR_Wirthstrasse_transparent_mosaic_group1.tif'
+# sample_image = '../orthomosaic/20221014_BN_Betriebsgelände_OG_transparent_mosaic_group1.tif'
+sample_image = '../orthomosaic/20221123_Fehrenbachallee_transparent_mosaic_group1.tif'
+# sample_image = '/home/rdluhu/Dokumente/data von marcus/20221027_FR_Habsburger_Str/20221027_FR_Habsburger_Str_transparent_mosaic_group1.tif'
+# sample_image = '/home/rdluhu/Dokumente/data von marcus/20230808_FR_Merianstr_Rheinstr/20230808_FR_Merianstr_Rheinstr_transparent_mosaic_group1.tif'
+# sample_image = '../orthomosaic/20240228_FR_Mathias-Blank_Str/20240228_FR_Mathias-Blank_Str_transparent_mosaic_group1.tif'
+# sample_image_folder = '20220203_FR_Wirthstrasse'
+# sample_image_folder = '20221014_BN_Betriebsgelände_OG'
+sample_image_folder = '20221123_Fehrenbachallee'
+# sample_image_folder = '20221027_FR_Habsburger_Str'
+# sample_image_folder = '20230808_FR_Merianstr_Rheinstr'
+# sample_image_folder = '20240228_FR_Mathias-Blank_Str'
 
 if os.path.exists(sample_image):
     print(f'Image {sample_image}')
@@ -33,6 +32,7 @@ file_size_bytes = os.path.getsize(sample_image)
 file_size_mb = file_size_bytes / (1024 * 1024)
 print(f'File size: {file_size_mb:.2f} MB')
 
+
 # cut large image into small tiles with overlapping
 # overlapping is default to be 0
 def cut_img_into_tiles(img_path, output_dir, tile_width, tile_height, overlap_ration=0):
@@ -41,8 +41,8 @@ def cut_img_into_tiles(img_path, output_dir, tile_width, tile_height, overlap_ra
     if img is None:
         print(f'Error: unable to open image file {img_path}')
         return
-    
-    img_height, img_width, _ = img.shape # height, width, number of channel (3)
+
+    img_height, img_width, _ = img.shape  # height, width, number of channel (3)
     print(f'Original image size: {img_height} x {img_width} pixel')
     img_size_bytes = os.path.getsize(img_path)
     img_size_mb = img_size_bytes / (1024 * 1024)
@@ -52,10 +52,10 @@ def cut_img_into_tiles(img_path, output_dir, tile_width, tile_height, overlap_ra
     # create output directory
     os.makedirs(output_dir, exist_ok=True)
 
-    step_height = int(tile_height * (1-overlap_ration))
-    step_width = int(tile_width * (1-overlap_ration)) 
+    step_height = int(tile_height * (1 - overlap_ration))
+    step_width = int(tile_width * (1 - overlap_ration))
 
-    #cut the image and save each tile
+    # cut the image and save each tile
     tile_num = 0
     for y in range(0, img_height, step_height):
         for x in range(0, img_width, step_width):
@@ -79,16 +79,20 @@ def cut_img_into_tiles(img_path, output_dir, tile_width, tile_height, overlap_ra
             # iterate tile number
             tile_num += 1
 
+
 # test the function
 img_path = sample_image
-output_dir = os.path.join('/home/rdluhu/Dokumente/tile_img_dir', sample_image_folder)
-shutil.rmtree(output_dir, ignore_errors=True)
-tile_height = 640
-tile_width = 640
+output_dir_small = os.path.join('../tile/tile_small', sample_image_folder)
+output_dir_large = os.path.join('../tile/tile_large', sample_image_folder)
+shutil.rmtree(output_dir_small, ignore_errors=True)
+shutil.rmtree(output_dir_large, ignore_errors=True)
+tile_height_small, tile_width_small = 640, 640
+tile_height_large, tile_width_large = 1280, 1280
 
-cut_img_into_tiles(img_path, output_dir, tile_height, tile_width, 0.1)
-#img_temp = '/home/rdluhu/Dokumente/tile_img_dir/tile_325.tif'
-#img_tensor = cv2.imread(img_temp)
-#print(img_tensor)
+cut_img_into_tiles(img_path, output_dir_small, tile_height_small, tile_width_small, 0.1)
+cut_img_into_tiles(img_path, output_dir_large, tile_height_large, tile_width_large, 0.1)
+# img_temp = '/home/rdluhu/Dokumente/tile_img_dir/tile_325.tif'
+# img_tensor = cv2.imread(img_temp)
+# print(img_tensor)
 
 # add a main function for external function to handle
