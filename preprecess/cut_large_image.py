@@ -103,9 +103,9 @@ def process_images(image_dir):
                 tile_height_large, tile_width_large = 1280, 1280
                 overlap_ration = 0.1
                 # cut image into small tiles: typically 640 * 640
-                # cut_img_into_tiles(image_path, output_small_tile_dir, tile_width_small, tile_height_small, overlap_ration)
+                cut_img_into_tiles(image_path, output_small_tile_dir, tile_width_small, tile_height_small, overlap_ration)
                 # cut image into large tiles: typically 1280 * 1280
-                # cut_img_into_tiles(image_path, output_large_tile_dir, tile_width_large, tile_height_large, overlap_ration)
+                cut_img_into_tiles(image_path, output_large_tile_dir, tile_width_large, tile_height_large, overlap_ration)
     except FileNotFoundError as e:
         print(f"Error: {e}")
 
