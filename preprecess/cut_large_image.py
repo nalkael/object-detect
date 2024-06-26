@@ -1,5 +1,6 @@
 import numpy as np
 import os
+
 os.environ['OPENCV_IO_MAX_IMAGE_PIXELS'] = str(pow(2, 40))
 import cv2
 import shutil
@@ -26,8 +27,12 @@ def show_img_info(file_path):
         print(f'{file_path} does not exist.')
 
 
-# cut large image into small tiles with overlapping
-# overlapping is default to be 0
+"""
+cut large image into small pieces/tiles with overlapping for further annotation
+I am considering to write another function to cut images for detection and merge them back into one image
+"""
+
+
 def cut_img_into_tiles(img_path, output_dir, tile_width, tile_height, overlap_ration=0.0):
     # load the image with openCV
     img = cv2.imread(img_path)
@@ -50,6 +55,7 @@ def cut_img_into_tiles(img_path, output_dir, tile_width, tile_height, overlap_ra
 
     # cut the image and save each tile
     tile_num = 0
+    j, i = 0
     for y in range(0, img_height, step_height):
         for x in range(0, img_width, step_width):
             # boundary of the tile
@@ -103,9 +109,11 @@ def process_images(image_dir):
                 tile_height_large, tile_width_large = 1280, 1280
                 overlap_ration = 0.1
                 # cut image into small tiles: typically 640 * 640
-                cut_img_into_tiles(image_path, output_small_tile_dir, tile_width_small, tile_height_small, overlap_ration)
+                cut_img_into_tiles(image_path, output_small_tile_dir, tile_width_small, tile_height_small,
+                                   overlap_ration)
                 # cut image into large tiles: typically 1280 * 1280
-                cut_img_into_tiles(image_path, output_large_tile_dir, tile_width_large, tile_height_large, overlap_ration)
+                cut_img_into_tiles(image_path, output_large_tile_dir, tile_width_large, tile_height_large,
+                                   overlap_ration)
     except FileNotFoundError as e:
         print(f"Error: {e}")
 
