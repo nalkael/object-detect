@@ -1,0 +1,7 @@
+train: ../dataset.v7i.coco/train/images
+val: ../dataset.v7i.coco/valid/images
+test: ../dataset.v7i.coco/test/images
+
+nc: 6 # number of classes
+names: ['Gasschieberdeckel', 'Kanalschachtdeckel', 'Sinkkaesten', 'Unterflurhydrant', 'Versorgungsschachtdeckel', 'Wasserschieberdeckel']
+
