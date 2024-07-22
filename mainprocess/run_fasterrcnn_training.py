@@ -51,13 +51,13 @@ def register_custom_dataset(yaml_path):
         train_images_abspath # path to training images
     )
 
-    register_coco_instances(){
+    register_coco_instances(
         'my_dataset_val',
         {},
         val_annotation_abspath,
         val_images_abspath
-    }
-    
+    )
+
 
 yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_dataset.fasterrcnn.yaml'))
 
