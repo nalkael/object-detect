@@ -19,7 +19,9 @@ def load_yaml(yaml_path):
         config = yaml.safe_load(file)
         return config
 
-
+'''
+Register the Dataset
+'''
 def register_custom_dataset(yaml_path):
     # yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_dataset.fasterrcnn.yaml'))
     config = load_yaml(yaml_path)
@@ -43,20 +45,31 @@ def register_custom_dataset(yaml_path):
     print(val_images_abspath)
 
     '''
+    my_train_dataset_name = 'my_dataset_train'
+    my_val_dataset_name = 'my_dataset_val'
 
     register_coco_instances(
-        'my_dataset_train', # Name of my custom dataset
+        my_train_dataset_name, # Name of my custom training dataset
         {}, # metadata
         train_annotation_abspath, # path to annotations
         train_images_abspath # path to training images
     )
 
     register_coco_instances(
-        'my_dataset_val',
-        {},
-        val_annotation_abspath,
-        val_images_abspath
+        my_val_dataset_name, # name of my custom validating dataset
+        {}, # metadatea for validation dataset
+        val_annotation_abspath, # path to annotations of validating annotations
+        val_images_abspath # path to validating images
     )
+
+    # Validation
+    train_dataset_dicts = DatasetCatalog.get(my_train_dataset_name) # Retreive dataset dictionaries
+    train_metadata = MetadataCatalog.get(my_train_dataset_name)
+    val_dataset_dicts = DatasetCatalog.get(my_val_dataset_name)
+    val_metadata = MetadataCatalog.get(my_val_dataset_name)
+    # Verify Registration
+    print(f'Registered {my_train_dataset_name} with {len(train_dataset_dicts)} instances')
+    print(f'Registered {my_val_dataset_name} with {len(val_dataset_dicts)} instances')
 
 
 yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_dataset.fasterrcnn.yaml'))
