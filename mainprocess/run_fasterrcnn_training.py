@@ -12,6 +12,13 @@ from detectron2.utils.logger import setup_logger
 import yaml
 import cv2
 
+from detectron2 import model_zoo
+
+from detectron2.engine import DefaultTrainer
+
+# Setup logger for better debugging and progress tracking
+setup_logger()
+
 # Function to load YAML file
 def load_yaml(yaml_path):
     # yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_dataset.fasterrcnn.yaml'))
@@ -71,7 +78,27 @@ def register_custom_dataset(yaml_path):
     print(f'Registered {my_train_dataset_name} with {len(train_dataset_dicts)} instances')
     print(f'Registered {my_val_dataset_name} with {len(val_dataset_dicts)} instances')
 
+    return my_train_dataset_name, my_val_dataset_name
 
-yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_dataset.fasterrcnn.yaml'))
 
-register_custom_dataset(yaml_path)
+dataset_yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_dataset.fasterrcnn.yaml'))
+config_yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_config.fasterrcnn.yaml'))
+
+# get traning dataset name and validation dataset name
+my_train_dataset_name, my_val_dataset_name = register_custom_dataset(dataset_yaml_path)
+
+# Configure the Detectron2 model and training process 
+cfg = get_cfg()
+# Load model configuration, assign the model as Faster R-CNN network
+cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
+cfg.DATASETS.TRAIN = (my_train_dataset_name,)
+cfg.DATASETS.TEST = (my_val_dataset_name, )
+cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 320
+cfg.MODEL.ROI_HEADS.NUM_CLASSES = 6 # my custom datasets has 6 classes
+
+# Load weights from a local pre-trained weights file
+model_weights_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../pretrained_models/fasterrcnn/model_final_280758.pkl'))
+print(model_weights_path)
+cfg.MODEL.WEIGHTS = model_weights_path # path to the local 
+
+trainer = CustomTrainer(cfg)
