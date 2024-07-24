@@ -3,7 +3,7 @@ import torch
 import detectron2
 
 # import necessary modules from Detectron2
-from detectron2.engine import DefaultTrainer
+from detectron2.engine import DefaultTrainer, HookBase
 from detectron2.config import get_cfg
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.data.datasets import register_coco_instances
@@ -80,6 +80,56 @@ def register_custom_dataset(yaml_path):
 
     return my_train_dataset_name, my_val_dataset_name
 
+# define a hook to implement the early stopping strategy.
+class EarlyStoppingHook(HookBase):
+    def __init__(self, patience=50, delta=0.0):
+        '''
+            patience: how long to wait after the last time validation loss improved
+            delta: minumum change in the monitored quantity as an improvement
+        '''
+        self.patience = patience
+        self.delta = delta
+        self.best_loss = float('inf')
+        self.epochs_without_improvement = 0
+    
+    def after_step(self):
+        current_loss = self.trainer.storage.history('total_loss').latest()
+
+        if current_loss is None:
+            return # Continue training if loss is not available
+
+        if current_loss < self.best_loss - self.delta:
+            self.best_loss = current_loss
+            self.epochs_without_improvement = 0
+        else:
+            self.epochs_without_improvement += 1
+        
+        if self.epochs_without_improvement >= self.patience:
+            # print(f'Early stopping triggered after {self.epochs_without_improvement} epochs without improvement.')
+            self.stop_training = True # it doesn't work
+
+    def after_epoch(self):
+        if self.stop_training:
+            raise RuntimeError('Stop training early under early stopping criteria.')
+'''
+Define a custom trainer class that inherits from DefaultTrainer
+'''
+class CustomTrainer(DefaultTrainer):
+    @classmethod
+    def build_model(cls, cfg):
+        model = super().build_model(cfg)
+
+        # Freeze the backbone
+        backbone = model.backbone
+        for param in backbone.parameters():
+            param.requires_grad = False
+        
+        return model
+
+    def build_hooks(self):
+        hooks = super().build_hooks()
+        hooks.append(EarlyStoppingHook(patience=200))
+        return hooks
 
 dataset_yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_dataset.fasterrcnn.yaml'))
 config_yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_config.fasterrcnn.yaml'))
@@ -94,11 +144,19 @@ cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_F
 cfg.DATASETS.TRAIN = (my_train_dataset_name,)
 cfg.DATASETS.TEST = (my_val_dataset_name, )
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 320
+cfg.SOLVER.IMS_PER_BATCH = 2
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = 6 # my custom datasets has 6 classes
+cfg.SOLVER.MAX_ITER = 1000 # training epoch
 
 # Load weights from a local pre-trained weights file
 model_weights_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../pretrained_models/fasterrcnn/model_final_280758.pkl'))
 print(model_weights_path)
-cfg.MODEL.WEIGHTS = model_weights_path # path to the local 
+cfg.MODEL.WEIGHTS = model_weights_path # path to the local
+
+trained_model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../output/fasterrcnn'))
+cfg.OUTPUT_DIR = trained_model_dir # Directory to save the trained model
+os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
 
 trainer = CustomTrainer(cfg)
+trainer.resume_or_load(resume=False)
+trainer.train()
