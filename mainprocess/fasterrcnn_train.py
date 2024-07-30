@@ -107,10 +107,9 @@ class EarlyStoppingHook(HookBase):
         if self.epochs_without_improvement >= self.patience:
             # print(f'Early stopping triggered after {self.epochs_without_improvement} epochs without improvement.')
             self.stop_training = True # it doesn't work
+            # raise RuntimeError('Stop training early under early stopping criteria.')
 
-    def after_epoch(self):
-        if self.stop_training:
-            raise RuntimeError('Stop training early under early stopping criteria.')
+
 '''
 Define a custom trainer class that inherits from DefaultTrainer
 '''
@@ -128,7 +127,7 @@ class CustomTrainer(DefaultTrainer):
 
     def build_hooks(self):
         hooks = super().build_hooks()
-        hooks.append(EarlyStoppingHook(patience=200))
+        hooks.append(EarlyStoppingHook(patience=300))
         return hooks
 
 dataset_yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_dataset.fasterrcnn.yaml'))
