@@ -81,6 +81,7 @@ def register_custom_dataset(yaml_path):
     return my_train_dataset_name, my_val_dataset_name
 
 # define a hook to implement the early stopping strategy.
+# TODO
 class EarlyStoppingHook(HookBase):
     def __init__(self, patience=50, delta=0.0):
         '''
