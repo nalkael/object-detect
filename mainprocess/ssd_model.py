@@ -1,6 +1,12 @@
 import os
+import torch
+import detectron2
 
-import mmcv
+import torch.nn.functional as F
+import torchvision
+
+from mmdet.apis import init_detector, inference_detector
+
 
 file_path = os.path.abspath(__file__)
 current_dir = os.path.dirname(os.path.abspath(__file__))
