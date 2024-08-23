@@ -1,0 +1,5 @@
+'''
+This script handles model evaluation. 
+After training, you can use it to evaluate your model on a validation or test dataset.
+It typically includes functions to perform inference on a dataset and calculate metrics such as mAP or IoU.
+'''
