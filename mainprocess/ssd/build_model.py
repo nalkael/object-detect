@@ -13,7 +13,7 @@ from torchvision.models.detection import _utils
 from torchvision.models.detection import ssd300_vgg16
 from torchvision.models.detection import SSD300_VGG16_Weights
 
-def get_model(num_class=91, size=300):
+def create_model(num_class=91, size=300):
     """
     Load and modify the SSD model for the given number of classes
     """
@@ -29,8 +29,8 @@ def get_model(num_class=91, size=300):
     '''
     in_channels = _utils.retrieve_out_channels(model.backbone, (size, size))
 
-    # List containing number of anchors
-    num_anchors = 1
+    # List containing number of anchors based on aspect rations
+    num_anchors = model.anchor_generator.num_anchors_per_location()
 
 
     model.head.classification_head = SSDClassificationHead(
