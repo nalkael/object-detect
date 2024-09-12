@@ -11,6 +11,13 @@ Generate conresponding bounding-box coordinates with tiles (important!)
 and there is also someother requirements:
 1. If the image cannot perfectly split, there could need to add some paddings (it is a bit annoying)
 2. keep a record about the original image size information, can be used to recover from tiles
-3. Some overlap about the images when splitting (it can also used to generate some datasets)
+3. Some overlap about the images when splitting (it can also used to generate more small-sized datasets)
+How to implement that?
 """
+
+import os
+import cv2
+import torch
+
+
 
