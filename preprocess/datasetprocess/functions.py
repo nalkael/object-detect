@@ -23,6 +23,13 @@ def exponential_search(A: list[int], x: int) -> int:
     
     return -1
 
+def one_delete(x, y) -> bool:
+    # if the string x can be transformed into the string y with exactlz one delete operation, returns True
+    # otherweise returns False
+    
+    pass
+
+
 def main():
 
     A = [1,2,9,13,19,27,32,47,59,61,72,85,99,103,127,133,141,156]
