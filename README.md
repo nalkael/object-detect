@@ -1,7 +1,19 @@
-# Object Detection Model for Urban Infrastructure
+﻿# Object Detection Model for Urban Infrastructure
 
-This project is used in detection for urban Infrastructure, more precisely,  small infrastructure on the street such as **StackEdit**. Once you have finished with me, you can create new files by opening the **file explorer** on the left corner of the navigation bar.
+This project is used in detection for **urban Infrastructure**, more precisely,  small infrastructure on the street such as the manhole cover. The trained model can run on the local computer without additional computation resource and detect classified objects from arbitrary input images.
 
+And here is a flow chart for the pipeline:
+
+```mermaid
+graph LR
+A(Traning Data) 
+A --> B((Base Model))
+B -- Train --> B
+B --> D(Trained Model)
+E(Test Data) --> D
+D --> F(Object Coordinates)
+D --> G(Object Classification)
+```
 
 # Files
 
@@ -141,3 +153,4 @@ A --> C(Round Rect)
 B --> D{Rhombus}
 C --> D
 ```
+
