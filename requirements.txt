@@ -26,7 +26,6 @@ cryptography==43.0.0
 cuda-python==12.5.0
 cycler==0.12.1
 cymem==2.0.8
--e git+https://github.com/nalkael/object-detect.git@1ddbca2f200097313d84403c9d4cd7b050849b9b#egg=detectron2&subdirectory=detectron2
 eval_type_backport==0.2.0
 filelock==3.14.0
 fire==0.6.0
