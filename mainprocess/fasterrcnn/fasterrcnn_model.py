@@ -29,7 +29,7 @@ def load_yaml(yaml_path):
 '''
 Register the Dataset
 '''
-def register_custom_dataset(yaml_path):
+def RegisterCustomDataset(yaml_path):
     # yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_dataset.fasterrcnn.yaml'))
     config = load_yaml(yaml_path)
     train_images_path = config['train']
@@ -135,7 +135,7 @@ dataset_yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_
 config_yaml_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'my_config.fasterrcnn.yaml'))
 
 # get traning dataset name and validation dataset name
-my_train_dataset_name, my_val_dataset_name = register_custom_dataset(dataset_yaml_path)
+my_train_dataset_name, my_val_dataset_name = RegisterCustomDataset(dataset_yaml_path)
 
 # Configure the Detectron2 model and training process 
 cfg = get_cfg()
@@ -149,11 +149,11 @@ cfg.MODEL.ROI_HEADS.NUM_CLASSES = 6 # my custom datasets has 6 classes
 cfg.SOLVER.MAX_ITER = 1000 # training epoch
 
 # Load weights from a local pre-trained weights file
-model_weights_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../pretrained_models/fasterrcnn/model_final_280758.pkl'))
+model_weights_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../pretrained_models/fasterrcnn/model_final_280758.pkl'))
 print(model_weights_path)
 cfg.MODEL.WEIGHTS = model_weights_path # path to the local
 
-trained_model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../output/fasterrcnn'))
+trained_model_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../output/fasterrcnn'))
 cfg.OUTPUT_DIR = trained_model_dir # Directory to save the trained model
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
 
