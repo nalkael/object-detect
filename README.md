@@ -5,17 +5,9 @@ This project is used in detection for **urban infrastructures** from input of **
 
 Here are some example of patterns for different objects:
 
-![manhole cover](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/001_Schachtdeckel/001_Kanalschachtdeckel/KSr_01.jpg)
+![manhole cover](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/001_Schachtdeckel/001_Kanalschachtdeckel/KSr_01.jpg)![utility shaft](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/001_Schachtdeckel/002_Versorgungsschacht/VS_02.jpg)
 
-![utility shaft](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/001_Schachtdeckel/002_Versorgungsschacht/VS_02.jpg)
-
-![water valve cover](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/002_Schieberdeckel/001_Wasser/SD_Wasser_03.jpg)
-
-![gas valve cover](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/002_Schieberdeckel/002_Gas/SD_Gas_04.jpg)
-
-![underground hydrant](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/003_Unterflurhydrant/UFH_02.jpg)
-
-![stormwater inlet](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/004_Sinkkaesten/25x50/SK25_03.jpg)
+![water valve cover](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/002_Schieberdeckel/001_Wasser/SD_Wasser_03.jpg)![gas valve cover](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/002_Schieberdeckel/002_Gas/SD_Gas_04.jpg)![underground hydrant](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/003_Unterflurhydrant/UFH_02.jpg)![stormwater inlet](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/004_Sinkkaesten/25x50/SK25_03.jpg)
 
 
 The model can be trained on the local computer without additional huge computation resource and it can detect classified objects from arbitrary input images.
