@@ -5,17 +5,17 @@ This project is used in detection for **urban infrastructures** from input of **
 
 Here are some example of patterns for different objects:
 
-![manhole cover](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/001_Schachtdeckel/001_Kanalschachtdeckel/KSr_02.jpg =100x100)
+![manhole cover](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/001_Schachtdeckel/001_Kanalschachtdeckel/KSr_02.jpg=100x100)
 
-![utility shaft](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/001_Schachtdeckel/002_Versorgungsschacht/VS_01.jpg =100x100)
+![utility shaft](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/001_Schachtdeckel/002_Versorgungsschacht/VS_01.jpg=100x100)
 
-![water valve cover](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/002_Schieberdeckel/001_Wasser/SD_Wasser_03.jpg =65x50)
+![water valve cover](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/002_Schieberdeckel/001_Wasser/SD_Wasser_03.jpg=65x50)
 
-![gas valve cover](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/002_Schieberdeckel/002_Gas/SD_Gas_04.jpg =100x20)
+![gas valve cover](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/002_Schieberdeckel/002_Gas/SD_Gas_04.jpg=100x20)
 
-![underground hydrant](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/003_Unterflurhydrant/UFH_02.jpg =50x50)
+![underground hydrant](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/003_Unterflurhydrant/UFH_02.jpg=50x50)
 
-![stormwater inlet](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/004_Sinkkaesten/25x50/SK50_03.jpg =50x50)
+![stormwater inlet](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/004_Sinkkaesten/25x50/SK50_03.jpg=50x50)
 
 
 The model can be trained on the local computer without additional huge computation resource and it can detect classified objects from arbitrary input images.
