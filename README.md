@@ -15,7 +15,7 @@ Here are some example of patterns for different objects:
 
 ![underground hydrant](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/003_Unterflurhydrant/UFH_02.jpg)
 
-![stormwater inlet](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/004_Sinkkaesten/25x50/SK50_03.jpg)
+![stormwater inlet](https://github.com/nalkael/object-detect/blob/main/examples/pattern%20sample/004_Sinkkaesten/50x50/SK50_03.jpg)
 
 
 The model can be trained on the local computer without additional huge computation resource and it can detect classified objects from arbitrary input images.
