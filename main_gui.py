@@ -10,10 +10,13 @@ class ObjectDetectionMainApp(QWidget):
 
     def init_gui(self):
         layout = QVBoxLayout()
-        
+        self.model_label = QLabel('Select Model:', self)
+        layout.addWidget(self.model_label)
         pass
 
 
 if __name__=='__main__':
     app = QApplication(sys.argv)
+    ex = ObjectDetectionMainApp()
+    ex.show()
     sys.exit(app.exec_())
