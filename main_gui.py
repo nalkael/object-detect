@@ -73,8 +73,15 @@ class ObjectDetectionMainApp(QWidget):
             return
         
         selected_model = self.model_dropbox.currentText()
-        # print(selected_model)
-
+        print(selected_model)
+        # dict to refer different scripts 
+        model_detection_scripts = {
+            "YOLOv5": "",
+            "Faster R-CNN": "",
+            "SSD300" : "",
+            "RetinaNet": "",
+            "Cascade R-CNN": "" 
+        }
         pass
 
 if __name__=='__main__':
