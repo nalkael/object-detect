@@ -66,8 +66,15 @@ class ObjectDetectionMainApp(QWidget):
         if file_or_folder:
             self.input_path = file_or_folder
             self.inputData_path_label.setText(f"Selected Path: {self.input_path}")
-        
+
     def exec_detection(self):
+        if not self.input_path:
+            QMessageBox.critical(self, "Error", "Please select an image or a folder for input.")
+            return
+        
+        selected_model = self.model_dropbox.currentText()
+        # print(selected_model)
+
         pass
 
 if __name__=='__main__':
