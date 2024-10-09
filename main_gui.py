@@ -49,8 +49,24 @@ class ObjectDetectionMainApp(QWidget):
         self.setGeometry(300, 300, 400, 300)
 
     def select_input(self):
-        pass
+        # Open file dialog to select a folder or a single image
+        file_dialog = QFileDialog()
+        options = QFileDialog.Options()
+        options |= QFileDialog.ReadOnly
 
+
+        # I found some bugs here to choose between folder and single image
+        # TODO 
+
+        # Select either from folder or an image file
+        file_or_folder = QFileDialog.getExistingDirectory(self, "Select Folder", options=options)
+        if not file_or_folder: # If no folder selected, allow image selection:
+            file_or_folder, _ = QFileDialog.getOpenFileName(self, "Select Image", "", "Images (*.png *.jpg *.jpeg)", options=options)
+        
+        if file_or_folder:
+            self.input_path = file_or_folder
+            self.inputData_path_label.setText(f"Selected Path: {self.input_path}")
+        
     def exec_detection(self):
         pass
 
