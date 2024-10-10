@@ -1,3 +1,5 @@
+# The Gui script
+
 import sys
 import subprocess
 import PyQt5
@@ -17,7 +19,7 @@ class ObjectDetectionMainApp(QWidget):
 
         # Dropdown box for model selection
         self.model_dropbox = QComboBox(self)
-        models_list = ["YOLOv5", "Faster R-CNN", "SSD300", "RetineNet", "Cascade R-CNN"]
+        models_list = ["YOLOv5", "Faster R-CNN", "SSD300", "RetineNet", "Cascade R-CNN"] # extensive in future
         self.model_dropbox.addItems(models_list)
         layout.addWidget(self.model_dropbox)
 
@@ -56,6 +58,7 @@ class ObjectDetectionMainApp(QWidget):
 
 
         # I found some bugs here to choose between folder and single image
+        # check if it is input from a single image or from a folder
         # TODO 
 
         # Select either from folder or an image file
@@ -73,15 +76,17 @@ class ObjectDetectionMainApp(QWidget):
             return
         
         selected_model = self.model_dropbox.currentText()
-        print(selected_model)
+        print(f"using {selected_model} object detection model...")
         # dict to refer different scripts 
         model_detection_scripts = {
-            "YOLOv5": "",
-            "Faster R-CNN": "",
-            "SSD300" : "",
-            "RetinaNet": "",
-            "Cascade R-CNN": "" 
+            "YOLOv5": "model_yolov5.py",
+            "Faster R-CNN": "model_fasterrcnn.py",
+            "SSD300" : "model_ssd.py",
+            "RetinaNet": "model_retinanet.py",
+            "Cascade R-CNN": "model_cascadercnn.py"
+            # extensive in future
         }
+
         pass
 
 if __name__=='__main__':
