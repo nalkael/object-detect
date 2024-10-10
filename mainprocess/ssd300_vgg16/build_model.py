@@ -20,7 +20,7 @@ def create_model(num_class=91, size=300):
 
     # Load an SSD model pre-trained on COCO (Load the Torchvision pretrained model)
     model = ssd300_vgg16(weights=SSD300_VGG16_Weights.DEFAULT)
-
+    
     # Modify the classification head to match the number of classes
     '''
     This function calculates the number of output channels from the backbone model (VGG16 in this case) w
