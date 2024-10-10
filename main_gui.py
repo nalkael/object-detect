@@ -19,7 +19,7 @@ class ObjectDetectionMainApp(QWidget):
 
         # Dropdown box for model selection
         self.model_dropbox = QComboBox(self)
-        models_list = ["YOLOv5", "Faster R-CNN", "SSD300", "RetineNet", "Cascade R-CNN"] # extensive in future
+        models_list = ["SSD300", "Faster R-CNN", "YOLOv5", "RetineNet", "Cascade R-CNN"] # extensive in future
         self.model_dropbox.addItems(models_list)
         layout.addWidget(self.model_dropbox)
 
@@ -44,6 +44,7 @@ class ObjectDetectionMainApp(QWidget):
         # TODO
 
         self.input_path = None # Store selected file/folder path
+        self.output_path = None # Store the output folder for data processing
 
         # Set laýout for the main window
         self.setLayout(layout)
@@ -87,7 +88,23 @@ class ObjectDetectionMainApp(QWidget):
             # extensive in future
         }
 
-        pass
+        # Map the selected model to its respective Python script
+        script_to_run = model_detection_scripts[selected_model]
+
+        # Since it's the detection model, the model should have been already trained
+        # Just use it directly in the detection application
+        try:
+            # Execute selected model script, passing the input path
+            # If the subscript runs without issues, it continues and process the data
+            # subprocess.run(["python", script_to_run, self.input_path, self.output_path, "--verbose"], check=True)
+            subprocess.run(["python", script_to_run, self.input_path, "--verbose"], check=True)
+
+            # Show a success message after the subprocess finished smoothly
+            QMessageBox.information(self, "Success", f"Detection completed using {selected_model}. Results saved in output.txt")
+
+        except subprocess.CalledProcessError as e:
+            # If an error occurs during execution, throw out an exception
+            QMessageBox.critical(self, "Error", f"Error: {e}")
 
 if __name__=='__main__':
     app = QApplication(sys.argv)
