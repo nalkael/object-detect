@@ -12,5 +12,20 @@ import numpy as np
 # images without annotations(bounding boxes) are not discarded, instead
 # those images are used as background images
 # it helps to improve the performance of object detection models
+
+here are augmentations that we apply to train the SSD model:
+Blur
+MotionBlur
+MedianBlur
+ToGray
+RandomBrightnessContrast
+ColorJitter
+RandomGamma
+
+use Albumentations library to apply the augmentations
 """
+
+from config import (
+    CLASSES, RESIZE_TO, TRAIN_DIR, BATCH_SIZE
+)
 

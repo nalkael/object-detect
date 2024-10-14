@@ -10,9 +10,9 @@ NUM_WORKERS = 4 # Number of parallel workers for data loading
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 # training folder
-TRAIN_DIR = 'data/License Plate Recognition.v1-raw-images.voc/train'
+TRAIN_DIR = '../../datasets/dataset.coco/train'
 # Validation images and XML files directory.
-VALID_DIR = 'data/License Plate Recognition.v1-raw-images.voc/valid'
+VALID_DIR = '../../datasets/dataset.coco/valid'
 
 # Classes: 0 index is reserved for background.
 CLASSES = [
@@ -32,6 +32,6 @@ NUM_CLASSES = len(CLASSES)
 VISUALIZE_TRANSFORMED_IMAGES = False
 
 # Location to save model and plots.
-OUT_DIR = 'outputs'
+OUT_DIR = '../../outputs/ssd300'
 
 # print(NUM_CLASSES)
