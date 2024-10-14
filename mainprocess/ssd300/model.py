@@ -26,12 +26,14 @@ def create_model(num_classes=91, size=300):
     
     
     # Image size for transforms.
+    # The format is required by the transform logic in detection models 
+    # such as SSD, Faster R-CNN, etc., because of how they handle image resizing
     model.transform.min_size = (size,)
     model.transform.max_size = size
     return model
 
 if __name__ == '__main__':
-    model = create_model(2, 640)
+    model = create_model(2, 320)
     print(model)
     # Total parameters and trainable parameters.
     total_params = sum(p.numel() for p in model.parameters())
