@@ -7,9 +7,10 @@ import cv2
 import os
 import numpy as np
 
+"""
 # the dataset preparation also handels the images without bounding boxes
 # images without annotations(bounding boxes) are not discarded, instead
 # those images are used as background images
 # it helps to improve the performance of object detection models
-
+"""
 
