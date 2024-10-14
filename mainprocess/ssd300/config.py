@@ -17,7 +17,13 @@ VALID_DIR = 'data/License Plate Recognition.v1-raw-images.voc/valid'
 # Classes: 0 index is reserved for background.
 CLASSES = [
     '__background__', 
-    'License_Plate'
+    'Manhole_Cover',
+    'Utility_Shaft',
+    'Water_Valve_Cover',
+    'Gas_Valve_Cover',
+    'Underground_Hydrant',
+    'Stormwater_Inlet',
+    'Manhole_Cover_Quad',
     ]
 
 NUM_CLASSES = len(CLASSES)
@@ -27,3 +33,5 @@ VISUALIZE_TRANSFORMED_IMAGES = False
 
 # Location to save model and plots.
 OUT_DIR = 'outputs'
+
+# print(NUM_CLASSES)
