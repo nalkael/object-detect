@@ -45,7 +45,7 @@ class Averager:
     
 class SaveBestModel:
     """
-
+    Save Best Model
     """
     def __init__(self, best_valid_map=float(0)):
         """
@@ -63,4 +63,16 @@ class SaveBestModel:
             self.best_valid_map = current_valid_map
             print(f'\nBEST VALIDATION mAP: {self.best_valid_map}')
             print(f'\nBEST MODEL at EPOCH: {epoch+1}\n')
-            
+            # save a serialized object such as model's state to a file
+            torch.save({
+                'epoch': epoch + 1,
+                'model_state_dict': model.state_dict(),
+            }, f'{OUT_DIR}/best_model.pth') # Save to the specified directory
+    
+def collate_fn(batch):
+    """
+    the function in Python is typically used when loading data with a DataLoader
+    It is to combine (collapse) samples from a dataset into a batch.
+    """
+    return tuple(zip(*batch))
+
