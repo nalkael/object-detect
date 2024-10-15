@@ -59,5 +59,8 @@ class SaveBestModel:
         This method allows instances of the class to be called as a function
         when invoke SaveBestModel(...), this method will be executed.
         """
-        
-        pass
+        if current_valid_map > self.best_valid_map:
+            self.best_valid_map = current_valid_map
+            print(f'\nBEST VALIDATION mAP: {self.best_valid_map}')
+            print(f'\nBEST MODEL at EPOCH: {epoch+1}\n')
+            
