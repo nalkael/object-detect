@@ -1,5 +1,0 @@
-'''
-This YAML file holds all the configurations related to your model
-such as dataset paths, learning rate, batch size, and other hyperparameters.
-These configurations can be loaded in scripts using Detectron2's get_cfg()
-'''
