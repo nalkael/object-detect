@@ -76,3 +76,6 @@ def collate_fn(batch):
     """
     return tuple(zip(*batch))
 
+"""
+apply transformations for data augumentation in the object detection task
+"""
