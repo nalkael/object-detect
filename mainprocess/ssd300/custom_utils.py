@@ -4,6 +4,8 @@ import numpy as np
 import torch
 import matplotlib.pyplot as plt
 
+from albumentations.pytorch import ToTensorV2
+
 from config import (
     DEVICE, CLASSES
 )
@@ -77,5 +79,43 @@ def collate_fn(batch):
     return tuple(zip(*batch))
 
 """
-apply transformations for data augumentation in the object detection task
+apply transformations for data augumentation in the object detection task: training data
 """
+def get_train_transform(data_format):
+    """
+    data_format: COCO format, PASCAL VOC format, etc....
+    """
+    compose = Al.Compose([
+        Al.Blur(blur_limit=3, p=0.1),
+        Al.MotionBlur(blur_limit=3, p=0.1),
+        Al.MedianBlur(blur_limit=3, p=0.1),
+        Al.ToGray(p=0.2),
+        Al.RandomBrightnessContrast(p=0.2),
+        Al.ColorJitter(p=0.2),
+        ToTensorV2(p=1.0),
+    ], bbox_params={
+        'format': data_format,
+        'label_fields': ['labels']
+    })
+    return compose
+
+"""
+apply transformations for data augumentation in the object detection task: validation data
+"""
+def get_valid_transform(data_format):
+    compose = Al.Compose([
+        ToTensorV2(p=1.0),
+    ], bbox_params={
+        'format': data_format,
+        'label_fields': ['labels']    
+        })
+    return compose
+
+def show_transformed_images(train_loader, data_format):
+    """
+    This function shows the transformed images from the train loader.
+    Check whether the transformed images with the corresponding labels are correct
+    Only runs if 'VISUALIZE_TRANSFORMED_IMAGES = True' in config.py, default is False
+    """
+    
+    pass
