@@ -48,13 +48,17 @@ class Averager:
 class SaveBestModel:
     """
     Save Best Model
+    Must apply early stop with patience, otherwise it cannot handle oscillation
     """
-    def __init__(self, best_valid_map=float(0)):
+    def __init__(self, best_valid_map=float(0), patience=10):
         """
         It stores the best validation mAP seen so far.
         This value keeps trackof the highest mAP encountered during training
+        Introduce aaaaa patience mechanism to handle oscillations
         """
         self.best_valid_map = best_valid_map
+        self.patience = patience
+        self.counter = 0
     
     def __call__(self, model, current_valid_map, epoch, OUT_DIR):
         """
@@ -63,6 +67,7 @@ class SaveBestModel:
         """
         if current_valid_map > self.best_valid_map:
             self.best_valid_map = current_valid_map
+            self.counter = 0
             print(f'\nBEST VALIDATION mAP: {self.best_valid_map}')
             print(f'\nBEST MODEL at EPOCH: {epoch+1}\n')
             # save a serialized object such as model's state to a file
@@ -70,6 +75,21 @@ class SaveBestModel:
                 'epoch': epoch + 1,
                 'model_state_dict': model.state_dict(),
             }, f'{OUT_DIR}/best_model.pth') # Save to the specified directory
+        else:
+            # If the mAP doesn't improve, increase the patience counter
+            self.counter += 1
+            print(f'VALIDATION mAP DID NOT IMPROVE. PATIENCE: {self.counter}')
+        
+        # Stop if patience exceeded
+        if self.counter >= self.patience:
+            # stop
+            print(f'\nStopping early as no improvement was seen for {self.patience} epochs.\n')
+            return True # to show it's a nearly stopping
+        else: return False # iT is not an early stopping
+
+# TODO
+# moving average: Smoothes mAP values to aviod reacting to short-term osillations
+# combine loss and mAP (loss + mAP): consider multiple factors to decide when to save
     
 def collate_fn(batch):
     """
@@ -117,5 +137,17 @@ def show_transformed_images(train_loader, data_format):
     Check whether the transformed images with the corresponding labels are correct
     Only runs if 'VISUALIZE_TRANSFORMED_IMAGES = True' in config.py, default is False
     """
-    
+    # TODO
+    # not apply yet
+    pass
+
+def save_model():
+    """
+    This function is a more general-purpose method to save the model at any given point in training (after each epoch)
+    It does not check for any validation metrics or performance improvements, simply saves the current state of the model and optimizer.
+    This is useful for resuming training later or saving the state at regular intervals
+    """
+    pass
+
+def save_mAP():
     pass
