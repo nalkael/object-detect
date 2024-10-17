@@ -141,13 +141,42 @@ def show_transformed_images(train_loader, data_format):
     # not apply yet
     pass
 
-def save_model():
+def save_model(epoch, model, optimizer, OUT_DIR):
     """
     This function is a more general-purpose method to save the model at any given point in training (after each epoch)
     It does not check for any validation metrics or performance improvements, simply saves the current state of the model and optimizer.
     This is useful for resuming training later or saving the state at regular intervals
     """
-    pass
+    torch.save({
+        'epoch': epoch + 1,
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        }, f'{OUT_DIR}/last_model.pth'
+        )
+
+def save_loss_plot(
+    OUT_DIR,
+    train_loss_list,
+    valid_loss_list,
+    x_label = 'iterations',
+    y_label = 'loss',
+    save_name = 'loss_plot'
+):
+    """
+    Function to save both train and validation loss graph
+    :param OUT_DIR: path to save the graphs
+    :param train_loss_list: List containing the training loss values
+    :param valid_loss_list: List containing the validation loss values
+    """
+    figure_1 = plt.figure(figsize=(20, 20), num=1, clear=True)
+    loss_ax = figure_1.add_subplot()
+    loss_ax.plot(train_loss_list, color='tab:blue', label='Training Loss')
+    loss_ax.plot(valid_loss_list, color='tab:orange', label='Validation Loss')
+    loss_ax.set_xlabel(x_label)
+    loss_ax.set_ylabel(y_label)
+    loss_ax.legend()
+    figure_1.savefig(f"{OUT_DIR}/{save_name}.png")
+    print('SAVING LOSS PLOTS COMPLETE...')
 
 def save_mAP():
     pass
