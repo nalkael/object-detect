@@ -178,5 +178,21 @@ def save_loss_plot(
     figure_1.savefig(f"{OUT_DIR}/{save_name}.png")
     print('SAVING LOSS PLOTS COMPLETE...')
 
-def save_mAP():
-    pass
+def save_mAP_plot(OUT_DIR, map_05, map_095):
+    """
+    # Save the mAP@0.5 and mAP@0.95 values per epoch.
+    :param map_05: List containing mAP values at 0.5 IoU
+    :param map: List containing mAP values at 0.5:0.95 IoU
+    """
+    figure = plt.figure(figsize=(20, 20), num=1, clear=True)
+    map_ax = figure.add_subplot()
+    map_ax.plot(
+        map_05, color='tab:blue', linestyle='-', label='mAP@0.5'
+    )
+    map_ax.plot(
+        map_095, color='tab:red', linestyle='-', label='mAP@0.5:0.95'
+    )
+    ax.set_xlabel('epochs')
+    ax.set_ylabel('mAP')
+    ax.legend()
+    figure.savefig(f'{OUT_DIR}/mAP.png')
