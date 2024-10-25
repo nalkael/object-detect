@@ -1,2 +1,17 @@
 # py cache file
-__pycache__
+__pycache__/
+
+dataset/
+weights/
+
+# big files
+*.pickle
+
+#pycharm
+
+# Enviroments
+.env
+.venv
+env/
+venv/
+ENV/
