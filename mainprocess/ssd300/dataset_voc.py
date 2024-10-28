@@ -42,11 +42,19 @@ class CustomVOCDetection(VOCDetection):
     '''
     def __init__(self, root: str, year: str = '2012', image_set: str ='train', download: bool=False):
         super().__init__(root, year= year, image_set=image_set, download=download)
+
+        # Define image transformations
+        self.transforms = T.Compose([
+            T.Resize((RESIZE_TO, RESIZE_TO)),
+            T.ToTensor(),
+        ])
     
     def __getitem__(self, idx: int) -> Tuple[Any, Any]:
         image, target = super().__getitem__(idx)
 
-        # Convert image to numpy array and apply transformations
+        # Resize and mormalized the images as a tensor
+        image = self.transforms(image)
 
+        # prepare target information
         pass
 
