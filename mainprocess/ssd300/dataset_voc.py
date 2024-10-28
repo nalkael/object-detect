@@ -40,13 +40,13 @@ class CustomVOCDetection(VOCDetection):
     '''
     root: root directory of the VOC Dataset
     '''
-    def __init__(self, root, image_set='train', download=False):
-        super().__init__(root, image_set=image_set, download=download)
+    def __init__(self, root: str, year: str = '2012', image_set: str ='train', download: bool=False):
+        super().__init__(root, year= year, image_set=image_set, download=download)
     
     def __getitem__(self, idx: int) -> Tuple[Any, Any]:
         image, target = super().__getitem__(idx)
 
         # Convert image to numpy array and apply transformations
-        
+
         pass
 
