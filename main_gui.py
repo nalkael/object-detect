@@ -1,9 +1,10 @@
 # The Gui script
 
+import os
 import sys
 import subprocess
 import PyQt5
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog, QComboBox, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QFileDialog, QComboBox, QMessageBox, QCheckBox
 
 class ObjectDetectionMainApp(QWidget):
     def __init__(self):
@@ -40,11 +41,18 @@ class ObjectDetectionMainApp(QWidget):
         self.inputData_path_label = QLabel("Selected Path: None", self)
         layout.addWidget(self.inputData_path_label)
 
+        # Checkbox show if the result with bounding box coordinate saved with images
+        self.save_image_with_box = QCheckBox("Save Images with Bounding-Box")
+        self.save_image_with_box.setChecked(False)
+        # TODO
+        layout.addWidget(self.save_image_with_box)
+
         # Label to display the select path for output result
         # TODO
 
         self.input_path = None # Store selected file/folder path
         self.output_path = None # Store the output folder for data processing
+        self.base_data_dir = os.path.abspath('data') # 'data' is the data folder at the root level
 
         # Set laýout for the main window
         self.setLayout(layout)
@@ -84,7 +92,7 @@ class ObjectDetectionMainApp(QWidget):
             "Faster R-CNN": "model_fasterrcnn.py",
             "SSD300" : "model_ssd.py",
             "RetinaNet": "model_retinanet.py",
-            "Cascade R-CNN": "model_cascadercnn.py"
+            "Cascade R-CNN": "model_cascadercnn.py",
             # extensive in future
         }
 
@@ -105,6 +113,10 @@ class ObjectDetectionMainApp(QWidget):
         except subprocess.CalledProcessError as e:
             # If an error occurs during execution, throw out an exception
             QMessageBox.critical(self, "Error", f"Error: {e}")
+
+    def save_image_onClick():
+        # TODO
+        pass
 
 if __name__=='__main__':
     app = QApplication(sys.argv)

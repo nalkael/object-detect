@@ -54,7 +54,11 @@ class CustomVOCDetection(VOCDetection):
 
         # Resize and mormalized the images as a tensor
         image = self.transforms(image)
-
+        
         # prepare target information
         pass
 
+
+if __name__ == "__main__":
+    CustomVOCDetection(".")
+    pass
