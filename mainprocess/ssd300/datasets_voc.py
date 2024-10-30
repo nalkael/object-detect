@@ -8,11 +8,10 @@ import os
 from typing import Any, Tuple
 
 from torch.utils.data import DataLoader, Dataset, Subset
-from torchvision.datasets import VOCDetection
 
 
 from config import(
-    CLASSES, RESIZE_TO, TRAIN_DIR, VALID_DIR, BATCH_SIZE
+    CLASSES, RESIZE_TO, TRAIN_DIR, VALID_DIR, DATASET_PATH, BATCH_SIZE
 )
 
 from custom_utils import collate_fn, get_train_transform, get_valid_transform
@@ -36,12 +35,11 @@ RandomGamma
 use Albumentations library to apply the augmentations
 """
 
-class CustomVOCDetection(VOCDetection):
+class CustomVOCLoader(Dataset):
     '''
     root: root directory of the VOC Dataset
     '''
-    def __init__(self, root: str, image_set: str ='train', download: bool=False):
-        super().__init__(root, image_set=image_set, download=download)
+    def __init__(self, dataset_dir, dataset_type, image_size, classes, transforms=None):
 
         # Define image transformations
         """
@@ -54,6 +52,17 @@ class CustomVOCDetection(VOCDetection):
             T.Resize((RESIZE_TO, RESIZE_TO)),
             T.ToTensor(),
         ])
+
+        
+        # Define custom paths and structures for dataset
+        self.images_dir = os.path.join(root, image_set) # e.g., dataset_root/train
+        self.annotations_dir = os.path.join(root, image_set) # use the same folder for annotations
+
+        self.data = [
+            (os.path.join(self.images_dir, f), os.path.join(self.annotations_dir, f.replace('.jpg', '.xml')))
+            for f in os.listdir(self.images_dir) if f.endswitch('.jpg')
+        ]
+
     
     def __getitem__(self, idx: int) -> Tuple[Any, Any]:
         """
@@ -68,6 +77,7 @@ class CustomVOCDetection(VOCDetection):
         if the image is resized and normalized, it will have a shape (3, RESIZE_TO, RESIZE_TO)
         with pixel values typically scaled between 0 and 1
         """
+
         image, target = super().__getitem__(idx)
 
         # Resize and mormalized the images as a tensor
@@ -115,7 +125,7 @@ class CustomVOCDetection(VOCDetection):
 
 if __name__ == "__main__":
     
-    dataset_train = CustomVOCDetection(root=TRAIN_DIR)
-    dataset_valid = CustomVOCDetection(root=VALID_DIR)
+    dataset_train = CustomVOCDetection(root=TRAIN_DIR, image_set='train')
+    # dataset_valid = CustomVOCDetection(root=VALID_DIR, image_set='valid')
     print(f"Number of samples: {len(dataset_train)}")
-    print(f"Number of samples: {len(dataset_valid)}")
+    # print(f"Number of samples: {len(dataset_valid)}")

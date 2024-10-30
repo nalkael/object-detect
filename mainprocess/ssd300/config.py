@@ -10,9 +10,11 @@ NUM_WORKERS = 4 # Number of parallel workers for data loading
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 # training folder
-TRAIN_DIR = '/home/rdluhu/Dokumente/object_detection_project/dataset.v12i.voc/train'
+TRAIN_DIR = '/home/rdluhu/Dokumente/object_detection_project/dataset.v12i.voc/train_dataset'
 # Validation images and XML files directory.
-VALID_DIR = '/home/rdluhu/Dokumente/object_detection_project/dataset.v12i.voc/valid'
+VALID_DIR = '/home/rdluhu/Dokumente/object_detection_project/dataset.v12i.voc/valid_dataset'
+
+DATASET_PATH = '/home/rdluhu/Dokumente/object_detection_project/dataset.v12i.voc'
 
 # Classes: 0 index is reserved for background.
 CLASSES = [
