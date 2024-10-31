@@ -2,11 +2,17 @@ import torch
 import torchvision
 import torchvision.transforms as T
 
+from xml.etree import ElementTree as et
 import numpy as np
 import cv2
 import os
 from typing import Any, Tuple
+import glob as glob
 
+"""
+Dataset stores the samples and their corresponding labels
+DataLoader wraps an iterable around the Dataset to enable easy access to the samples
+"""
 from torch.utils.data import DataLoader, Dataset, Subset
 
 
@@ -39,7 +45,7 @@ class CustomVOCLoader(Dataset):
     '''
     root: root directory of the VOC Dataset
     '''
-    def __init__(self, dataset_dir, dataset_type, image_size, classes, transforms=None):
+    def __init__(self, dataset_dir: str, image_size: int, classes: Tuple, transforms=None):
 
         # Define image transformations
         """
@@ -47,21 +53,23 @@ class CustomVOCLoader(Dataset):
         Even though VOCDetection internally converts the image to PyTorch Tensor, it does not resize it
 
         ToTensor() not only converts the image to a tensor but also normalize or standardize the pixel values
-        """
+        
         self.transforms = T.Compose([
             T.Resize((RESIZE_TO, RESIZE_TO)),
             T.ToTensor(),
         ])
+        """
+        self.transforms = transforms
+        self.dataset_dir = dataset_dir # 'training dataset' or 'valiation dataset'
+        self.image_size = image_size
+        self.classes = classes
+        self.image_types = ['*.jpg', '*.jpeg', '*.png', '*.JPG']
+        self.image_paths = []
 
-        
-        # Define custom paths and structures for dataset
-        self.images_dir = os.path.join(root, image_set) # e.g., dataset_root/train
-        self.annotations_dir = os.path.join(root, image_set) # use the same folder for annotations
-
-        self.data = [
-            (os.path.join(self.images_dir, f), os.path.join(self.annotations_dir, f.replace('.jpg', '.xml')))
-            for f in os.listdir(self.images_dir) if f.endswitch('.jpg')
-        ]
+        for file_type in self.image_types:
+            self.image_paths.extend(glob.glob(os.path.join(self.dataset_dir, file_type)))
+        self.all_images = [image_path.split(os.path.sep)[-1] for image_path in self.image_paths]
+        self.all_images = sorted(self.all_images)
 
     
     def __getitem__(self, idx: int) -> Tuple[Any, Any]:
@@ -78,54 +86,159 @@ class CustomVOCLoader(Dataset):
         with pixel values typically scaled between 0 and 1
         """
 
-        image, target = super().__getitem__(idx)
+                # Capture the image name and the full image path.
+        image_name = self.all_images[idx]
+        image_path = os.path.join(self.dataset_dir, image_name)
 
-        # Resize and mormalized the images as a tensor
-        image = self.transforms(image)
-
-        # prepare target information
-        """
-        the target data comes from the XML annotations of the VOC dataset
-        """
-        boxes =[]
-        labels =[]
-        for obj in target['annotation']['object']:
-            labels.append(CLASSES.index(obj['name']))
-            xmin = int(obj['bndbox']['xmin'])
-            ymin = int(obj['bndbox']['ymin'])
-            xmax = int(obj['bndbox']['xmax'])
-            ymax = int(obj['bndbox']['ymax'])
-            boxes.append([xmin, ymin, xmax, ymax])
+        # Read and preprocess the image.
+        image = cv2.imread(image_path)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
+        image_resized = cv2.resize(image, (self.image_size, self.image_size))
+        image_resized /= 255.0
         
-        # Convert boxes and labels to tensors
+        # Capture the corresponding XML file for getting the annotations.
+        annot_filename = os.path.splitext(image_name)[0] + '.xml'
+        annot_file_path = os.path.join(self.dataset_dir, annot_filename)
+        
+        boxes = []
+        labels = []
+        tree = et.parse(annot_file_path)
+        root = tree.getroot()
+        
+        # Original image width and height.
+        image_width = image.shape[1]
+        image_height = image.shape[0]
+        
+        # Box coordinates for xml files are extracted 
+        # and corrected for image size given.
+        for member in root.findall('object'):
+            # Get label and map the `classes`.
+            labels.append(self.classes.index(member.find('name').text))
+            
+            # Left corner x-coordinates.
+            xmin = int(member.find('bndbox').find('xmin').text)
+            # Right corner x-coordinates.
+            xmax = int(member.find('bndbox').find('xmax').text)
+            # Left corner y-coordinates.
+            ymin = int(member.find('bndbox').find('ymin').text)
+            # Right corner y-coordinates.
+            ymax = int(member.find('bndbox').find('ymax').text)
+            
+            # Resize the bounding boxes according 
+            # to resized image `width`, `height`.
+            xmin_final = (xmin/image_width)*self.image_size
+            xmax_final = (xmax/image_width)*self.image_size
+            ymin_final = (ymin/image_height)*self.image_size
+            ymax_final = (ymax/image_height)*self.image_size
+
+            # Check that all coordinates are within the image.
+            if xmax_final > self.image_size:
+                xmax_final = self.image_size
+            if ymax_final > self.image_size:
+                ymax_final = self.image_size
+            
+            boxes.append([xmin_final, ymin_final, xmax_final, ymax_final])
+        
+        # Bounding box to tensor.
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
+        # Area of the bounding boxes.
+        area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0]) if len(boxes) > 0 \
+            else torch.as_tensor(boxes, dtype=torch.float32)
+        # No crowd instances.
+        iscrowd = torch.zeros((boxes.shape[0],), dtype=torch.int64)
+        # Labels to tensor.
         labels = torch.as_tensor(labels, dtype=torch.int64)
 
-        # Create the target dictionary
-        """
-        for ssd model, the 'area' and 'iscrowd' fields are not required
-        'area' is primarily useful for algorithm or evaluation metrics like the COCO evaluation metrics
-        area = (xmax - xmin) * (ymax - ymin)
-        SSD doesn't use it for training or inference.
-        'iscrowd' is also mainly used for the COCO dataset or models that can handle grouped objects
-        SSD is not designed with special handing for crowded scenarions
-        """
-        area = (boxes[:, 2] - boxes[:, 0]) * (boxes[:, 3] - boxes[:, 1])
+        # Prepare the final `target` dictionary.
+        target = {}
+        target["boxes"] = boxes
+        target["labels"] = labels
+        target["area"] = area
+        target["iscrowd"] = iscrowd
+        image_id = torch.tensor([idx])
+        target["image_id"] = image_id
 
-        target_dict = {
-            "boxes": boxes,
-            "labels": labels,
-            "image_id": torch.tensor([idx])
-        }
+        # Apply the image transforms.
+        if self.transforms:
+            sample = self.transforms(image = image_resized,
+                                     bboxes = target['boxes'],
+                                     labels = labels)
+            image_resized = sample['image']
+            target['boxes'] = torch.Tensor(sample['bboxes'])
+        
+        if np.isnan((target['boxes']).numpy()).any() or target['boxes'].shape == torch.Size([0]):
+            target['boxes'] = torch.zeros((0, 4), dtype=torch.int64)
+        return image_resized, target
 
-        return image, target_dict
+    def __len__(self):
+        return len(self.all_images)
 
 # dataset and dataloader
-# TODO
+# Prepare the final datasets and data loaders.
+def create_train_dataset(DIR):
+    train_dataset = CustomDataset(
+        DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_train_transform()
+    )
+    return train_dataset
+def create_valid_dataset(DIR):
+    valid_dataset = CustomDataset(
+        DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_valid_transform()
+    )
+    return valid_dataset
+def create_train_loader(train_dataset, num_workers=0):
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=True,
+        num_workers=num_workers,
+        collate_fn=collate_fn,
+        drop_last=True
+    )
+    return train_loader
+def create_valid_loader(valid_dataset, num_workers=0):
+    valid_loader = DataLoader(
+        valid_dataset,
+        batch_size=BATCH_SIZE,
+        shuffle=False,
+        num_workers=num_workers,
+        collate_fn=collate_fn,
+        drop_last=True
+    )
+    return valid_loader
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
+    # sanity check of the Dataset pipeline with sample visualization
+    dataset = CustomVOCLoader(
+        dataset_dir=TRAIN_DIR, image_size=RESIZE_TO, classes=CLASSES 
+    )
+    print(f"Number of training images: {len(dataset)}")
     
-    dataset_train = CustomVOCDetection(root=TRAIN_DIR, image_set='train')
-    # dataset_valid = CustomVOCDetection(root=VALID_DIR, image_set='valid')
-    print(f"Number of samples: {len(dataset_train)}")
-    # print(f"Number of samples: {len(dataset_valid)}")
+    # function to visualize a single sample
+    def visualize_sample(image, target):
+        for box_num in range(len(target['boxes'])):
+            box = target['boxes'][box_num]
+            label = CLASSES[target['labels'][box_num]]
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            cv2.rectangle(
+                image, 
+                (int(box[0]), int(box[1])), (int(box[2]), int(box[3])),
+                (0, 0, 255), 
+                2
+            )
+            cv2.putText(
+                image, 
+                label, 
+                (int(box[0]), int(box[1]-5)), 
+                cv2.FONT_HERSHEY_SIMPLEX, 
+                0.7, 
+                (0, 0, 255), 
+                2
+            )
+        cv2.imshow('Image', image)
+        cv2.waitKey(0)
+        
+    NUM_SAMPLES_TO_VISUALIZE = 50
+    for i in range(NUM_SAMPLES_TO_VISUALIZE):
+        image, target = dataset[i]
+        visualize_sample(image, target)

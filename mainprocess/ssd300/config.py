@@ -10,22 +10,22 @@ NUM_WORKERS = 4 # Number of parallel workers for data loading
 DEVICE = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 # training folder
-TRAIN_DIR = '/home/rdluhu/Dokumente/object_detection_project/dataset.v12i.voc/train_dataset'
+TRAIN_DIR = '/home/rdluhu/Dokumente/object_detection_project/dataset.v12i.voc/train'
 # Validation images and XML files directory.
-VALID_DIR = '/home/rdluhu/Dokumente/object_detection_project/dataset.v12i.voc/valid_dataset'
+VALID_DIR = '/home/rdluhu/Dokumente/object_detection_project/dataset.v12i.voc/valid'
 
 DATASET_PATH = '/home/rdluhu/Dokumente/object_detection_project/dataset.v12i.voc'
 
 # Classes: 0 index is reserved for background.
 CLASSES = [
     '__background__', 
-    'Manhole_Cover',
-    'Utility_Shaft',
-    'Water_Valve_Cover',
-    'Gas_Valve_Cover',
-    'Underground_Hydrant',
-    'Stormwater_Inlet',
-    'Manhole_Cover_Quad',
+    'Kanalschachtdeckel',
+    'Versorgungsschachtdeckel',
+    'Wasserschieberdeckel',
+    'Gasschieberdeckel',
+    'Unterflurhydrant',
+    'Sinkkaesten',
+    'KanaldeckelQuad',
     ]
 
 NUM_CLASSES = len(CLASSES)
