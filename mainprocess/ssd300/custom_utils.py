@@ -101,7 +101,7 @@ def collate_fn(batch):
 """
 apply transformations for data augumentation in the object detection task: training data
 """
-def get_train_transform(data_format):
+def get_train_transform():
     """
     data_format: COCO format, PASCAL VOC format, etc....
     """
@@ -114,7 +114,7 @@ def get_train_transform(data_format):
         Al.ColorJitter(p=0.2),
         ToTensorV2(p=1.0),
     ], bbox_params={
-        'format': data_format,
+        'format': 'pascal_voc',
         'label_fields': ['labels']
     })
     return compose
@@ -122,11 +122,11 @@ def get_train_transform(data_format):
 """
 apply transformations for data augumentation in the object detection task: validation data
 """
-def get_valid_transform(data_format):
+def get_valid_transform():
     compose = Al.Compose([
         ToTensorV2(p=1.0),
     ], bbox_params={
-        'format': data_format,
+        'format': 'pascal_voc',
         'label_fields': ['labels']    
         })
     return compose

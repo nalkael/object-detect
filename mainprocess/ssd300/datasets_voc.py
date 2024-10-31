@@ -176,15 +176,17 @@ class CustomVOCLoader(Dataset):
 # dataset and dataloader
 # Prepare the final datasets and data loaders.
 def create_train_dataset(DIR):
-    train_dataset = CustomDataset(
-        DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_train_transform()
+    train_dataset = CustomVOCLoader(
+        dataset_dir=TRAIN_DIR, image_size=RESIZE_TO, classes=CLASSES, transforms=get_train_transform()
     )
     return train_dataset
+
 def create_valid_dataset(DIR):
-    valid_dataset = CustomDataset(
-        DIR, RESIZE_TO, RESIZE_TO, CLASSES, get_valid_transform()
+    valid_dataset = CustomVOCLoader(
+        dataset_dir=TRAIN_DIR, image_size=RESIZE_TO, classes=CLASSES, transforms=get_valid_transform()
     )
     return valid_dataset
+
 def create_train_loader(train_dataset, num_workers=0):
     train_loader = DataLoader(
         train_dataset,
