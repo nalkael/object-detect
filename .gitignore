@@ -2,8 +2,7 @@ output_plots/
 results*/
 datasets/
 outputs/
-
-# detectron2/
+detectron2/
 
 # big files
 *.synctex.gz*
