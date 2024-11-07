@@ -1,0 +1,16 @@
+If you want to perform object recognition using circular or non-regularly shaped labels instead of bounding boxes, you'll need a different approach than YOLO, which is specifically designed for bounding box object detection.
+
+One common approach for object recognition with non-rectangular shapes is semantic segmentation. Semantic segmentation assigns a label to each pixel in an image, effectively dividing the image into regions corresponding to different objects or classes. This allows for more precise localization and delineation of objects, including those with non-rectangular shapes.
+
+Here are a few models commonly used for semantic segmentation tasks:
+
+U-Net: U-Net is a popular convolutional neural network architecture for semantic segmentation. It consists of an encoder-decoder structure with skip connections to preserve spatial information.
+DeepLab: DeepLab is another widely used semantic segmentation model that incorporates atrous convolution (also known as dilated convolution) to capture multi-scale features.
+Mask R-CNN: Mask R-CNN is an extension of the Faster R-CNN object detection model that adds a branch for predicting segmentation masks alongside bounding boxes. It can be used for instance segmentation, which involves both object detection and pixel-wise segmentation.
+FCN (Fully Convolutional Network): FCN is an early semantic segmentation model that replaces fully connected layers with convolutional layers to enable end-to-end pixel-wise prediction.
+These models are capable of handling various object shapes and can be trained on datasets labeled with circular or irregularly shaped masks instead of bounding boxes. Keep in mind that training these models may require a larger dataset and more computational resources compared to YOLO due to the pixel-wise prediction nature of semantic segmentation.
+
+git checkout master   
+git branch main master -f    
+git checkout main  
+git push origin main -f 

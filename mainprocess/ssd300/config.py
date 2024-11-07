@@ -34,6 +34,4 @@ NUM_CLASSES = len(CLASSES)
 VISUALIZE_TRANSFORMED_IMAGES = False
 
 # Location to save model and plots.
-OUT_DIR = '../../outputs/ssd300'
-
-# print(NUM_CLASSES)
+OUT_DIR = '/home/rdluhu/Dokumente/object_detection_project/outputs/ssd300'
