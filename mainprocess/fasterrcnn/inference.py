@@ -25,7 +25,7 @@ cfg.merge_from_file(os.path.join(OUTPUT_DIR, "config.yaml"))
 # Update parameters for inference
 cfg.MODEL_WEIGHTS = os.path.join(OUTPUT_DIR, "model_final.pth")
 # set threshold for inference
-cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.24
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.25
 
 # Initialize predictor
 predictor = DefaultPredictor(cfg)
@@ -72,3 +72,5 @@ for imageName in glob.glob(os.path.join(TEST_DIR, '*jpg')):
 
     if cv2.waitKey(0) == 27:
         break
+
+cv2.destroyAllWindows()
