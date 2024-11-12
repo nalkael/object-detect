@@ -29,12 +29,12 @@ with open("config.yaml", "r") as f:
 
 dataset_train_json = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train/_annotations.coco.json'
 dataset_train_root = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train'
-dataset_test_json = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/_annotations.coco.json'
-dataset_test_root = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid'
+dataset_val_json = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/_annotations.coco.json'
+dataset_val_root = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid'
 
 def register_datasets():
     register_coco_instances("my_dataset_train", {}, dataset_train_json, dataset_train_root)
-    register_coco_instances("my_dataset_test", {}, dataset_test_json, dataset_test_root)
+    register_coco_instances("my_dataset_val", {}, dataset_val_json, dataset_val_root)
     print('Datasets in COCO format registered successfully.')
 
 register_datasets()
@@ -43,8 +43,8 @@ register_datasets()
 dataset_train_metadata = MetadataCatalog.get("my_dataset_train")
 dataset_train_dicts = DatasetCatalog.get("my_dataset_train")
 
-dataset_test_metadata = MetadataCatalog.get("my_dataset_test")
-dataset_test_dicts = DatasetCatalog.get("my_dataset_test")
+dataset_val_metadata = MetadataCatalog.get("my_dataset_val")
+dataset_val_dicts = DatasetCatalog.get("my_dataset_val")
 
 print('show some images from training dataset: ')
 for d in random.sample(dataset_train_dicts, 3):
@@ -57,9 +57,9 @@ for d in random.sample(dataset_train_dicts, 3):
 
 
 print('show some images from validation dataset: ')
-for t in random.sample(dataset_test_dicts, 3):
+for t in random.sample(dataset_val_dicts, 3):
     img_t = cv2.imread(t['file_name'])
-    visualizer = Visualizer(img_t[:, :, ::-1], metadata=dataset_test_metadata)
+    visualizer = Visualizer(img_t[:, :, ::-1], metadata=dataset_val_metadata)
     v = visualizer.draw_dataset_dict(t)
     cv2.imshow("image", v.get_image()[:, :, ::-1])
     cv2.waitKey(0)

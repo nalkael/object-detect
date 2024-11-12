@@ -13,7 +13,7 @@ cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_F
 cfg.DATASETS.TRAIN = ('my_dataset_train',)
 # cfg.DATASETS.TEST = ('my_dataset_test',)
 # no evaluation will be done during training (can adjust later)
-cfg.DATASETS.TEST = ()
+cfg.DATASETS.TEST = ('my_dataset_val')
 cfg.DATALOADER.NUM_WORKERS = 2 # 2 subprocesses will work to load data in parallel (improving loading speed)
 
 # training initialize from model zoo
@@ -32,7 +32,7 @@ cfg.SOLVER.MAX_ITER = 5000
 # number of region proposals sampled per image for training the ROI(Region of Interest) heads
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
 # Sets the number of object classes for the custom dataset (excluding background)
-cfg.MODEL.ROI_HEADS.NUM_CLASSES = 7
+cfg.MODEL.ROI_HEADS.NUM_CLASSES = 6
 
 # cfg.OUTPUT_DIR is a default configuration option within Detectron2, it uses the default directory './output'
 # set a custom OUTPUT_DIR
@@ -52,8 +52,9 @@ try:
     # Training Initialization and Execution
     # DefaultTrainer handles the training process, setting up data loaders, optimizers and saving checkpoints
     trainer = DefaultTrainer(cfg)
-    # if a previous checkpoint exists in the OUTPUT_DIR, training resumes from there
-    trainer.resume_or_load(resume=True)
+    # if a previous checkpoint exists in the OUTPUT_DIR, training resumes from there, with 'False' from scratch
+    trainer.resume_or_load(resume=False)
+    # trainer.resume_or_load(resume=True)
     # start the training process, the model will run for specified 
     trainer.train()
     print(f'Training finished successfully.')
