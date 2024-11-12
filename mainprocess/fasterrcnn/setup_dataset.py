@@ -47,7 +47,7 @@ dataset_test_metadata = MetadataCatalog.get("my_dataset_test")
 dataset_test_dicts = DatasetCatalog.get("my_dataset_test")
 
 print('show some images from training dataset: ')
-for d in random.sample(dataset_train_dicts, 10):
+for d in random.sample(dataset_train_dicts, 3):
     img = cv2.imread(d["file_name"])
     visualizer = Visualizer(img[:, :, ::-1], metadata=dataset_train_metadata)
     v = visualizer.draw_dataset_dict(d)
@@ -57,7 +57,7 @@ for d in random.sample(dataset_train_dicts, 10):
 
 
 print('show some images from validation dataset: ')
-for t in random.sample(dataset_test_dicts, 10):
+for t in random.sample(dataset_test_dicts, 3):
     img_t = cv2.imread(t['file_name'])
     visualizer = Visualizer(img_t[:, :, ::-1], metadata=dataset_test_metadata)
     v = visualizer.draw_dataset_dict(t)

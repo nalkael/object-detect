@@ -26,7 +26,7 @@ cfg.SOLVER.IMS_PER_BATCH = 5
 # learning rate, depends on dataset size, model and hardware
 cfg.SOLVER.BASE_LR = 0.0025
 # maximum number of training iterations, should be increased for real-world datasets
-cfg.SOLVER.MAX_ITER = 500
+cfg.SOLVER.MAX_ITER = 5000
 
 # Model Head(Classification Layer) Configuration
 # number of region proposals sampled per image for training the ROI(Region of Interest) heads
@@ -56,6 +56,6 @@ try:
     trainer.resume_or_load(resume=True)
     # start the training process, the model will run for specified 
     trainer.train()
-    prinf(f'Training finished successfully.')
+    print(f'Training finished successfully.')
 except Exception as e:
     print(f'Training failed with error: {e}')
