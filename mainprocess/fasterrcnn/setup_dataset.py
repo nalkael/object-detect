@@ -27,12 +27,17 @@ with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 '''
 
-register_coco_instances("my_dataset_train", {},
-                        "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train/_annotations.coco.json",
-                        "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train")
-register_coco_instances("my_dataset_test", {},
-                        "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/_annotations.coco.json",
-                        "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid")
+dataset_train_json = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train/_annotations.coco.json'
+dataset_train_root = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train'
+dataset_test_json = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/_annotations.coco.json'
+dataset_test_root = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid'
+
+def register_datasets():
+    register_coco_instances("my_dataset_train", {}, dataset_train_json, dataset_train_root)
+    register_coco_instances("my_dataset_test", {}, dataset_test_json, dataset_test_root)
+    print('Datasets in COCO format registered successfully.')
+
+register_datasets()
 
 # visualize training data
 dataset_train_metadata = MetadataCatalog.get("my_dataset_train")
@@ -41,7 +46,7 @@ dataset_train_dicts = DatasetCatalog.get("my_dataset_train")
 dataset_test_metadata = MetadataCatalog.get("my_dataset_test")
 dataset_test_dicts = DatasetCatalog.get("my_dataset_test")
 
-
+print('show some images from training dataset: ')
 for d in random.sample(dataset_train_dicts, 10):
     img = cv2.imread(d["file_name"])
     visualizer = Visualizer(img[:, :, ::-1], metadata=dataset_train_metadata)
@@ -51,6 +56,7 @@ for d in random.sample(dataset_train_dicts, 10):
     cv2.destroyAllWindows()
 
 
+print('show some images from validation dataset: ')
 for t in random.sample(dataset_test_dicts, 10):
     img_t = cv2.imread(t['file_name'])
     visualizer = Visualizer(img_t[:, :, ::-1], metadata=dataset_test_metadata)
@@ -61,5 +67,3 @@ for t in random.sample(dataset_test_dicts, 10):
 
 if __name__ == '__main__':
     pass
-
-
