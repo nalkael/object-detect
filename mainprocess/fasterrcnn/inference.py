@@ -20,19 +20,20 @@ cfg = get_cfg()
 OUTPUT_DIR = '/home/rdluhu/Dokumente/object_detection_project/outputs/fasterrcnn'
 TEST_DIR = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid'
 
-cfg.merge_from_file(os.path.join(OUTPUT_DIR, "config.yaml"))
+cfg.merge_from_file(os.path.join(OUTPUT_DIR, 'config.yaml'))
 
+cfg.DATASETS.TEST = ('my_dataset_val',)
 # Update parameters for inference
-cfg.MODEL_WEIGHTS = os.path.join(OUTPUT_DIR, "model_final.pth")
+cfg.MODEL_WEIGHTS = os.path.join(OUTPUT_DIR, 'model_final.pth')
 # set threshold for inference
-cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.25
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.4
 
 # Initialize predictor
 predictor = DefaultPredictor(cfg)
 
 register_datasets()
 
-test_metadata = MetadataCatalog.get("my_dataset_test")
+test_metadata = MetadataCatalog.get("my_dataset_val")
 
 for imageName in glob.glob(os.path.join(TEST_DIR, '*jpg')):
     im = cv2.imread(imageName)

@@ -3,6 +3,7 @@ from detectron2.engine import DefaultTrainer
 from detectron2.config import get_cfg
 from detectron2 import model_zoo
 from detectron2.utils.logger import setup_logger
+from detectron2.evaluation import COCOEvaluator, DatasetEvaluators
 from setup_dataset import register_datasets
 
 # Register the datasets
@@ -13,7 +14,7 @@ cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_F
 cfg.DATASETS.TRAIN = ('my_dataset_train',)
 # cfg.DATASETS.TEST = ('my_dataset_test',)
 # no evaluation will be done during training (can adjust later)
-cfg.DATASETS.TEST = ('my_dataset_val')
+cfg.DATASETS.TEST = ('my_dataset_val',)
 cfg.DATALOADER.NUM_WORKERS = 2 # 2 subprocesses will work to load data in parallel (improving loading speed)
 
 # training initialize from model zoo
@@ -47,16 +48,29 @@ after setting and modify cfg in training script, save it as a YAML file
 with open(os.path.join(cfg.OUTPUT_DIR, "config.yaml"), "w") as f:
     f.write(cfg.dump())
 
+# Define a custom trainer with evaluator support
+class MyCustomTrainer(DefaultTrainer):
+    @classmethod
+    def build_evaluator(cls, cfg, dataset_name):
+        # Assuming COCO format
+        return COCOEvaluator(dataset_name, cfg, False, output_dir=cfg.OUTPUT_DIR)
+
 # train model with configuration
 try:
     # Training Initialization and Execution
     # DefaultTrainer handles the training process, setting up data loaders, optimizers and saving checkpoints
-    trainer = DefaultTrainer(cfg)
+    # trainer = DefaultTrainer(cfg)
+    trainer = MyCustomTrainer(cfg)
     # if a previous checkpoint exists in the OUTPUT_DIR, training resumes from there, with 'False' from scratch
     trainer.resume_or_load(resume=False)
     # trainer.resume_or_load(resume=True)
-    # start the training process, the model will run for specified 
+    # start the training process, the model will run for specified
     trainer.train()
     print(f'Training finished successfully.')
+    
+    # Perform evaluation after training
+    evaluator = MyCustomTrainer.build_evaluator(cfg, cfg.DATASETS.TEST[0]) 
+    trainer.test(cfg, trainer.model, evaluators=[evaluator])
+    
 except Exception as e:
     print(f'Training failed with error: {e}')
