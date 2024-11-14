@@ -3,7 +3,8 @@ from detectron2.engine import DefaultTrainer
 from detectron2.config import get_cfg
 from detectron2 import model_zoo
 from detectron2.utils.logger import setup_logger
-from detectron2.evaluation import COCOEvaluator, DatasetEvaluators
+from detectron2.evaluation import COCOEvaluator, DatasetEvaluators, inference_on_dataset
+from detectron2.data import build_detection_test_loader
 from setup_dataset import register_datasets
 
 # Register the datasets
@@ -14,7 +15,8 @@ cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_F
 cfg.DATASETS.TRAIN = ('my_dataset_train',)
 # cfg.DATASETS.TEST = ('my_dataset_test',)
 # no evaluation will be done during training (can adjust later)
-cfg.DATASETS.TEST = ('my_dataset_val',)
+cfg.DATASETS.TEST = ('my_dataset_val',) # set validation dataset for periodic evaluation
+cfg.TEST.EVAL_PERIOD = 500 # Evaluate every 500 iterations during training
 cfg.DATALOADER.NUM_WORKERS = 2 # 2 subprocesses will work to load data in parallel (improving loading speed)
 
 # training initialize from model zoo
@@ -68,9 +70,12 @@ try:
     trainer.train()
     print(f'Training finished successfully.')
     
-    # Perform evaluation after training
-    evaluator = MyCustomTrainer.build_evaluator(cfg, cfg.DATASETS.TEST[0]) 
-    trainer.test(cfg, trainer.model, evaluators=[evaluator])
+    # Perform a final evaluation on "my_dataset_test" after training
+    """
+    evaluator = MyCustomTrainer.build_evaluator(cfg, "my_dataset_test")
+    val_loader = build_detection_test_loader(cfg, "my_dataset_test")
+    print(inference_on_dataset(trainer.model, val_loader, evaluator))
+    """
     
 except Exception as e:
     print(f'Training failed with error: {e}')

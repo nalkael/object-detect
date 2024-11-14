@@ -26,7 +26,7 @@ cfg.DATASETS.TEST = ('my_dataset_val',)
 # Update parameters for inference
 cfg.MODEL_WEIGHTS = os.path.join(OUTPUT_DIR, 'model_final.pth')
 # set threshold for inference
-cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.4
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
 
 # Initialize predictor
 predictor = DefaultPredictor(cfg)
@@ -71,7 +71,15 @@ for imageName in glob.glob(os.path.join(TEST_DIR, '*jpg')):
 
     cv2.imshow("Predictions", result_image)
 
+    # Check if the 'ESC' key was pressed (key code 27)
     if cv2.waitKey(0) == 27:
+        print('Esc key pressed. Exiting...')
         break
 
+    # Check if the window was manually closed
+    if cv2.getWindowProperty("Predictions", cv2.WND_PROP_VISIBLE) < 1:
+        print('Window closed manually. Exiting...')
+        break
+
+# close all OpenCV windows
 cv2.destroyAllWindows()

@@ -33,8 +33,15 @@ dataset_val_json = '/home/rdluhu/Dokumente/object_detection_project/datasets/dat
 dataset_val_root = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid'
 
 def register_datasets():
+    # Register train dataset
     register_coco_instances("my_dataset_train", {}, dataset_train_json, dataset_train_root)
+    
+    # Register validation dataset
     register_coco_instances("my_dataset_val", {}, dataset_val_json, dataset_val_root)
+    
+    # Register test dataset
+    # register_coco_instances("my_dataset_test", {}, dataset_test_json, dataset_test_root)
+
     print('Datasets in COCO format registered successfully.')
 
 register_datasets()
