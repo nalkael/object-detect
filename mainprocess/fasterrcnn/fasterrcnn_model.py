@@ -80,40 +80,9 @@ def RegisterCustomDataset(yaml_path):
 
     return my_train_dataset_name, my_val_dataset_name
 
-# define a hook to implement the early stopping strategy.
-# TODO
-class EarlyStoppingHook(HookBase):
-    def __init__(self, patience=50, delta=0.0):
-        '''
-            patience: how long to wait after the last time validation loss improved
-            delta: minumum change in the monitored quantity as an improvement
-        '''
-        self.patience = patience
-        self.delta = delta
-        self.best_loss = float('inf')
-        self.epochs_without_improvement = 0
-    
-    def after_step(self):
-        current_loss = self.trainer.storage.history('total_loss').latest()
 
-        if current_loss is None:
-            return # Continue training if loss is not available
+# Define a custom trainer class that inherits from DefaultTrainer
 
-        if current_loss < self.best_loss - self.delta:
-            self.best_loss = current_loss
-            self.epochs_without_improvement = 0
-        else:
-            self.epochs_without_improvement += 1
-        
-        if self.epochs_without_improvement >= self.patience:
-            # print(f'Early stopping triggered after {self.epochs_without_improvement} epochs without improvement.')
-            self.stop_training = True # it doesn't work
-            # raise RuntimeError('Stop training early under early stopping criteria.')
-
-
-'''
-Define a custom trainer class that inherits from DefaultTrainer
-'''
 class CustomTrainer(DefaultTrainer):
     @classmethod
     def build_model(cls, cfg):

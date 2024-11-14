@@ -1,9 +1,0 @@
-train: ../../dataset.v10i.coco/train/
-train_annotation: ../../dataset.v10i.coco/train/_annotations.coco.json
-val: ../../dataset.v10i.coco/valid/
-val_annotation: ../../dataset.v10i.coco/valid/_annotations.coco.json
-test: ../../dataset.v10i.coco/test/
-
-nc: 6 # number of classes
-names: ['Gasschieberdeckel', 'Kanalschachtdeckel', 'Sinkkaesten', 'Unterflurhydrant', 'Versorgungsschachtdeckel', 'Wasserschieberdeckel']
-
