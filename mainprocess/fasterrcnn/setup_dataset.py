@@ -73,4 +73,4 @@ for t in random.sample(dataset_val_dicts, 0):
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    pass
+    register_datasets()

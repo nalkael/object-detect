@@ -5,12 +5,13 @@ numpy
 opencv-python
 pandas
 pillow
-pycocotools
+pycocotools # COCO mAP
 pylabel
 PyQt5
 PyYAML
 roboflow
 scikit-learn
+scipy
 tensorboard
 tensorflow
 torch
