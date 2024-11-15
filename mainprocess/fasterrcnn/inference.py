@@ -26,7 +26,7 @@ cfg.DATASETS.TEST = ('my_dataset_val',)
 # Update parameters for inference
 cfg.MODEL_WEIGHTS = os.path.join(OUTPUT_DIR, 'model_final.pth')
 # set threshold for inference
-cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.4
 
 # Initialize predictor
 predictor = DefaultPredictor(cfg)
