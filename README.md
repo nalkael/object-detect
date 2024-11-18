@@ -26,13 +26,12 @@ end
 
 Get yourself a Python>=3.10 environment. Using a  [virtualenv](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment)  is recommended but not required.
 
-You'll need a few tools to run scripts in this distribution. They are specified in the requirements.txt file. Install them with pip:
+You'll need a few tools to run scripts in this distribution. They are specified in the requirements.txt file.
 
+Install them with pip: (assume you are in the root directory of the project)
 > python -m pip install -r requirements.txt
 
 and also install [Detectron2](https://github.com/facebookresearch/detectron2):
->git clone https://github.com/facebookresearch/detectron2.git
->
 >python -m pip install -e detectron2
 
 This project contains some foundation models such as:

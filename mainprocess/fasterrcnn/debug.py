@@ -98,6 +98,6 @@ evaluator = COCOEvaluator("my_dataset_test", output_dir= "./output")
 val_loader = build_detection_test_loader(cfg, "my_dataset_test")
 print(inference_on_dataset(predictor.model, val_loader, evaluator))
 
-f = open('/home/rdluhu/Dokumente/object_detection_project/mainprocess/fasterrcnn/config.yml', 'w')
+f = open('/home/rdluhu/Dokumente/object_detection_project/mainprocess/fasterrcnn/debug.yml', 'w')
 f.write(cfg.dump())
 f.close()
