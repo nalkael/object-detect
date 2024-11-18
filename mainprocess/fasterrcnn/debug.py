@@ -37,7 +37,7 @@ from detectron2.utils.visualizer import Visualizer
 
 for d in random.sample(dataset_dicts, 10):
     img = cv2.imread(d["file_name"])
-    visualizer = Visualizer(img[:, :, ::-1], metadata=my_dataset_train_metadata, scale=0.5)
+    visualizer = Visualizer(img[:, :, ::-1], metadata=my_dataset_train_metadata)
     vis = visualizer.draw_dataset_dict(d)
     cv2.imshow("image", vis.get_image()[:, :, ::-1])
     cv2.waitKey(0)
@@ -56,7 +56,7 @@ cfg.DATALOADER.NUM_WORKERS = 2
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")  # Let training initialize from model zoo
 cfg.SOLVER.IMS_PER_BATCH = 2
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
-cfg.SOLVER.MAX_ITER = 500   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
+cfg.SOLVER.MAX_ITER = 5000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = 7  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
 # NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
@@ -83,7 +83,7 @@ import glob
 for imageName in glob.glob('/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/*jpg'):
     im = cv2.imread(imageName)
     outputs = predictor(im)
-    v = Visualizer(im[:, :, ::-1], metadata=test_metadata, scale=0.8)
+    v = Visualizer(im[:, :, ::-1], metadata=test_metadata)
     out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
     cv2.imshow("Prediction", out.get_image()[:, :, ::-1])
     cv2.waitKey(0)
