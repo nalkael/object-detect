@@ -29,13 +29,13 @@ cfg.SOLVER.IMS_PER_BATCH = 5
 # learning rate, depends on dataset size, model and hardware
 cfg.SOLVER.BASE_LR = 0.0025
 # maximum number of training iterations, should be increased for real-world datasets
-cfg.SOLVER.MAX_ITER = 5000
+cfg.SOLVER.MAX_ITER = 2000
 
 # Model Head(Classification Layer) Configuration
 # number of region proposals sampled per image for training the ROI(Region of Interest) heads
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
 # Sets the number of object classes for the custom dataset (excluding background)
-cfg.MODEL.ROI_HEADS.NUM_CLASSES = 6
+cfg.MODEL.ROI_HEADS.NUM_CLASSES = 7
 
 # cfg.OUTPUT_DIR is a default configuration option within Detectron2, it uses the default directory './output'
 # set a custom OUTPUT_DIR

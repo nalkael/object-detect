@@ -1,5 +1,6 @@
 import subprocess
 import os
+import yaml
 from pathlib import Path
 
 import torch
@@ -14,14 +15,21 @@ from yolov5.train import train # this will be a custom method
 a yolov5 model for custom training
 """
 def train_yolov5_custom(cfg='yolov5s.yaml', data='data.yaml', epochs=100, batch_size=16, img_size=320, device=None):
-    # set device (GPU/CPU)
+    # Load dataset configuration
+    with open(data, 'r') as f:
+        data_dict = yaml.safe_load(f)
+
+    # set device (GPU/CPU), initialize device
     device = select_device(device)
     
     # initialize model
-    model = Model(cfg).to(device)
+    model = Model(cfg).to(device) # Load a YOLO model structure (e.g. YOLOv5s)
+    model.train() # Set model to training mode
 
     # load dataset and create data loader
-    dataset_dict = {'train': '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/train', 'val': '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/valid', 'test': '',}
+    # TODO: load dataset configuration
+    dataset_dict = {}
+    # dataset_dict = {'train': '', 'val': '', 'test': '',}
     train_data = LoadImagesAndLabels(dataset_dict['train'], img_size=img_size, batch_size=batch_size)
 
     # Get hyperparameters and training step
@@ -30,13 +38,20 @@ def train_yolov5_custom(cfg='yolov5s.yaml', data='data.yaml', epochs=100, batch_
     # Set optimizer
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
+    # Define loss function
+    computer_loss = ComputeLoss(model)
+
     # Create output directory
-    output_dir = increment_path(Path('runs/train/exp', exist_ok=False)) # Save results in experiment folder
+    output_dir = increment_path(Path('runs/train/exp', exist_ok=False)) # Save results in experiment folder#
+    os.makedirs(output_dir, exist_ok=True)
     print(f'Saving results to {output_dir}...')
 
     # Training loop
+    # TODO: implement training loop
     for epoch in range(epochs):
         model.train()
+        total_loss = 0.0
+
         pass
 
 
@@ -46,7 +61,7 @@ def run_training():
 
     train_script = os.path.join(yolov5_dir, 'train.py')
     dataset_yaml = os.path.abspath(os.path.join(os.path.dirname(__file__), 'dataset.yaml'))
-    weight_path = os.path.join(yolov5_dir, 'yolov5x.pt')
+    weight_path = os.path.join(yolov5_dir, 'yolov5s.pt')
 
     # Define the command to excute script 
     command = [

@@ -3,6 +3,8 @@ results*/
 datasets/
 outputs/
 detectron2/
+Computer-Vision-Matarials/
+samples/
 
 # big files
 *.synctex.gz*

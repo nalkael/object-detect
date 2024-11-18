@@ -14,15 +14,20 @@ from detectron2.utils.visualizer import Visualizer, ColorMode
 # glob is used to list all image files in a directory that match a certain pattern (e.g. all .jpg file)
 import glob
 
+register_datasets()
+
 # Initialize cfg and load the saved configuration from YAML file
 cfg = get_cfg()
 # TODO: OUTPUT_DIR could load from another config file
 OUTPUT_DIR = '/home/rdluhu/Dokumente/object_detection_project/outputs/fasterrcnn'
-TEST_DIR = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid'
+# TEST_DIR = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid'
+TEST_DIR = '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train' # test
+
 
 cfg.merge_from_file(os.path.join(OUTPUT_DIR, 'config.yaml'))
 
-cfg.DATASETS.TEST = ('my_dataset_val',)
+# cfg.DATASETS.TEST = ('my_dataset_val',)
+cfg.DATASETS.TEST = ('my_dataset_train',) # test
 # Update parameters for inference
 cfg.MODEL_WEIGHTS = os.path.join(OUTPUT_DIR, 'model_final.pth')
 # set threshold for inference
@@ -31,9 +36,10 @@ cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
 # Initialize predictor
 predictor = DefaultPredictor(cfg)
 
-register_datasets()
 
-test_metadata = MetadataCatalog.get("my_dataset_val")
+
+# test_metadata = MetadataCatalog.get("my_dataset_val")
+test_metadata = MetadataCatalog.get("my_dataset_train")
 
 for imageName in glob.glob(os.path.join(TEST_DIR, '*jpg')):
     im = cv2.imread(imageName)
