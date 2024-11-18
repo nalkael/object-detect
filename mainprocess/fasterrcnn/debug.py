@@ -94,7 +94,7 @@ Evaluation
 """
 from detectron2.evaluation import COCOEvaluator, inference_on_dataset
 from detectron2.data import build_detection_test_loader
-evaluator = COCOEvaluator("my_dataset_test", output_dir= "./output")
+evaluator = COCOEvaluator("my_dataset_test", output_dir= "/home/rdluhu/Dokumente/object_detection_project/outputs/fasterrcnn")
 val_loader = build_detection_test_loader(cfg, "my_dataset_test")
 print(inference_on_dataset(predictor.model, val_loader, evaluator))
 

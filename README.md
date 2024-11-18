@@ -15,7 +15,7 @@ A --> B((Base Model))
 B -.-> C((train)) -.-> B
 end
 B --> D(Trained Model)
-subgraph Test Stage
+subgraph Inference Stage
 E(Test Data) --> D
 D --> F(Object Coordinates)
 D --> G(Object Classifications)
@@ -44,3 +44,8 @@ This project contains belowing models:
 - [M2Det](https://arxiv.org/abs/1811.04533)
 
 ### TODO
+build pipeline
+preprocessing
+postprocessing
+tutorial
+Docker
