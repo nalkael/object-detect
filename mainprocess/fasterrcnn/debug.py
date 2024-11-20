@@ -63,9 +63,9 @@ cfg.MODEL.ROI_HEADS.NUM_CLASSES = 7  # (see https://detectron2.readthedocs.io/tu
 cfg.OUTPUT_DIR = '/home/rdluhu/Dokumente/object_detection_project/outputs/fasterrcnn'
 
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
-trainer = DefaultTrainer(cfg)
-trainer.resume_or_load(resume=False)
-trainer.train()
+# trainer = DefaultTrainer(cfg)
+# trainer.resume_or_load(resume=False)
+# trainer.train()
 
 cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5   # set the testing threshold for this model
@@ -75,7 +75,8 @@ predictor = DefaultPredictor(cfg)
 """
 Inference with Detectron2 Saved Weights
 """
-test_metadata = MetadataCatalog.get("my_dataset_test")
+
+my_dataset_val_metadata = MetadataCatalog.get("my_dataset_test")
 
 from detectron2.utils.visualizer import ColorMode
 import glob
@@ -83,7 +84,7 @@ import glob
 for imageName in glob.glob('/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/*jpg'):
     im = cv2.imread(imageName)
     outputs = predictor(im)
-    v = Visualizer(im[:, :, ::-1], metadata=test_metadata)
+    v = Visualizer(im[:, :, ::-1], metadata=my_dataset_val_metadata)
     out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
     cv2.imshow("Prediction", out.get_image()[:, :, ::-1])
     cv2.waitKey(0)
@@ -98,6 +99,6 @@ evaluator = COCOEvaluator("my_dataset_test", output_dir= "/home/rdluhu/Dokumente
 val_loader = build_detection_test_loader(cfg, "my_dataset_test")
 print(inference_on_dataset(predictor.model, val_loader, evaluator))
 
-f = open('/home/rdluhu/Dokumente/object_detection_project/mainprocess/fasterrcnn/debug.yml', 'w')
+f = open('/home/rdluhu/Dokumente/object_detection_project/mainprocess/fasterrcnn/debug.yaml', 'w')
 f.write(cfg.dump())
 f.close()
