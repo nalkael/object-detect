@@ -8,9 +8,9 @@ from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog, DatasetCatalog
 
 cfg = get_cfg()
-cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/retinanet_R_50_FPN_3x.yaml"))
-cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/retinanet_R_50_FPN_3x.yaml")
-cfg.MODEL.RETINANET.SCORE_THRESH_TEST = 0.7 # set threshold for this model, different from Faster R-CNN!
+cfg.merge_from_file(model_zoo.get_config_file("Misc/cascade_mask_rcnn_R_50_FPN_3x.yaml"))
+cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("Misc/cascade_mask_rcnn_R_50_FPN_3x.yaml")
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7 # set threshold for this model, different from Faster R-CNN!
 cfg.MODEL.DEVICE = 'cuda' # use GPU if available, use CPU if not
 
 # Initialize the predictor
@@ -19,7 +19,7 @@ predictor = DefaultPredictor(cfg)
 
 # Load some sample images for demostration
 images = None
-# images = get_samples("/home/rdluhu/Dokumente/object_detection_project/samples")
+images = get_samples("/home/rdluhu/Dokumente/object_detection_project/samples")
 
 # make and show prediction on sample images
 if images is not None:
