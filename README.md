@@ -44,8 +44,16 @@ This project contains belowing models:
 - [M2Det](https://arxiv.org/abs/1811.04533)
 
 ### TODO
+CLIP model
+
+Few-shot detection
+
 build pipeline
+
 preprocessing
+
 postprocessing
+
 tutorial
+
 Docker

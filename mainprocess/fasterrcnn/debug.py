@@ -87,7 +87,10 @@ for imageName in glob.glob('/home/rdluhu/Dokumente/object_detection_project/data
     v = Visualizer(im[:, :, ::-1], metadata=my_dataset_val_metadata)
     out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
     cv2.imshow("Prediction", out.get_image()[:, :, ::-1])
-    cv2.waitKey(0)
+    key = cv2.waitKey(0)
+    if key == 27:
+        print("ESC key pressed. Exiting...")
+        break
     cv2.destroyAllWindows()
 
 """

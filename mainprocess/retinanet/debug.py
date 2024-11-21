@@ -31,7 +31,10 @@ if images is not None:
         v = Visualizer(im[:, :, ::-1], MetadataCatalog.get(cfg.DATASETS.TRAIN[0]))
         out = v.draw_instance_predictions(filtered_instances.to("cpu"))
         cv2.imshow("Prediction", out.get_image()[:, :, ::-1])
-        cv2.waitKey(0)
+        key = cv2.waitKey(0)
+        if key == 27:
+            print("ESC key pressed. Exiting...")
+            break
         cv2.destroyAllWindows()
 
 """Train on a custom dataset"""
