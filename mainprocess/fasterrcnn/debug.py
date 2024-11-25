@@ -68,7 +68,7 @@ os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
 # trainer.train()
 
 cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7   # set the testing threshold for this model
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8   # set the testing threshold for this model
 cfg.DATASETS.TEST = ("my_dataset_test", )
 predictor = DefaultPredictor(cfg)
 
@@ -77,6 +77,7 @@ Inference with Detectron2 Saved Weights
 """
 
 my_dataset_val_metadata = MetadataCatalog.get("my_dataset_test")
+MetadataCatalog.get("my_dataset_test").thing_classes = MetadataCatalog.get("my_dataset_train").thing_classes
 
 from detectron2.utils.visualizer import ColorMode
 import glob
