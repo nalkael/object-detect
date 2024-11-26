@@ -1,23 +1,33 @@
 import torch, detectron2
-
-# Basic setup and import
-from detectron2.utils.logger import setup_logger
-setup_logger()
-print('Setup logger...')
-
-# import common libraries
-import numpy as np
-import os, json, cv2, random
+import cv2, sys, os, json, random
 import subprocess
-from cv2 import imshow
+import logging
+import numpy as np
 import imghdr
+from detectron2.utils.logger import setup_logger
 
-# import common detectron2 utilities
+# import common Detectron2 libraries
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor, DefaultTrainer
 from detectron2.config import get_cfg
 from detectron2.utils.visualizer import Visualizer
 from detectron2.data import MetadataCatalog, DatasetCatalog
+
+log_output_path = '/home/rdluhu/Dokumente/object_detection_project/outputs/maskrcnn/maskrcnn.log'
+samples_path = '/home/rdluhu/Dokumente/object_detection_project/samples'
+
+def initial_logger(log_output_path: str):
+    # Set up Detectron2's logger
+    os.makedirs(os.path.dirname(log_output_path), exist_ok=True)
+    logger = setup_logger(output=log_output_path)
+
+    # Add an additional handler for console output
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG)
+
+    # Add the console handler to the looger
+    logger.addHandler(console_handler)
+    print('Setup logging...')
 
 def show_info():
     subprocess.run(["nvcc", "--version"])
@@ -26,7 +36,7 @@ def show_info():
     print("torch: ", TORCH_VERSION, "; cuda: ", CUDA_VERSION)
     print("detectron2: ", detectron2.__version__)
 
-# test a pre-trained detectron2 model
+# test some demo on pre-trained detectron2 model
 def show_samples(file_dir) -> None:
     images = []
 
@@ -47,7 +57,6 @@ def show_samples(file_dir) -> None:
         else:
             print(f"Skipping non-image file {file_name}")
 
-
 def get_samples(file_dir) -> list:
     images = []
 
@@ -66,7 +75,7 @@ def get_samples(file_dir) -> list:
     
     return images # return the list of image objects
 
-
 if __name__ == '__main__':
     show_info()
-    show_samples("/home/rdluhu/Dokumente/object_detection_project/samples")
+    initial_logger(log_output_path)
+    show_samples(samples_path)

@@ -2,6 +2,7 @@ albumentations
 ipython
 matplotlib
 numpy
+openai-clip
 opencv-python
 pandas
 pillow
