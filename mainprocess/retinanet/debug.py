@@ -42,6 +42,6 @@ from detectron2.structures import BoxMode
 # if the dataset is in COCO format, import modules below
 from detectron2.data.datasets import register_coco_instances
 
-register_coco_instances("my_dataset_train", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/datase_coco/train/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/datase_coco/train")
-register_coco_instances("my_dataset_val", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/datase_coco/val/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/datase_coco/val")
+register_coco_instances("my_dataset_train", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train")
+register_coco_instances("my_dataset_val", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/val/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/val")
 
