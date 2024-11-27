@@ -1,7 +1,8 @@
 output_plots/
 results*/
 datasets/
-outputs/
+output*/
+outputs*/
 detectron2/
 Computer-Vision-Matarials/
 # samples/
