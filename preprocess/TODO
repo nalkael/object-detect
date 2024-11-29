@@ -1,0 +1,5 @@
+Slice the original image into small tiles
+
+Store them sequentially
+
+Need to restore the image in the post-processing stage
