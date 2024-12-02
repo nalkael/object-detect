@@ -7,10 +7,10 @@ from transformers import CLIPModel, CLIPProcessor
 class CLIPBackbone(Backbone):
     def __init__(self, clip_model_name="openai/clip-vit-base-patch32"):
         super().__init__()
-        self.clip_model_name = clip_model_name
         self.clip_model = CLIPModel.from_pretrained(clip_model_name)
-        self.clip_visual = self.clip_model.vision_model
-        # TODO: load pre-trained model weights
+
+        # Freeze CLIP backbone if desired
+
 
     def forward(self, images):
         # Extract features using CLIP encoder

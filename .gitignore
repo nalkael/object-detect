@@ -2,9 +2,8 @@ output_plots/
 results*/
 datasets/
 output*/
-outputs*/
 detectron2/
-Computer-Vision-Matarials/
+pretrained*/
 # samples/
 
 # big files
