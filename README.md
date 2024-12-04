@@ -40,7 +40,6 @@ This project contains belowing models:
 - [SSD](https://arxiv.org/abs/1512.02325) (**S**ingle **S**hot Multibox **D**etector)
 - [RetinaNet](https://arxiv.org/abs/1708.02002)
 - [Cascade R-CNN](https://arxiv.org/abs/1712.00726)
-- [CenterNet](https://arxiv.org/abs/1904.08189)
 - [M2Det](https://arxiv.org/abs/1811.04533)
 
 ### TODO

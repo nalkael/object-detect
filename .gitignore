@@ -9,6 +9,7 @@ pretrained*/
 # big files
 *.synctex.gz*
 *.pickle
+*.tif
 
 # latex
 *.aux
