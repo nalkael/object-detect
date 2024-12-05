@@ -34,7 +34,7 @@ Install them with pip: (assume you are in the root directory of the project)
 and also install [Detectron2](https://github.com/facebookresearch/detectron2):
 >python -m pip install -e detectron2
 
-This project contains belowing models:
+This project contains belowing models as benchmark:
 - [Faster R-CNN](https://arxiv.org/abs/1506.01497)
 - [YOLOv5](https://arxiv.org/html/2407.20892v1) (**Y**ou **O**nly **L**ook **O**nce)
 - [SSD](https://arxiv.org/abs/1512.02325) (**S**ingle **S**hot Multibox **D**etector)

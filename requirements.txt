@@ -11,10 +11,12 @@ pylabel
 PyQt5
 PyYAML
 roboflow
+sahi
 scikit-learn
 scipy
 tensorboard
 tensorflow
+tifffile
 torch
 torchaudio
 torchmetrics
