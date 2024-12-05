@@ -26,7 +26,7 @@ Import and Register Custom Detectron2 Data
 """
 from detectron2.data.datasets import register_coco_instances
 register_coco_instances("my_dataset_train", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train")
-register_coco_instances("my_dataset_test", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid")
+register_coco_instances("my_dataset_test", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/val/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/val")
 
 #visualize training data
 my_dataset_train_metadata = MetadataCatalog.get("my_dataset_train")
@@ -40,7 +40,10 @@ for d in random.sample(dataset_dicts, 10):
     visualizer = Visualizer(img[:, :, ::-1], metadata=my_dataset_train_metadata)
     vis = visualizer.draw_dataset_dict(d)
     cv2.imshow("image", vis.get_image()[:, :, ::-1])
-    cv2.waitKey(0)
+    key = cv2.waitKey(0)
+    if key == 27:
+        print("ESC key pressed. Exiting...")
+        break
     cv2.destroyAllWindows()
 
 """
@@ -82,7 +85,7 @@ MetadataCatalog.get("my_dataset_test").thing_classes = MetadataCatalog.get("my_d
 from detectron2.utils.visualizer import ColorMode
 import glob
 
-for imageName in glob.glob('/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/*jpg'):
+for imageName in glob.glob('/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/val/*jpg'):
     im = cv2.imread(imageName)
     outputs = predictor(im)
     v = Visualizer(im[:, :, ::-1], metadata=my_dataset_val_metadata)
@@ -103,6 +106,6 @@ evaluator = COCOEvaluator("my_dataset_test", output_dir= "/home/rdluhu/Dokumente
 val_loader = build_detection_test_loader(cfg, "my_dataset_test")
 print(inference_on_dataset(predictor.model, val_loader, evaluator))
 
-f = open('/home/rdluhu/Dokumente/object_detection_project/mainprocess/fasterrcnn/debug.yaml', 'w')
+f = open('/home/rdluhu/Dokumente/object_detection_project/mainprocess/benchmark/fasterrcnn/debug.yaml', 'w')
 f.write(cfg.dump())
 f.close()

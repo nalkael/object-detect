@@ -38,6 +38,7 @@ if images is not None:
         instances = outputs["instances"]
         v = Visualizer(im[:, :, ::-1], MetadataCatalog.get(cfg.DATASETS.TRAIN[0]))
         out = v.draw_instance_predictions(instances.to("cpu"))
+        cv2.namedWindow("Prediction", cv2.WINDOW_NORMAL)
         cv2.imshow("Prediction", out.get_image()[:, :, ::-1])
         key = cv2.waitKey(0)
         if key == 27:
@@ -58,12 +59,12 @@ cfg.MODEL.MASK_ON = False
 
 # set training configuration
 cfg.DATASETS.TRAIN = ("my_dataset_train",)
-cfg.DATASETS.TEST = ()
+cfg.DATASETS.TEST = ("my_dataset_test", )
 cfg.DATASETS.NUM_WORKERS = 2
 # cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
 cfg.SOLVER.IMS_PER_BATCH = 2 # This is the real 'batch size' commonly known in deep learning
 cfg.SOLVER.BASE_LR = 0.00025
-cfg.SOLVER.MAX_ITER = 2000 # 300 iterations seems good enough for toy dataset; need to train longer for a practical dataset
+cfg.SOLVER.MAX_ITER = 5000 # 300 iterations seems good enough for toy dataset; need to train longer for a practical dataset
 cfg.SOLVER.STEPS = [] # decay learning rate
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = 7 # 7 classes in urban infrastructure dataset
@@ -85,16 +86,18 @@ Inference with Detectron2 Saved Weights
 """
 
 my_dataset_val_metadata = MetadataCatalog.get("my_dataset_val")
-# MetadataCatalog.get("my_datasemy_dataset_val").thing_classes = MetadataCatalog.get("my_dataset_train").thing_classes
+# MetadataCatalog.get("my_dataset_val").thing_classes = MetadataCatalog.get("my_dataset_train").thing_classes
+# TODO: something wrong to get classes of test dataset
 
 from detectron2.utils.visualizer import ColorMode
 import glob
 
-for imageName in glob.glob('/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/*jpg'):
+for imageName in glob.glob('/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/val/*jpg'):
     im = cv2.imread(imageName)
     outputs = predictor(im)
     v = Visualizer(im[:, :, ::-1], metadata=my_dataset_val_metadata)
     out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+    cv2.namedWindow("Prediction", cv2.WINDOW_NORMAL)
     cv2.imshow("Prediction", out.get_image()[:, :, ::-1])
     key = cv2.waitKey(0)
     if key == 27:
