@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 
 import clip
 
-img_path = "/home/rdluhu/Dokumente/object_detection_project/samples/Original_Doge_meme.jpg"
+img_path = "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/val/20230808_FR_3_7_png.rf.20fc9d82befd2722c69dc266e9e7f341.jpg"
 im = cv2.imread(img_path)
 cv2.namedWindow('Sample', cv2.WINDOW_NORMAL)
 cv2.imshow('Sample', im)
