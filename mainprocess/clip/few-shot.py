@@ -1,27 +1,34 @@
 # initialize a Detectron2 model
+import os, sys
+
 import torch
 import detectron2
 from detectron2.config import get_cfg
 from detectron2.engine import DefaultPredictor
+from detectron2 import model_zoo
 from utils.load_image import load_image_cv
 
 import clip
 
+# Debug import Path
+print("Python search path: ", sys.path)
+
 # Load configuration and pre-trained mode
 cfg = get_cfg()
-cfg.merge_from_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")
+cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
 cfg.OUTPUT_DIR = '/home/rdluhu/Dokumente/object_detection_project/outputs/fasterrcnn'
 # cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml") 
 cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
 cfg.MODEL.DEVICE = "cuda"
 
-predictor = DefaultPredictor()
+predictor = DefaultPredictor(cfg)
 
 # Generate region proposals
 def generate_rpn_proposals(image, predictor):
     """Generate proposals from Detectron2 RPN"""
     outputs = predictor(image)
+    print("Keys in outputs:", outputs.keys())
     proposals = outputs["proposals"].tensor.cpu().numpy() # Extract proposals
     scores = outputs["scores"].cpu().numpy() # Extract scores
     return proposals, scores

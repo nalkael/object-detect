@@ -2,11 +2,12 @@
 I merged all the code in this single file (it shouldn't be like this in real implementation)
 to test the whole function for this module
 """
-import torch, detectron2
+import torch, torchvision, detectron2
 import clip
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
 from detectron2 import model_zoo
+from torchvision import transforms
 
 # Load CLIP model
 device = "cuda" if torch.cuda.is_available() else "cpu"

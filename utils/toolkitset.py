@@ -11,6 +11,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
+from utils.load_image import load_image_cv
 
 class Toolkits:
     def __init__(self):
@@ -93,3 +94,75 @@ class yolo_rotate_box:
         '''
         height, width = self.image[:2] # image contains 3 dimensions
         pass
+
+
+def visualize_proposals_with_opencv(image_path, proposal_boxes, proposal_scores, top_k=10):
+    """
+    Visualize the top-k proposals with scores on an image using OpenCV
+
+    Args:
+        image_path (str): the path of input image
+        proposal_boxes (numpy array): Array of bounding box proposals [N, 4]
+        proposal_scores (numpy array): Array of proposals scores [N]
+        top_k (int): Number of top proposals to display
+    """
+    image = load_image_cv(image_path)
+
+    # Ensure proposal bounding boxes and scores are numpy arrays
+    proposal_boxes = np.array(proposal_boxes)
+    proposal_scores = np.array(proposal_scores)
+
+    # Sort proposals by scores in descending order
+    sorted_indices = np.argsort(proposal_scores)[::-1]
+    top_indices = sorted_indices[:top_k]
+
+    # Get the top proposals and scores
+    top_boxes = proposal_boxes[top_indices]
+    top_scores = proposal_scores[top_indices]
+
+    # Create a copy of image to draw on
+    image_copy = image.copy()
+
+    for i, (box, score) in enumerate(zip(top_boxes, top_scores)):
+        x1, y1, x2, y2 = box.astype(int) # Convert box coordinates to integers
+
+        # Draw the bounding box
+        cv2.rectangle(image_copy, (x1, y1), (x2, y2), (0, 255, 0), 2)  # Green rectangle
+
+        # Put the score text
+        label = f"{score:.2f}"
+        font_scale = 0.5
+        font_thickness = 1
+        text_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, font_scale, font_thickness)
+        text_x, text_y = x1, y1 - 10 if y1 > 20 else y1 + 20
+        cv2.rectangle(
+            image_copy,
+            (text_x, text_y - text_size[1]),
+            (text_x + text_size[0], text_y),
+            (0, 255, 0),
+            thickness=cv2.FILLED,
+        )  # Background for text
+        cv2.putText(
+            image_copy,
+            label,
+            (text_x, text_y - 2),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            font_scale,
+            (0, 0, 0),
+            font_thickness,
+        )  # Score text
+
+    # Display the image
+    cv2.imshow("Proposals with Scores", image_copy)
+
+    # Wait for key press or window close event (Enter key or close window)
+    while True:
+        key = cv2.waitKey(1)
+        if key != -1: # If abitrary key is pressed
+            break
+        if cv2.getWindowProperty("Proposals with Scores", cv2.WND_PROP_VISIBLE) < 1:
+            # If the windows is closed, exit the loop
+            break
+
+    # cv2.waitKey(0)  # Wait for key press to close the window
+    cv2.destroyAllWindows()
