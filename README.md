@@ -56,6 +56,8 @@ preprocessing
 
 postprocessing
 
+slice and merge images with SAHI framework (large-size images processing)
+
 tutorial
 
 Docker
