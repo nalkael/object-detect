@@ -35,7 +35,7 @@ dataset_dicts = DatasetCatalog.get("my_dataset_train")
 import random
 from detectron2.utils.visualizer import Visualizer
 
-for d in random.sample(dataset_dicts, 10):
+for d in random.sample(dataset_dicts, 0):
     img = cv2.imread(d["file_name"])
     visualizer = Visualizer(img[:, :, ::-1], metadata=my_dataset_train_metadata)
     vis = visualizer.draw_dataset_dict(d)
@@ -90,6 +90,7 @@ for imageName in glob.glob('/home/rdluhu/Dokumente/object_detection_project/data
     outputs = predictor(im)
     v = Visualizer(im[:, :, ::-1], metadata=my_dataset_val_metadata)
     out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+    cv2.namedWindow("Prediction", cv2.WINDOW_NORMAL)
     cv2.imshow("Prediction", out.get_image()[:, :, ::-1])
     key = cv2.waitKey(0)
     if key == 27:
