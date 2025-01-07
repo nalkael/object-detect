@@ -36,7 +36,7 @@ def read_and_slice_tiff(image_path, output_dir, tile_size=512, overlap_ration=0.
                 
                 tile_path = os.path.join(output_dir, f"tile_{x}_{y}.tif")
                 with rasterio.open(
-                    tile.path, 
+                    tile_path, 
                     "w",
                     driver="GTiff",
                     height=window.height,
