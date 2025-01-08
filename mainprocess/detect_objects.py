@@ -15,11 +15,12 @@ def set_cfg():
     # Set the pre-trained model weights
     cfg.MODEL.WEIGHTS = "/home/rdluhu/Dokumente/object_detection_project/outputs/fasterrcnn/model_final.pth"
 
+    cfg.DATASETS.TRAIN 
     # adjust the number of classes in dataset
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 7
     
     # set device (CPU or GPU)
     cfg.MODEL.DEVICE = "cuda"
-
+    
     return cfg
 
