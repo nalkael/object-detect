@@ -43,7 +43,9 @@ This project contains belowing models as benchmark:
 - [SSD](https://arxiv.org/abs/1512.02325) (**S**ingle **S**hot Multibox **D**etector)
 - [RetinaNet](https://arxiv.org/abs/1708.02002)
 - [Cascade R-CNN](https://arxiv.org/abs/1712.00726)
-- [M2Det](https://arxiv.org/abs/1811.04533)
+
+SAHI Framwork is applied in this project:
+- [How to detect small objects in large images](https://blog.ml6.eu/how-to-detect-small-objects-in-very-large-images-70234bab0f98)
 
 ### TODO
 CLIP model

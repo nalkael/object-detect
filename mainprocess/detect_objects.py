@@ -5,7 +5,7 @@ from sahi import AutoDetectionModel
 from detectron2.config import get_cfg
 from detectron2 import model_zoo
 
-def set_cfg():
+def set_fastrcnn_cfg():
     # create a config object
     cfg = get_cfg()
 
@@ -20,7 +20,8 @@ def set_cfg():
     cfg.MODEL.ROI_HEADS.NUM_CLASSES = 7
     
     # set device (CPU or GPU)
-    cfg.MODEL.DEVICE = "cuda"
+    cfg.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
     
     return cfg
 
