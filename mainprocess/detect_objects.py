@@ -5,9 +5,16 @@ from sahi import AutoDetectionModel
 from detectron2.config import get_cfg
 from detectron2 import model_zoo
 
-def set_fastrcnn_cfg():
+def set_fastrcnn_cfg(model_type="fasterrcnn"):
+    # model type: faster_rcnn, cascade_rcnn, retinanet, m2det, yolo, ssd
     # create a config object
     cfg = get_cfg()
+
+    model_type = model_type.lower()
+
+    if model_type == "fasterrcnn":
+        model_name = "COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"
+        model_path = "/home/rdluhu/Dokumente/object_detection_project/outputs/fasterrcnn/model_final.pth"
 
     # Load the Faster R-CNN configuration from the model zoo
     cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
