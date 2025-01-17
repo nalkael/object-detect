@@ -22,6 +22,8 @@ def set_fastrcnn_cfg(model_type="fasterrcnn", model_path=None):
         model_name = "COCO-Detection/retinanet_R_50_FPN_3x.yaml"
         model_path = "/home/rdluhu/Dokumente/object_detection_project/outputs/retinanet/model_final.pth"
     else:
+        # to be implemented
+        # add more models such as yolov5, ssd, m2det
         raise ValueError("Model type not supported")
 
     # Load the Faster R-CNN configuration from the model zoo
@@ -40,3 +42,12 @@ def set_fastrcnn_cfg(model_type="fasterrcnn", model_path=None):
     
     return cfg
 
+if __name__ == "__main__":
+    # set the model type
+    model_type = "fasterrcnn"
+    cfg = set_fastrcnn_cfg(model_type=model_type)
+    model = AutoDetectionModel(cfg)
+    model.load_model()
+    model.predict()
+    model.save_predictions()
+    print("Predictions saved successfully")
