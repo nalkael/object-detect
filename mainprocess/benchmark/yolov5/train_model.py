@@ -40,3 +40,4 @@ if __name__ == "__main__":
     print("This script is used to train the yolov5 model on the dataset.")
     print(yolov5_dir)
     print(dataset_config)
+    print(get_yaml_config(dataset_config))
