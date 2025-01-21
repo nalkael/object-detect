@@ -12,7 +12,7 @@ yolov5_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../yolov5'
 dataset_config = os.path.abspath(os.path.join(os.path.dirname(__file__), '../yolov5/yolov5_dataset.yaml'))
 
 class YOLOv5Model:
-    def __init__(self, model_path, dataset_config, output_dir, epochs, batch_size, img_size):
+    def __init__(self, model_path, dataset_config, output_dir, epochs=100, batch_size=16, img_size=320):
         self.model_path = model_path # name of pre-trained model to use
         self.dataset_config = dataset_config # path to dataset config file
         self.output_dir = output_dir # path to save the trained model
