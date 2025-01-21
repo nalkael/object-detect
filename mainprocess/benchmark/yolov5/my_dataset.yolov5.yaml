@@ -1,7 +1,0 @@
-train: ../dataset.v7i.yolov5pytorch/train/images
-val: ../dataset.v7i.yolov5pytorch/valid/images
-test: ../dataset.v7i.yolov5pytorch/test/images
-
-nc: 6 # number of classes
-names: ['Gasschieberdeckel', 'Kanalschachtdeckel', 'Sinkkaesten', 'Unterflurhydrant', 'Versorgungsschachtdeckel', 'Wasserschieberdeckel']
-

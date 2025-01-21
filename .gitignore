@@ -11,6 +11,7 @@ pretrained*/
 *.synctex.gz*
 *.pickle
 *.tif
+*.pt
 
 # latex
 *.aux

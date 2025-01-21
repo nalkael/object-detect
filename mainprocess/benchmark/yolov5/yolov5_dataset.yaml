@@ -1,0 +1,11 @@
+# train: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/train/images
+# val: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/valid/images
+# test: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/test/images
+
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 8 # number of classes
+names: ['class 0', 'class 1', 'class 2', 'class 3', 'class 4', 'class 5', 'class 6', 'class 7'] # class names
+
