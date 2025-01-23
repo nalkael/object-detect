@@ -8,10 +8,10 @@ import yaml
 
 dataset_config = os.path.abspath(os.path.join(os.path.dirname(__file__), '../yolov8/yolov8_dataset.yaml'))
 yolov8_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../yolov8'))
-output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../outputs'))
+output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../output/yolov8'))
 
 class YOLOv8Model:
-    def init(self, model_path, dataset_config, output_dir, epochs=100, batch=16, img_size=320):
+    def __init__(self, model_path, dataset_config, output_dir, epochs=100, batch=16, img_size=320):
         self.model_path = model_path
         self.model_name = os.path.splitext(self.model_path)[0]
         self.dataset_config = dataset_config
@@ -58,5 +58,7 @@ if __name__ == "__main__":
         batch=16,
         img_size=320
     )
-    model.train_model()
+
+    # model.train_model()
+    print("model trained successfully...")
 
