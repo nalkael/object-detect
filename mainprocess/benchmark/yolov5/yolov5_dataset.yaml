@@ -16,3 +16,6 @@ names: ['gas_schieberdeckel', # class 1
 'wasser_schieberdeckel', # class 7
 'wasser_unterflur_hydrant' # class 8
 ]
+
+# best model path
+best_model_path: /home/rdluhu/Dokumente/object_detection_project/outputs/yolov5/best.pt

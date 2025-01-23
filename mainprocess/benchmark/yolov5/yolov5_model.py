@@ -66,3 +66,4 @@ if __name__ == "__main__":
 
     # peform inference on an test image
     # test_img_path = os.path.abspath(os.path.join(yolov5_dir, 'test.jpg'))
+    # model.inference(test_img_path)
