@@ -8,13 +8,14 @@ import yaml
 
 dataset_config = os.path.abspath(os.path.join(os.path.dirname(__file__), '../yolov8/yolov8_dataset.yaml'))
 yolov8_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../yolov8'))
-output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../outputs/yolov8'))
+output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../outputs'))
 
 class YOLOv8Model:
     def init(self, model_path, dataset_config, output_dir, epochs=100, batch=16, img_size=320):
         self.model_path = model_path
+        self.model_name = os.path.splitext(self.model_path)[0]
         self.dataset_config = dataset_config
-        self.output_dir = output_dir
+        self.output_dir = os.path.join(output_dir, self.model_name)
         self.epochs = epochs
         self.batch = batch
         self.img_size = img_size
@@ -33,16 +34,29 @@ class YOLOv8Model:
         )
         print(f"Training complete. Model saved in: {self.output_dir}/yolov8_results")
 
+    def inference(self, img_path):
+        print(f"Performing inference on the image {img_path}...")
+        model = YOLO(self.model_path)
+        results = model(img_path)
+        results.save(save_dir=os.path.join(self.output_dir, "inference_results"))
+        print(f"Inference complete. Results saved in: {self.output_dir}/inference_results")
+        return results
+
 
 def get_yaml_config(config_file):
     with open(config_file, 'r') as file:
         config = yaml.safe_load(file)
     return config
 
-def train_model():
-    print("Training YOLOv8 model. This may take a while...")
-    model = YOLO(MODEL_PATH)
-    pass
-
 if __name__ == "__main__":
-    train_model()
+    print("This script is used to train the yolov8 model on the dataset.")
+    model = YOLOv8Model(
+        model_path="yolov8m.pt",
+        dataset_config=dataset_config,
+        output_dir=output_dir,
+        epochs=500,
+        batch=16,
+        img_size=320
+    )
+    model.train_model()
+
