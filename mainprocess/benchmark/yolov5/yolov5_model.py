@@ -47,6 +47,16 @@ class YOLOv5Model:
         results.save(save_dir=os.path.join(self.output_dir, "inference_results")) # save the results
         print(f"Inference complete. Results saved in: {self.output_dir}/inference_results")
         return results
+    
+    def inference_video(self, video_path):
+        """perform inference on a video"""
+        print(f"Performing inference on the video {video_path}...")
+        model = YOLO(self.model_path)
+        results = model(video_path)
+        results.save(save_dir=os.path.join(self.output_dir, "inference_results"))
+        print(f"Inference complete. Results saved in: {self.output_dir}/inference_results")
+        return results
+        
 
 if __name__ == "__main__":
     print("This script is used to train the yolov5 model on the dataset.")
