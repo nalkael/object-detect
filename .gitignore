@@ -8,6 +8,7 @@ pretrained*/
 trained_models*/
 demo_data/
 models/
+runs/
 # samples/
 
 # big files
