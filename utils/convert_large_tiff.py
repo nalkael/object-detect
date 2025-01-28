@@ -49,7 +49,7 @@ def convert_large_tiff_to_jpeg(input_tiff, output_jpeg, window_size=1024):
                 os.makedirs(directory)
                 print(f'Created directory: {directory}')
 
-            success = cv2.imwrite(output_jpeg, cv2.cvtColor(jpeg_array, cv2.COLOR_RGB2BGR), [cv2.IMWRITE_JPEG_QUALITY, 90])
+            success = cv2.imwrite(output_jpeg, cv2.cvtColor(jpeg_array, cv2.COLOR_RGB2BGR), [cv2.IMWRITE_JPEG_QUALITY, 80])
             if not success:
                 raise Exception(f'Error in saving the JPEG image at: {output_jpeg}')
             else:
