@@ -18,7 +18,7 @@ from sahi.utils.yolov5 import (
 
 # download YOLOV5S6 model to 'models/yolov5s6.pt'
 # yolov5_model_path = '/home/rdluhu/Dokumente/object_detection_project/trained_models/yolov5/best.pt'
-yolov5_model_path = 'models/yolov5s6.pt'
+yolov5_model_path = 'trained_models/yolov5/best.pt'
 download_yolov5s6_model(destination_path=yolov5_model_path)
 print('YOLOV5S6 model downloaded to:', yolov5_model_path)
 
