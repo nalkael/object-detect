@@ -59,7 +59,7 @@ if __name__=='__main__':
     config_file = 'config.yaml'
     with open(config_file, 'r') as file:
         config = yaml.safe_load(file)
-    orthomosaic_path = config['orthomosaic_file']
+    orthomosaic_path = config['sample_orthomosaic_file']
     output_dir = config['orthomosaic_output_dir']
 
     # tile the orthomosaic
