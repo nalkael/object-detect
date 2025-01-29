@@ -1,0 +1,10 @@
+dataset_dir: "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco"
+dataset_name: "dataset_coco"
+dataset_type: "coco"
+
+train_annotation: "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train/_annotations.coco.json"
+train_image_dir: "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train"
+valid_annotation: "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/_annotations.coco.json"
+valid_image_dir: "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid"
+test_annotation: "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/test/_annotations.coco.json"
+test_image_dir: "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/test"

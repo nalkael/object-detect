@@ -4,4 +4,4 @@ orthomosaic_output_dir: /home/rdluhu/Dokumente/image_data/orthomosaic_output
 
 
 # just for testing
-orthomosaic_file: /home/rdluhu/Dokumente/image_data/orthomosaic/20221206_FR_FW_Verbundsnetz_P2_transparent_mosaic_group1.tif
+sample_orthomosaic_file: /home/rdluhu/Dokumente/image_data/orthomosaic/20221206_FR_FW_Verbundsnetz_P2_transparent_mosaic_group1.tif

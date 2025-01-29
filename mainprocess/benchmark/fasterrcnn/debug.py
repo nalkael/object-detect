@@ -3,6 +3,8 @@ TORCH_VERSION = ".".join(torch.__version__.split(".")[:2])
 CUDA_VERSION = torch.__version__.split("+")[-1]
 print("torch: ", TORCH_VERSION, "; cuda: ", CUDA_VERSION)
 
+import yaml # read the yaml file to load the dataset
+
 # Some basic setup:
 # Setup detectron2 logger
 import detectron2
@@ -26,7 +28,7 @@ Import and Register Custom Detectron2 Data
 """
 from detectron2.data.datasets import register_coco_instances
 register_coco_instances("my_dataset_train", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train")
-register_coco_instances("my_dataset_test", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/val/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/val")
+register_coco_instances("my_dataset_test", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid")
 
 #visualize training data
 my_dataset_train_metadata = MetadataCatalog.get("my_dataset_train")
