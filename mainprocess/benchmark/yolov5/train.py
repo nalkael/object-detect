@@ -1,5 +1,5 @@
-import yolov5
-from yolov5 import train
+import ultralytics
+from ultralytics import YOLO
 import yaml
 import os
 
