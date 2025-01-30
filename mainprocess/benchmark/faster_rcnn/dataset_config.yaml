@@ -8,3 +8,13 @@ valid_annotation: "/home/rdluhu/Dokumente/object_detection_project/datasets/data
 valid_image_dir: "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid"
 test_annotation: "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/test/_annotations.coco.json"
 test_image_dir: "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/test"
+
+novel_classes:
+  - "gas_schieberdeckel"
+  - "kanal_deckel_quad"
+  - "kanal_regenwassereinlass"
+  - "kanal_schachtdeckel"
+  - "versorgungs_deckel_eisen"
+  - "versorgungs_schachtdeckel"
+  - "wasser_schieberdeckel"
+  - "wasser_unterflur_hydrant"

@@ -5,3 +5,10 @@ orthomosaic_output_dir: /home/rdluhu/Dokumente/image_data/orthomosaic_output
 
 # just for testing
 sample_orthomosaic_file: /home/rdluhu/Dokumente/image_data/orthomosaic/20221206_FR_FW_Verbundsnetz_P2_transparent_mosaic_group1.tif
+
+
+# some models path:
+# Faster R-CNN
+faster_rcnn: /home/rdluhu/Dokumente/object_detection_project/mainprocess/benchmark/faster_rcnn
+faster_rcnn_output: /home/rdluhu/Dokumente/object_detection_project/outputs/faster_rcnn
+

@@ -28,7 +28,8 @@ Import and Register Custom Detectron2 Data
 """
 from detectron2.data.datasets import register_coco_instances
 register_coco_instances("my_dataset_train", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/train")
-register_coco_instances("my_dataset_test", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid")
+register_coco_instances("my_dataset_valid", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid")
+register_coco_instances("my_dataset_test", {}, "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/test/_annotations.coco.json", "/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/test")
 
 #visualize training data
 my_dataset_train_metadata = MetadataCatalog.get("my_dataset_train")
@@ -56,14 +57,14 @@ from detectron2.engine import DefaultTrainer
 cfg = get_cfg()
 cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
 cfg.DATASETS.TRAIN = ("my_dataset_train",)
-cfg.DATASETS.TEST = ()
+cfg.DATASETS.TEST = ("my_dataset_test")
 cfg.DATALOADER.NUM_WORKERS = 2
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")  # Let training initialize from model zoo
 cfg.SOLVER.IMS_PER_BATCH = 2
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
-cfg.SOLVER.MAX_ITER = 1000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
+cfg.SOLVER.MAX_ITER = 300   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
-cfg.MODEL.ROI_HEADS.NUM_CLASSES = 7  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
+cfg.MODEL.ROI_HEADS.NUM_CLASSES = 8  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
 # NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
 cfg.OUTPUT_DIR = '/home/rdluhu/Dokumente/object_detection_project/outputs/fasterrcnn'
 
@@ -87,12 +88,12 @@ MetadataCatalog.get("my_dataset_test").thing_classes = MetadataCatalog.get("my_d
 from detectron2.utils.visualizer import ColorMode
 import glob
 
-for imageName in glob.glob('/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/val/*jpg'):
+for imageName in glob.glob('/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/valid/*jpg'):
     im = cv2.imread(imageName)
     outputs = predictor(im)
     v = Visualizer(im[:, :, ::-1], metadata=my_dataset_val_metadata)
     out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
-    cv2.namedWindow("Prediction", cv2.WINDOW_NORMAL)
+    # cv2.namedWindow("Prediction", cv2.WINDOW_NORMAL)
     cv2.imshow("Prediction", out.get_image()[:, :, ::-1])
     key = cv2.waitKey(0)
     if key == 27:

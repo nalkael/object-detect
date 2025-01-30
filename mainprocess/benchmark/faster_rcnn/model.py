@@ -1,13 +1,20 @@
 import yaml
 import os
+import torch
+import random
+import cv2
+
+import detectron2
 
 from detectron2 import model_zoo
 from detectron2.config import get_cfg
+from detectron2.engine import DefaultTrainer, DefaultPredictor
 from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.data.datasets import register_coco_instances
-from detectron2.engine import DefaultTrainer
 from detectron2.evaluation import COCOEvaluator, inference_on_dataset
 from detectron2.data import build_detection_test_loader
+from detectron2.utils.visualizer import Visualizer
+
 
 # Some basic setup:
 # Setup detectron2 logger
@@ -15,50 +22,103 @@ import detectron2
 from detectron2.utils.logger import setup_logger
 setup_logger()
 
-def load_dataset_config(dataset_path):
-    with open(dataset_path, "r") as file:
-        config = yaml.safe_load(file)
-        train_annotation = config["train_annotation"]
-        train_image_dir = config["train_image_dir"]
-        valid_annotation = config["valid_annotation"]
-        valid_image_dir = config["valid_image_dir"]
-        test_annotation = config["test_annotation"]
-        test_image_dir = config["test_image_dir"]
-        config = train_annotation, train_image_dir, valid_annotation, valid_image_dir, test_annotation, test_image_dir
-    return config
+"""
+# Load the config
+# dataset config
+# model configt
+"""
 
-# define novel class names
-# NOVEL_CLASSES = ["urban-infrastructure", "gas_schieberdeckel", "class 3", "class 4", "class 5", "class 6", "class 7", "class 8"]
+# load the config.yaml file of the general project
+with open('config.yaml', "r") as file:
+    config = yaml.safe_load(file)
+    faster_rcnn_dir = config['faster_rcnn']
+    faster_rcnn_output = config['faster_rcnn_output']
+    print("Faster R-CNN model output will be saved: ", faster_rcnn_output)
+    dataset_config_path = os.path.join(faster_rcnn_dir, 'dataset_config.yaml')
+    print("Dataset configration: ", dataset_config_path)
+    model_config_path = os.path.join(faster_rcnn_dir, 'model_config.yaml')
+# Define path for COCO format
 
-# load the dataset config
-dataset_config = load_dataset_config('/home/rdluhu/Dokumente/object_detection_project/mainprocess/benchmark/faster_rcnn/dataset.yaml')
-train_annotation, train_image_dir, valid_annotation, valid_image_dir, test_annotation, test_image_dir = dataset_config
+# load the dataset_config.yaml file of the Faster R-CNN model
+with open(dataset_config_path, 'r') as file:
+    dataset_config = yaml.safe_load(file)
+    train_json = dataset_config["train_annotation"]
+    train_images = dataset_config["train_image_dir"]
+    valid_json = dataset_config["valid_annotation"]
+    valid_images = dataset_config["valid_image_dir"]
+    test_json = dataset_config["test_annotation"]
+    test_images = dataset_config["test_image_dir"]
+    novel_classes = dataset_config["novel_classes"]
 
-register_coco_instances("train_dataset", {}, train_annotation, train_image_dir)
-register_coco_instances("valid_dataset", {}, valid_annotation, valid_image_dir)
-register_coco_instances("test_dataset", {}, test_annotation, test_image_dir)
+# load the model_condig.yaml file of the Faster R-CNN model
+with open(model_config_path, 'r') as file:
+    model_condfig = yaml.safe_load(file)
 
-# MetadataCatalog.get("train_dataset").thing_classes = NOVEL_CLASSES
-# MetadataCatalog.get("valid_dataset").thing_classes = NOVEL_CLASSES
-# MetadataCatalog.get("test_dataset").thing_classes = NOVEL_CLASSES
+print("Novel classes:", novel_classes)
 
+# register datasets
+register_coco_instances("train_dataset", {}, train_json, train_images)
+register_coco_instances("valid_dataset", {}, valid_json, valid_images)
+register_coco_instances("test_dataset", {}, test_json, test_images)
+
+# Assign class names to metadata
+MetadataCatalog.get("train_dataset").thing_classes = novel_classes
+MetadataCatalog.get("valid_dataset").thing_classes = novel_classes
+MetadataCatalog.get("test_dataset").thing_classes = novel_classes
+
+# visualize training dataset
+train_metadata = MetadataCatalog.get("train_dataset")
+train_dicts = DatasetCatalog.get("train_dataset")
+
+# visualize training dataset
+valid_metadata = MetadataCatalog.get("valid_dataset")
+valid_dicts = DatasetCatalog.get("valid_dataset")
+
+# visualize test dataset
+test_metadata = MetadataCatalog.get("test_dataset")
+test_dicts = DatasetCatalog.get("test_dataset")
+
+# show some sample dataset
+def visualize_dataset(dataset_dicts, num=0):
+    for d in random.sample(dataset_dicts, num):
+        img = cv2.imread(d["file_name"])
+        visualizer = Visualizer(img[:, :, ::-1], metadata=train_metadata)
+        vis = visualizer.draw_dataset_dict(d)
+        cv2.imshow("Sample", vis.get_image()[:, :, ::-1])
+        cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+visualize_dataset(train_dicts)
+visualize_dataset(test_dicts)
+
+# Load Detectron2 base configuration (Faster R-CNN)
 cfg = get_cfg()
 cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
-# cfg.merge_from_file("/home/rdluhu/Dokumente/object_detection_project/mainprocess/benchmark/faster_rcnn/config.yaml")
+
+# update config for fine-tuning
 cfg.DATASETS.TRAIN = ("train_dataset",)
 cfg.DATASETS.TEST = ("test_dataset",)
 
-cfg.SOLVER.IMS_PER_BATCH = 2 # Batch size
-cfg.SOLVER.BASE_LR = 0.00025  # Learning rate
-cfg.SOLVER.MAX_ITER = 400  # Number of iterations
-cfg.SOLVER.STEPS =  (250, 300)  # When to decrease learning rate
+cfg.DATALOADER.NUM_WORKERS = 2
+# Let training initialize from model zoo
+cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")
+cfg.SOLVER.IMS_PER_BATCH = 2
+cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
+cfg.SOLVER.MAX_ITER = 300   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
+cfg.SOLVER.STEPS =  (200, 250)  # When to decrease learning rate
+cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
+cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
+# NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
+cfg.OUTPUT_DIR = faster_rcnn_output
+
+# make sure the folder exist
+os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+
+# Define a custom trainer class for evaluation
+
+"""
 
 # cfg.TEST.EVAL_PERIOD = 50
-
-# ensure NUM_CLASSES matches the number of novel classes
-# cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(NOVEL_CLASSES)
-cfg.MODEL.ROI_HEADS.NUM_CLASSES = 8
-cfg.OUTPUT_DIR = "/home/rdluhu/Dokumente/object_detection_project/outputs/fasterrcnn"
 
 # set valid dataset as 'test' for evaluation during the training
 trainer = DefaultTrainer(cfg)
@@ -73,3 +133,5 @@ cfg.DATASETS.TEST = ("test_dataset",)
 evaluator = COCOEvaluator("test_dataset", cfg, False, output_dir="./output/")
 val_loader = build_detection_test_loader(cfg, "test_dataset")
 inference_on_dataset(trainer.model, val_loader, evaluator)
+
+"""
