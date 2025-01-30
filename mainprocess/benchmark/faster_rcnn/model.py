@@ -102,33 +102,52 @@ cfg.DATASETS.TEST = ("test_dataset",)
 cfg.DATALOADER.NUM_WORKERS = 2
 # Let training initialize from model zoo
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")
-cfg.SOLVER.IMS_PER_BATCH = 2
+# cfg.SOLVER.IMS_PER_BATCH = 2
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
-cfg.SOLVER.MAX_ITER = 300   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (200, 250)  # When to decrease learning rate
+cfg.SOLVER.MAX_ITER = 3000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
+cfg.SOLVER.STEPS =  (2000, 2500)  # When to decrease learning rate
+
+# freeze the backbone layers (only ROI heads train) to prevents overfitting on small datasets
+cfg.MODEL.BACKBONE.FREEZE_AT = 2 # Freeze first 2 backbone stages
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
 # NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
+
 cfg.OUTPUT_DIR = faster_rcnn_output
 
 # make sure the folder exist
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
 
 # Define a custom trainer class for evaluation
+class CustomTrainer(DefaultTrainer):
+    @classmethod
+    def build_evaluator(cls, cfg, dataset_name):
+        return COCOEvaluator(dataset_name, cfg, False, output_dir='./output/')
 
-"""
 
-# cfg.TEST.EVAL_PERIOD = 50
-
-# set valid dataset as 'test' for evaluation during the training
-trainer = DefaultTrainer(cfg)
+# Train the model
+trainer = CustomTrainer(cfg)
 trainer.resume_or_load(resume=False)
 trainer.train()
 
+# save the trained model weights (for evaluation)
+cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth") # Load trained weights
 
-# After training, evaluate on the test dataset
-cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
-cfg.DATASETS.TEST = ("test_dataset",)
+# setup the evaluator for the test dataset
+evaluator = COCOEvaluator("test_dataset", cfg, False, cfg.OUTPUT_DIR)
+val_loader = build_detection_test_loader(cfg, "test_dataset")
+
+# run evaluation using the trained model
+print("Starting Evaluation on Test Dataset...")
+inference_on_dataset(trainer.model, val_loader, evaluator)
+
+# Inference function
+
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6   # set the testing threshold for this model
+predictor = DefaultPredictor(cfg)
+
+"""
+# cfg.TEST.EVAL_PERIOD = 50
 
 evaluator = COCOEvaluator("test_dataset", cfg, False, output_dir="./output/")
 val_loader = build_detection_test_loader(cfg, "test_dataset")
