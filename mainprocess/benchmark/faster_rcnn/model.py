@@ -37,6 +37,7 @@ with open('config.yaml', "r") as file:
     dataset_config_path = os.path.join(faster_rcnn_dir, 'dataset_config.yaml')
     print("Dataset configration: ", dataset_config_path)
     model_config_path = os.path.join(faster_rcnn_dir, 'model_config.yaml')
+    print("Model configration: ", model_config_path)
 # Define path for COCO format
 
 # load the dataset_config.yaml file of the Faster R-CNN model
@@ -51,8 +52,8 @@ with open(dataset_config_path, 'r') as file:
     novel_classes = dataset_config["novel_classes"]
 
 # load the model_condig.yaml file of the Faster R-CNN model
-with open(model_config_path, 'r') as file:
-    model_condfig = yaml.safe_load(file)
+#   with open(model_config_path, 'r') as file:
+#       model_config = yaml.safe_load(file)
 
 print("Novel classes:", novel_classes)
 
@@ -102,10 +103,10 @@ cfg.DATASETS.TEST = ("test_dataset",)
 cfg.DATALOADER.NUM_WORKERS = 2
 # Let training initialize from model zoo
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")
-# cfg.SOLVER.IMS_PER_BATCH = 2
+cfg.SOLVER.IMS_PER_BATCH = 2
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
-cfg.SOLVER.MAX_ITER = 3000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (2000, 2500)  # When to decrease learning rate
+cfg.SOLVER.MAX_ITER = 4000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
+cfg.SOLVER.STEPS =  (3000, 3500)  # When to decrease learning rate
 
 # freeze the backbone layers (only ROI heads train) to prevents overfitting on small datasets
 cfg.MODEL.BACKBONE.FREEZE_AT = 2 # Freeze first 2 backbone stages
@@ -130,8 +131,19 @@ trainer = CustomTrainer(cfg)
 trainer.resume_or_load(resume=False)
 trainer.train()
 
+"""
+Save config to persist file
+"""
+# write the dumped string manually to a file
+
+with open(model_config_path, "w") as file:
+    file.write(cfg.dump())
+
+print(f"Config saved to {model_config_path}")
+
 # save the trained model weights (for evaluation)
 cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth") # Load trained weights
+
 
 # setup the evaluator for the test dataset
 evaluator = COCOEvaluator("test_dataset", cfg, False, cfg.OUTPUT_DIR)
@@ -148,9 +160,4 @@ predictor = DefaultPredictor(cfg)
 
 """
 # cfg.TEST.EVAL_PERIOD = 50
-
-evaluator = COCOEvaluator("test_dataset", cfg, False, output_dir="./output/")
-val_loader = build_detection_test_loader(cfg, "test_dataset")
-inference_on_dataset(trainer.model, val_loader, evaluator)
-
 """

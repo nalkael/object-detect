@@ -1,0 +1,28 @@
+# config.yaml
+
+MODEL:
+  WEIGHTS: "detectron2://COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"
+  # if using Faster R-CNN
+  RPN:
+    NMS_THRESH: 0.7    
+  ROI_HEADS:
+    NUM_CLASSES: 8 # number of novel classes
+
+DATASETS:
+  TRAIN: ("train_dataset",)
+  TEST: ("test_dataset",) # no valid dataset key
+
+SOLVER:
+  IMS_PER_BATCH: 2  # Batch size
+  BASE_LR: 0.00025  # Learning rate
+  MAX_ITER: 300  # Number of iterations
+  STEPS: (200, 250)  # When to decrease learning rate
+
+INPUT:
+  MIN_SIZE_TRAIN: (800,)
+  MAX_SIZE_TRAIN: 1333
+  MIN_SIZE_TEST: 800
+  MAX_SIZE_TEST: 1333
+
+TEST:
+  EVAL_PERIOD: 50  # How often to evaluate the model on the test set
