@@ -12,7 +12,7 @@ DATASETS:
   PROPOSAL_FILES_TEST: []
   PROPOSAL_FILES_TRAIN: []
   TEST:
-  - test_dataset
+  - valid_dataset
   TRAIN:
   - train_dataset
 FLOAT32_PRECISION: ''
@@ -319,7 +319,7 @@ TEST:
     - 1100
     - 1200
   DETECTIONS_PER_IMAGE: 100
-  EVAL_PERIOD: 0
+  EVAL_PERIOD: 50
   EXPECTED_RESULTS: []
   KEYPOINT_OKS_SIGMAS: []
   PRECISE_BN:

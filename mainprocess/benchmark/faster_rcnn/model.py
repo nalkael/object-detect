@@ -3,12 +3,15 @@ import os
 import torch
 import random
 import cv2
+import time
 
 import detectron2
 
 from detectron2 import model_zoo
 from detectron2.config import get_cfg
 from detectron2.engine import DefaultTrainer, DefaultPredictor
+from detectron2.engine.hooks import PeriodicWriter, EvalHook
+
 from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.data.datasets import register_coco_instances
 from detectron2.evaluation import COCOEvaluator, inference_on_dataset
@@ -67,6 +70,8 @@ MetadataCatalog.get("train_dataset").thing_classes = novel_classes
 MetadataCatalog.get("valid_dataset").thing_classes = novel_classes
 MetadataCatalog.get("test_dataset").thing_classes = novel_classes
 
+print("Datasets registered successfully!")
+
 # visualize training dataset
 train_metadata = MetadataCatalog.get("train_dataset")
 train_dicts = DatasetCatalog.get("train_dataset")
@@ -90,6 +95,7 @@ def visualize_dataset(dataset_dicts, num=0):
     cv2.destroyAllWindows()
 
 visualize_dataset(train_dicts)
+visualize_dataset(valid_dicts)
 visualize_dataset(test_dicts)
 
 # Load Detectron2 base configuration (Faster R-CNN)
@@ -98,7 +104,7 @@ cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_F
 
 # update config for fine-tuning
 cfg.DATASETS.TRAIN = ("train_dataset",)
-cfg.DATASETS.TEST = ("test_dataset",)
+cfg.DATASETS.TEST = ("valid_dataset",)
 
 cfg.DATALOADER.NUM_WORKERS = 2
 # Let training initialize from model zoo
@@ -114,6 +120,7 @@ cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for t
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
 # NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
 
+cfg.TEST.EVAL_PERIOD = 50 # validate every 50 interations
 cfg.OUTPUT_DIR = faster_rcnn_output
 
 # make sure the folder exist
@@ -125,25 +132,29 @@ class CustomTrainer(DefaultTrainer):
     def build_evaluator(cls, cfg, dataset_name):
         return COCOEvaluator(dataset_name, cfg, False, output_dir='./output/')
 
-
 # Train the model
 trainer = CustomTrainer(cfg)
 trainer.resume_or_load(resume=False)
+print("Start Training Model...")
+start_time = time.time()
 trainer.train()
+end_time = time.time()
+print(f"Training ends in {end_time - start_time} seconds...")
+# end of training
 
 """
 Save config to persist file
 """
 # write the dumped string manually to a file
-
 with open(model_config_path, "w") as file:
     file.write(cfg.dump())
 
 print(f"Config saved to {model_config_path}")
 
+# after training, evaluate on the test set
 # save the trained model weights (for evaluation)
 cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth") # Load trained weights
-
+cfg.DATASETS.TEST = ("test_dataset",)
 
 # setup the evaluator for the test dataset
 evaluator = COCOEvaluator("test_dataset", cfg, False, cfg.OUTPUT_DIR)
@@ -152,12 +163,9 @@ val_loader = build_detection_test_loader(cfg, "test_dataset")
 # run evaluation using the trained model
 print("Starting Evaluation on Test Dataset...")
 inference_on_dataset(trainer.model, val_loader, evaluator)
+print(DefaultTrainer.test(cfg, trainer.model, evaluators=[evaluator]))
 
 # Inference function
-
+print("Inference Setting...")
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6   # set the testing threshold for this model
 predictor = DefaultPredictor(cfg)
-
-"""
-# cfg.TEST.EVAL_PERIOD = 50
-"""
