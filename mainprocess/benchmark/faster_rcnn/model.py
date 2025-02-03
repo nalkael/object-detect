@@ -145,7 +145,7 @@ print(f"Training ends in {end_time - start_time} seconds...")
 # end of training
 
 """
-Save config to persist file
+Save config to persist file after training
 """
 # write the dumped string manually to a file
 with open(model_config_path, "w") as file:
