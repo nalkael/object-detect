@@ -131,6 +131,9 @@ class CustomTrainer(DefaultTrainer):
     @classmethod
     def build_evaluator(cls, cfg, dataset_name):
         return COCOEvaluator(dataset_name, cfg, False, output_dir='./output/')
+    
+    # it seems incorrect to add a hook here
+    
 
 # Train the model
 trainer = CustomTrainer(cfg)
