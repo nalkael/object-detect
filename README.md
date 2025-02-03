@@ -40,7 +40,6 @@ and install the project as a package
 This project contains belowing models as benchmark:
 - [Faster R-CNN](https://arxiv.org/abs/1506.01497)
 - [YOLOv5](https://arxiv.org/html/2407.20892v1) (**Y**ou **O**nly **L**ook **O**nce)
-- [SSD](https://arxiv.org/abs/1512.02325) (**S**ingle **S**hot Multibox **D**etector)
 - [RetinaNet](https://arxiv.org/abs/1708.02002)
 - [Cascade R-CNN](https://arxiv.org/abs/1712.00726)
 

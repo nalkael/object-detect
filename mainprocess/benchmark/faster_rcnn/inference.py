@@ -19,44 +19,29 @@ from detectron2.structures import Instances
 # dataset config
 # model configt
 """
+from config_loader import load_dataset_config, load_project_config
 
 # load the config.yaml file of the general project
-with open('config.yaml', "r") as file:
-    config = yaml.safe_load(file)
-    faster_rcnn_dir = config['faster_rcnn']
-    faster_rcnn_output = config['faster_rcnn_output']
-    print("Faster R-CNN model output will be saved: ", faster_rcnn_output)
-    dataset_config_path = os.path.join(faster_rcnn_dir, 'dataset_config.yaml')
-    print("Dataset configration: ", dataset_config_path)
-    model_config_path = os.path.join(faster_rcnn_dir, 'model_config.yaml')
-    print("Model configration: ", model_config_path)
-
+model_info = load_project_config()
 
 # load the dataset_config.yaml file of the Faster R-CNN model
-with open(dataset_config_path, 'r') as file:
-    dataset_config = yaml.safe_load(file)
-    train_json = dataset_config["train_annotation"]
-    train_images = dataset_config["train_image_dir"]
-    valid_json = dataset_config["valid_annotation"]
-    valid_images = dataset_config["valid_image_dir"]
-    test_json = dataset_config["test_annotation"]
-    test_images = dataset_config["test_image_dir"]
-    novel_classes = dataset_config["novel_classes"]
+dataset_info = load_dataset_config(model_info["dataset_config_path"])
 
+novel_classes = dataset_info["novel_classes"]
 
 # load the configuration files that I saved
 cfg = get_cfg()
-cfg.merge_from_file(model_config_path)
+cfg.merge_from_file(model_info["model_config_path"])
 
 ### use hard-coded path below (just for test), but will change it later
-cfg.MODEL.WEIGHTS = "/home/rdluhu/Dokumente/object_detection_project/outputs/faster_rcnn/model_final.pth"
+cfg.MODEL.WEIGHTS = os.path.join(model_info["faster_rcnn_output"], "model_final.pth")
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = 8
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
 
 # Step 2: Initialize the predictor
 predictor = DefaultPredictor(cfg)
 
-### just for test, load an image for inference
+### just for test, load an image for inference, should not be kept in final app
 image_path = "datasets/dataset_coco/test/20221027_FR_17_2_png.rf.f3a8507c98f5281e84c9d58d95b8d35f.jpg"
 image = cv2.imread(image_path)
 
