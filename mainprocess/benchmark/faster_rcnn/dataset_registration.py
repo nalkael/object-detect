@@ -47,9 +47,21 @@ def register_my_dataset(
             )
         
         # assign class names to metadata
-        MetadataCatalog.get(f"{dataset}_name").thing_classes = class_names
+        MetadataCatalog.get(f"{dataset}_dataset").thing_classes = class_names
         print(f"Register dataset {dataset}...")
 
 
 # call the function to register datasets
 register_my_dataset()
+
+# check if the dataset correctly registered
+# print("Registered datasets: ", DatasetCatalog.list())
+
+# datasets_dicts = DatasetCatalog.get("train_dataset")
+# print(datasets_dicts[0])
+
+# check metadata information
+
+# metadata = MetadataCatalog.get("train_dataset")
+# print("Metadata: ", metadata)
+# print("Classes: ", metadata.thing_classes)

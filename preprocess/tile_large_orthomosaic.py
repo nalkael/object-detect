@@ -65,7 +65,7 @@ if __name__=='__main__':
     # tile the orthomosaic
     print("Tiling orthomosaic...")
     start_time = time.time()
-    tile_large_orthomosaic(orthomosaic_path, output_dir, tile_size=10000)
+    tile_large_orthomosaic(orthomosaic_path, output_dir, tile_size=5000)
     end_time = time.time()
     print("Orthomosaic tiling complete.")
-    print(f"Time taken: {end_time - start_time} seconds.")
+    print(f"Time taken: {(end_time - start_time):.2f} seconds.")
