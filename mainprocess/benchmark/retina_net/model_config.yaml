@@ -271,7 +271,7 @@ MODEL:
     NORM: GN
     NUM_CLASSES: 54
   WEIGHTS: https://dl.fbaipublicfiles.com/detectron2/COCO-Detection/faster_rcnn_R_50_FPN_3x/137849458/model_final_280758.pkl
-OUTPUT_DIR: outputs/faster_rcnn
+OUTPUT_DIR: /home/rdluhu/Dokumente/object_detection_project/outputs/faster_rcnn
 SEED: -1
 SOLVER:
   AMP:

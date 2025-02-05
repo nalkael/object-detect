@@ -10,6 +10,7 @@ from detectron2.data import MetadataCatalog, DatasetCatalog
 cfg = get_cfg()
 cfg.merge_from_file(model_zoo.get_config_file("Misc/cascade_mask_rcnn_R_50_FPN_3x.yaml"))
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("Misc/cascade_mask_rcnn_R_50_FPN_3x.yaml")
+cfg.MODEL.MASK_ON = False
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.8 # set threshold for this model, different from Faster R-CNN!
 cfg.MODEL.DEVICE = 'cuda' # use GPU if available, use CPU if not
 

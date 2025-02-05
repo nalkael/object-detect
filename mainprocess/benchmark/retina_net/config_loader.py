@@ -7,13 +7,13 @@ def load_project_config(config_path="config.yaml"):
         config = yaml.safe_load(file)
 
     model_info = {
-        "faster_rcnn_dir": config.get("faster_rcnn", ""),
-        "faster_rcnn_output": config.get("faster_rcnn_output", ""),
-        "dataset_config_path": os.path.join(config.get("faster_rcnn", ""), "dataset_config.yaml"),
-        "model_config_path": os.path.join(config.get("faster_rcnn", ""), "model_config.yaml")
+        "retinanet_dir": config.get("retinanet", ""),
+        "retinanet_output": config.get("retinanet_output", ""),
+        "dataset_config_path": os.path.join(config.get("retinanet", ""), "dataset_config.yaml"),
+        "model_config_path": os.path.join(config.get("retinanet", ""), "model_config.yaml")
     }
 
-    print(f"Faster R-CNN model output will be saved: {model_info['faster_rcnn_output']}")
+    print(f"RetinaNet model output will be saved: {model_info['retinanet_output']}")
     print(f"Dataset configuration: {model_info['dataset_config_path']}")
     print(f"Model configuration: {model_info['model_config_path']}")
 
@@ -37,12 +37,12 @@ def load_dataset_config(dataset_config_path):
 
     return dataset_info
 
-# check if the config can be correctly loaded
+
 if __name__ == '__main__':
     model_info = load_project_config()
     dataset_info = load_dataset_config(model_info["dataset_config_path"])
 
     #  test to access values in a structured way
-    print(model_info["faster_rcnn_output"])
+    print(model_info["retinanet_output"])
     print(dataset_info["test_images"])
     print(dataset_info["novel_classes"])

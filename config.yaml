@@ -1,14 +1,27 @@
 # some example config
-orthomosaic_dir: /home/rdluhu/Dokumente/image_data/orthomosaic
-orthomosaic_output_dir: /home/rdluhu/Dokumente/image_data/orthomosaic_output
+orthomosaic_dir: ../image_data/orthomosaic
+orthomosaic_output_dir: ../image_data/orthomosaic_output
 
 
 # just for testing
-sample_orthomosaic_file: /home/rdluhu/Dokumente/image_data/orthomosaic/20221206_FR_FW_Verbundsnetz_P2_transparent_mosaic_group1.tif
+sample_orthomosaic_file: ../image_data/orthomosaic/20221206_FR_FW_Verbundsnetz_P2_transparent_mosaic_group1.tif
 
 
 # some models path:
 # Faster R-CNN
-faster_rcnn: /home/rdluhu/Dokumente/object_detection_project/mainprocess/benchmark/faster_rcnn
-faster_rcnn_output: /home/rdluhu/Dokumente/object_detection_project/outputs/faster_rcnn
+faster_rcnn: mainprocess/benchmark/faster_rcnn
+faster_rcnn_output: outputs/faster_rcnn
 
+# RetinaNet
+retinanet: mainprocess/benchmark/retina_net
+retinanet_output: outputs/retina_net
+
+# Cascade R-CNN
+cascade_rcnn: mainprocess/benchmark/cascade_rcnn
+cascade_rcnn_ouput: outputs/cascade_rcnn
+
+# yolov5
+
+# yolov8
+
+# DETR...

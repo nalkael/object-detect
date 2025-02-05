@@ -18,8 +18,7 @@ from detectron2.evaluation import COCOEvaluator, inference_on_dataset
 from detectron2.data import build_detection_test_loader
 from detectron2.utils.visualizer import Visualizer
 
-# load config of dataset and model path
-from mainprocess.benchmark.faster_rcnn.config_loader import load_dataset_config, load_project_config
+from mainprocess.benchmark.retina_net.config_loader import load_dataset_config, load_project_config
 
 # Some basic setup:
 # Setup detectron2 logger
@@ -34,19 +33,21 @@ setup_logger()
 """
 
 # load the config.yaml file of the general project
-model_info = load_project_config()
-
 # load the dataset_config.yaml file of the Faster R-CNN model
-dataset_info = load_dataset_config(model_info["dataset_config_path"])
 
-# load the model_condig.yaml file of the Faster R-CNN model
-novel_classes = dataset_info["novel_classes"]
+model_info = load_project_config()
+dataset_info = load_dataset_config(model_info['dataset_config_path'])
+
+model_config_path = model_info['model_config_path']
+faster_rcnn_output = model_info['faster_rcnn_output']
+
+novel_classes = dataset_info['novel_classes']
 print("Novel classes:", novel_classes)
 
 # register datasets
-register_coco_instances("train_dataset", {}, dataset_info["train_json"], dataset_info["train_images"])
-register_coco_instances("valid_dataset", {}, dataset_info["valid_json"], dataset_info["valid_images"])
-register_coco_instances("test_dataset", {}, dataset_info["test_json"], dataset_info["test_images"])
+register_coco_instances("train_dataset", {}, dataset_info['train_json'], dataset_info['train_images'])
+register_coco_instances("valid_dataset", {}, dataset_info['valid_json'], dataset_info['valid_images'])
+register_coco_instances("test_dataset", {}, dataset_info['test_json'], dataset_info['test_images'])
 
 # Assign class names to metadata
 MetadataCatalog.get("train_dataset").thing_classes = novel_classes
@@ -67,7 +68,7 @@ valid_dicts = DatasetCatalog.get("valid_dataset")
 test_metadata = MetadataCatalog.get("test_dataset")
 test_dicts = DatasetCatalog.get("test_dataset")
 
-# show some sample dataset
+# show some sample dataset (optional)
 def visualize_dataset(dataset_dicts, num=0):
     for d in random.sample(dataset_dicts, num):
         img = cv2.imread(d["file_name"])
@@ -81,9 +82,9 @@ visualize_dataset(train_dicts)
 visualize_dataset(valid_dicts)
 visualize_dataset(test_dicts)
 
-# Load Detectron2 base configuration (Faster R-CNN)
+# Load Detectron2 base configuration (RetinaNet)
 cfg = get_cfg()
-cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
+cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/retinanet_R_50_FPN_3x.yaml"))
 
 # update config for fine-tuning
 cfg.DATASETS.TRAIN = ("train_dataset",)
@@ -91,7 +92,7 @@ cfg.DATASETS.TEST = ("valid_dataset",)
 
 cfg.DATALOADER.NUM_WORKERS = 2
 # Let training initialize from model zoo
-cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")
+cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/retinanet_R_50_FPN_3x.yaml")
 cfg.SOLVER.IMS_PER_BATCH = 2
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
 cfg.SOLVER.MAX_ITER = 4000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
@@ -104,7 +105,7 @@ cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.
 # NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
 
 cfg.TEST.EVAL_PERIOD = 50 # validate every 50 interations
-cfg.OUTPUT_DIR = model_info['faster_rcnn_output']
+cfg.OUTPUT_DIR = faster_rcnn_output
 
 # make sure the folder exist
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
@@ -113,8 +114,8 @@ os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
 class CustomTrainer(DefaultTrainer):
     @classmethod
     def build_evaluator(cls, cfg, dataset_name):
-        return COCOEvaluator(dataset_name, cfg, False, output_dir='./outputs/faster_rcnn')    
-    # it seems incorrect to add a hook here
+        return COCOEvaluator(dataset_name, cfg, False, output_dir='./outputs/retina_net')    
+    # it seems incorrect to add a hook here.. I must find another way to add hook
     
 
 # Train the model
@@ -129,13 +130,12 @@ print(f"Training ends in {end_time - start_time} seconds...")
 
 """
 Save config to persist file after training
-The saved file is also used by inference stage
 """
 # write the dumped string manually to a file
-with open(model_info['model_config_path'], "w") as file:
+with open(model_config_path, "w") as file:
     file.write(cfg.dump())
 
-print(f"Config saved to {model_info['model_config_path']}")
+print(f"Config saved to {model_config_path}")
 
 # after training, evaluate on the test set
 # save the trained model weights (for evaluation)
@@ -151,4 +151,9 @@ print("Starting Evaluation on Test Dataset...")
 inference_on_dataset(trainer.model, val_loader, evaluator)
 print(DefaultTrainer.test(cfg, trainer.model, evaluators=[evaluator]))
 
-print("Finished training of model...")
+print("Finish training of model...")
+
+# Inference function
+# print("Inference Setting...")
+# cfg.MODEL.RETINANET.SCORE_THRESH_TEST= 0.8   # set the testing threshold for this model
+# predictor = DefaultPredictor(cfg)
