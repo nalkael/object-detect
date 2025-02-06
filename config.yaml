@@ -21,7 +21,11 @@ cascade_rcnn: mainprocess/benchmark/cascade_rcnn
 cascade_rcnn_ouput: outputs/cascade_rcnn
 
 # yolov5
+yolov5: mainprocess/benchmark/yolo_v5
+yolov5_output: outputs/yolo_v5
 
 # yolov8
+yolov8: mainprocess/benchmark/yolo_v8
+yolov8_output: outputs/yolo_v8
 
 # DETR...
