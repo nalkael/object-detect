@@ -13,7 +13,7 @@ def load_project_config(config_path="config.yaml"):
         "model_config_path": os.path.join(config.get("yolov5", ""), "model_config.yaml")
     }
 
-    print(f"Faster R-CNN model output will be saved: {model_info['faster_rcnn_output']}")
+    print(f"YOLOv5 model output will be saved: {model_info['yolov5_output']}")
     print(f"Dataset configuration: {model_info['dataset_config_path']}")
     print(f"Model configuration: {model_info['model_config_path']}")
 
