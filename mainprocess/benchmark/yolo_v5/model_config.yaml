@@ -1,0 +1,5 @@
+image_size: 320
+batch_size: 16
+epochs: 300
+freeze: 0
+output_dir: outputs/yolo_v5

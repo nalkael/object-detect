@@ -32,7 +32,7 @@ def load_dataset_config(dataset_config_path):
         "valid_images": dataset_config.get("valid_image_dir", ""),
         "test_json": dataset_config.get("test_annotation", ""),
         "test_images": dataset_config.get("test_image_dir", ""),
-        "novel_classes": dataset_config.get("novel_classes", [])
+        "novel_classes": dataset_config.get("names", [])
     }
 
     return dataset_info
@@ -43,6 +43,6 @@ if __name__ == '__main__':
     dataset_info = load_dataset_config(model_info["dataset_config_path"])
 
     #  test to access values in a structured way
-    print(model_info["faster_rcnn_output"])
-    print(dataset_info["test_images"])
+    print(model_info["yolov5_output"])
+    # print(dataset_info["test_images"])
     print(dataset_info["novel_classes"])

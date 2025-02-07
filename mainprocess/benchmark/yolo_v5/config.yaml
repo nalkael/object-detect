@@ -1,0 +1,15 @@
+train: datasets/dataset_yolo/train/images
+val: datasets/dataset_yolo/valid/images
+test: datasets/dataset_yolo/test/images # Add the dataset path
+
+nc: 8 # number of classes
+names: [
+  "gas_schieberdeckel", 
+  "kanal_deckel_quad", 
+  "regenwasser_einlass", 
+  "kanal_schachtdeckel", 
+  "versorgungs_deckel_eisen", 
+  "versorgungs_schachtdeckel", 
+  "wasser_schieberdeckel", 
+  "unterflur_hydrant"
+]

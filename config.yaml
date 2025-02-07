@@ -4,7 +4,7 @@ orthomosaic_output_dir: ../image_data/orthomosaic_output
 
 
 # just for testing
-sample_orthomosaic_file: ../image_data/orthomosaic/20221206_FR_FW_Verbundsnetz_P2_transparent_mosaic_group1.tif
+sample_orthomosaic_file: 'dummy.tif'
 
 
 # some models path:
@@ -28,4 +28,4 @@ yolov5_output: outputs/yolo_v5
 yolov8: mainprocess/benchmark/yolo_v8
 yolov8_output: outputs/yolo_v8
 
-# DETR...
+# RE-DETR...
