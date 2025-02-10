@@ -84,7 +84,7 @@ visualize_dataset(test_dicts)
 
 # Load Detectron2 base configuration (RetinaNet)
 cfg = get_cfg()
-cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/retinanet_R_50_FPN_3x.yaml"))
+cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/retinanet_R_101_FPN_3x.yaml"))
 
 # update config for fine-tuning
 cfg.DATASETS.TRAIN = ("train_dataset",)
@@ -92,7 +92,7 @@ cfg.DATASETS.TEST = ("valid_dataset",)
 
 cfg.DATALOADER.NUM_WORKERS = 2
 # Let training initialize from model zoo
-cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/retinanet_R_50_FPN_3x.yaml")
+cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/retinanet_R_101_FPN_3x.yaml")
 cfg.SOLVER.IMS_PER_BATCH = 2
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
 cfg.SOLVER.MAX_ITER = 4000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
