@@ -10,6 +10,7 @@ demo_data/
 models/
 runs/
 # samples/
+sample_result/
 
 # big files
 *.synctex.gz*

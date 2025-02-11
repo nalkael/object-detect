@@ -8,6 +8,7 @@ sample_orthomosaic_file: 'dummy.tif'
 
 
 # some models path:
+
 # Faster R-CNN
 faster_rcnn: mainprocess/benchmark/faster_rcnn
 faster_rcnn_output: outputs/faster_rcnn
@@ -18,7 +19,7 @@ retinanet_output: outputs/retina_net
 
 # Cascade R-CNN
 cascade_rcnn: mainprocess/benchmark/cascade_rcnn
-cascade_rcnn_ouput: outputs/cascade_rcnn
+cascade_rcnn_output: outputs/cascade_rcnn
 
 # yolov5
 yolov5: mainprocess/benchmark/yolo_v5

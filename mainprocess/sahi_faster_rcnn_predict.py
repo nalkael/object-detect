@@ -19,7 +19,7 @@ detection_model = AutoDetectionModel.from_pretrained(
     model_path=model_weights_path,
     config_path=model_config_path,
     confidence_threshold=0.8,
-    image_size=640, # resize for inference
+    image_size=800, # resize for inference
     device="cuda:0" if torch.cuda.is_available() else "cpu",
 )
 
@@ -31,7 +31,7 @@ result = get_sliced_prediction(
     slice_height=320,
     slice_width=320,
     overlap_height_ratio=0.2,
-    overlap_width_ratio=0.2
+    overlap_width_ratio=0.2,
 )
 
 result.export_visuals(export_dir="sample_result")

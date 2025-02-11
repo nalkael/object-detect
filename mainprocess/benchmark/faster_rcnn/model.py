@@ -20,6 +20,7 @@ from detectron2.utils.visualizer import Visualizer
 
 # load config of dataset and model path
 from mainprocess.benchmark.faster_rcnn.config_loader import load_dataset_config, load_project_config
+from mainprocess.benchmark.faster_rcnn.dataset_registration import register_my_dataset
 
 # Some basic setup:
 # Setup detectron2 logger
@@ -27,11 +28,10 @@ import detectron2
 from detectron2.utils.logger import setup_logger
 setup_logger()
 
-"""
+
 # Load the config
 # dataset config
 # model configt
-"""
 
 # load the config.yaml file of the general project
 model_info = load_project_config()
@@ -54,6 +54,9 @@ MetadataCatalog.get("valid_dataset").thing_classes = novel_classes
 MetadataCatalog.get("test_dataset").thing_classes = novel_classes
 
 print("Datasets registered successfully!")
+
+
+# register_my_dataset()
 
 # visualize training dataset
 train_metadata = MetadataCatalog.get("train_dataset")
