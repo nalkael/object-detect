@@ -1,0 +1,2 @@
+model: "yolov8x.pt" # pre-trained model type
+data: dataset/dataset_yolo/

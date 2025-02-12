@@ -17,6 +17,7 @@ from detectron2.data.datasets import register_coco_instances
 from detectron2.evaluation import COCOEvaluator, inference_on_dataset
 from detectron2.data import build_detection_test_loader
 from detectron2.utils.visualizer import Visualizer
+from detectron2.utils.events import EventStorage
 
 # load config of dataset and model path
 from mainprocess.benchmark.faster_rcnn.config_loader import load_dataset_config, load_project_config
@@ -92,21 +93,48 @@ cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_101_
 cfg.DATASETS.TRAIN = ("train_dataset",)
 cfg.DATASETS.TEST = ("valid_dataset",)
 
-cfg.DATALOADER.NUM_WORKERS = 3
+cfg.DATALOADER.NUM_WORKERS = 2
 # Let training initialize from model zoo
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml")
-cfg.SOLVER.IMS_PER_BATCH = 2
+cfg.SOLVER.IMS_PER_BATCH = 16 # adjust depending on GPU memory
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
-cfg.SOLVER.MAX_ITER = 4000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (3000, 3500)  # When to decrease learning rate
+cfg.SOLVER.MAX_ITER = 30000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
+cfg.SOLVER.STEPS =  (20000, 25000)  # When to decrease learning rate
+cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
+cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 
+"""
+Class Imbalance Handling
+"""
+# If some classes are rare, re-weight the loss:
+cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 512  # Increase for better sampling
+# cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.25  # Increase if too few positive samples
+
+#######################################################
+# some stragdy to prevent overfitting
+cfg.SOLVER.WEIGHT_DECAY = 0.0001  # Reduce overfitting
+cfg.SOLVER.BASE_LR = 0.0005  # Lower LR since the dataset is small
 # freeze the backbone layers (only ROI heads train) to prevents overfitting on small datasets
-cfg.MODEL.BACKBONE.FREEZE_AT = 2 # Freeze first 2 backbone stages
-cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
+cfg.MODEL.BACKBONE.FREEZE_AT = 2 # Freeze first 2 backbone stages (there are 5 layers)
+# Apply Data Augmentation
+cfg.INPUT.RANDOM_FLIP = "horizontal"
+cfg.INPUT.CROP.ENABLED = True
+cfg.INPUT.CROP.SIZE = [0.8, 1.0]  # Random cropping
+cfg.INPUT.MIN_SIZE_TRAIN = (256, 384)  # Keep training scale close to dataset. Multi-scale training
+cfg.INPUT.MIN_SIZE_TEST = 320  # Test image size
+
+# ANCHOR_SIZES for Small Objects
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128, 256]]
+
+# Use a Feature Pyramid Network (FPN)
+# If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
+cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals
+
+#######################################################
+#cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
 # NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
-
-cfg.TEST.EVAL_PERIOD = 50 # validate every 50 interations
+cfg.TEST.EVAL_PERIOD = 1000 # validate after certain interations
 cfg.OUTPUT_DIR = model_info['faster_rcnn_output']
 
 # make sure the folder exist
@@ -118,7 +146,7 @@ class CustomTrainer(DefaultTrainer):
     def build_evaluator(cls, cfg, dataset_name):
         return COCOEvaluator(dataset_name, cfg, False, output_dir='./outputs/faster_rcnn')    
     # it seems incorrect to add a hook here
-    
+
 
 # Train the model
 trainer = CustomTrainer(cfg)

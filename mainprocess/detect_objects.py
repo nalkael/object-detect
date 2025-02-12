@@ -13,17 +13,17 @@ def set_fastrcnn_cfg(model_type="fasterrcnn", model_path=None):
     model_type = model_type.lower()
 
     if model_type == "fasterrcnn":
-        model_name = "COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"
+        model_name = "COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml" # COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml
         model_path = "/home/rdluhu/Dokumente/object_detection_project/outputs/fasterrcnn/model_final.pth"
     elif model_type == "cascadercnn":
         model_name = "Misc/cascade_mask_rcnn_R_50_FPN_3x.yaml"
         model_path = "/home/rdluhu/Dokumente/object_detection_project/outputs/cascadercnn/model_final.pth"
     elif model_type == "retinanet":
-        model_name = "COCO-Detection/retinanet_R_50_FPN_3x.yaml"
+        model_name = "COCO-Detection/retinanet_R_101_FPN_3x.yaml" #
         model_path = "/home/rdluhu/Dokumente/object_detection_project/outputs/retinanet/model_final.pth"
     else:
         # to be implemented
-        # add more models such as yolov5, ssd, m2det
+        # add more models such as yolov5, yolov8, rt-detr
         raise ValueError("Model type not supported")
 
     # Load the Faster R-CNN configuration from the model zoo
