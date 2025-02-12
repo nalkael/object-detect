@@ -1,2 +1,17 @@
 model: "yolov8x.pt" # pre-trained model type
-data: dataset/dataset_yolo/
+data: dataset/dataset_yolo
+epochs: 300 # Increase epochs to compensate for limited data
+batch: 16
+imgsz: 800 # increase image size to help detect small objects
+patience: 50 # number of epochs to wait without improvement
+save: True # enables saving of training checkpoints
+device: 0 # a single GPU
+workers: 8 # number of work threads 
+exist_ok : True
+pretrained: True
+optimizer: 'auto'
+cos_lr: True
+box: 8.0
+cls: 0.6
+val: True
+freeze: 10

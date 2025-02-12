@@ -93,7 +93,7 @@ cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_101_
 cfg.DATASETS.TRAIN = ("train_dataset",)
 cfg.DATASETS.TEST = ("valid_dataset",)
 
-cfg.DATALOADER.NUM_WORKERS = 2
+cfg.DATALOADER.NUM_WORKERS = 4
 # Let training initialize from model zoo
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml")
 cfg.SOLVER.IMS_PER_BATCH = 16 # adjust depending on GPU memory
