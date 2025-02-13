@@ -5,7 +5,7 @@ batch: 16
 imgsz: 800 # increase image size to help detect small objects
 patience: 50 # number of epochs to wait without improvement
 save: True # enables saving of training checkpoints
-device: 0 # a single GPU
+device: 0 # a single GPU, if there are other devices, change it
 workers: 8 # number of work threads 
 exist_ok : True
 pretrained: True
