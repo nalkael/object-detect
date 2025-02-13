@@ -1,6 +1,6 @@
 model: "yolov8x.pt" # pre-trained model type
-data: dataset/dataset_yolo
-epochs: 300 # Increase epochs to compensate for limited data
+data: datasets/dataset_yolo/320x320_20_null_yolo/data.yaml
+epochs: 100 # Increase epochs to compensate for limited data
 batch: 16
 imgsz: 800 # increase image size to help detect small objects
 patience: 50 # number of epochs to wait without improvement
@@ -9,9 +9,15 @@ device: 0 # a single GPU
 workers: 8 # number of work threads 
 exist_ok : True
 pretrained: True
-optimizer: 'auto'
+lr0: 0.003 # lower to prevent overfitting
+lrf: 0.25 # 0.2-0.3 decay slowly for stability
+momentum: 0.9
+weight_decay: 0.0001
+warmup_epochs: 5 # increase warmup epochs to stabilize learning
+warmup_momentum: 0.9 # Slightly higher to prevent sudden jumps
+warmup_bias_lr: 0.05 
 cos_lr: True
 box: 8.0
 cls: 0.6
 val: True
-freeze: 10
+freeze: 15 # try to freeze early layers during training
