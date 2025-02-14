@@ -25,10 +25,10 @@ detection_model = AutoDetectionModel.from_pretrained(
 print("start inference on sample image....")
 # run inference to have a test
 result = get_sliced_prediction(
-    read_image("/home/rdluhu/Dokumente/image_data/orthomosaic_output/tile_10000_20000_78.png"),
+    read_image("/home/rdluhu/Dokumente/object_detection_project/sample_result/geoservice.png"),
     detection_model,
-    slice_height=400,
-    slice_width=400,
+    slice_height=420,
+    slice_width=420,
     overlap_height_ratio=0.1,
     overlap_width_ratio=0.1,
 )

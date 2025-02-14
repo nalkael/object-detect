@@ -7,13 +7,13 @@ import ultralytics
 from ultralytics import YOLO
 
 
-class YOLOv5DetectionModel:
+class YOLOv8DetectionModel:
     def __init__(self, config_path):
         # load pre-trained model
         # load configuration from YAML file
         self.config = self.load_config(config_path)
 
-        # self.model = YOLO("yolov5xu.pt")
+        # self.model = YOLO("yolov8x.pt")
         self.model = YOLO(self.config["model"])
 
         # extract hyperparameters from config file
@@ -28,7 +28,7 @@ class YOLOv5DetectionModel:
 
         self.workers = self.config['workers']
         self.project = self.config['project']
-        self.name = self.config['train']
+        self.name = self.config['name']
         
         self.process_time = 0.0
 
@@ -65,22 +65,24 @@ class YOLOv5DetectionModel:
 
     def evaluate(self, test_data_path=None):
         """
-        Evaluate the fine-tuned model on a dataset
-        If test_data_set is provided, evaluates on the test dataset.
-        Otherwise, uses the validation dataset from the config
+        Load best trained model weight
+        Evaluate the fine-tuned model on test dataset
         """
 
         dataset_test = test_data_path if test_data_path else self.data
         print(f"Evaluating the model on {dataset_test}")
+        results = self.model.val(
+            data=dataset_test,
+            imgsz = self.image_size,
+            split = 'test'
+            )
+        # test_results = model.val(data='data.yaml', imgz=640, split='test') # on test split
 
-        results = self.model.test(data=dataset_test)
-        
+
 
 # Example of using the model class
 if __name__ == '__main__':
-    config_path = 'mainprocess/benchmark/yolo_v5/config.yaml'
-    # Create a YOLOv5x Model
-    model = YOLOv5DetectionModel(config_path)
+    config_path = 'mainprocess/benchmark/yolo_v8/config.yaml'
+    # Create a YOLOv8x Model
+    model = YOLOv8DetectionModel(config_path)
     model.train()
-
-    # 

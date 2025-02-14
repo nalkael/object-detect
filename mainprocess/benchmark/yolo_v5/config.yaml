@@ -1,15 +1,25 @@
-train: datasets/dataset_yolo/train/images
-val: datasets/dataset_yolo/valid/images
-test: datasets/dataset_yolo/test/images # Add the dataset path
-
-nc: 8 # number of classes
-names: [
-  "gas_schieberdeckel", 
-  "kanal_deckel_quad", 
-  "regenwasser_einlass", 
-  "kanal_schachtdeckel", 
-  "versorgungs_deckel_eisen", 
-  "versorgungs_schachtdeckel", 
-  "wasser_schieberdeckel", 
-  "unterflur_hydrant"
-]
+model: yolov8x.pt # pre-trained model type
+data: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/320x320_50_null_yolo/data.yaml
+epochs: 300 # Increase epochs to compensate for limited data
+batch: 16
+imgsz: 800 # increase image size to help detect small objects
+patience: 50 # number of epochs to wait without improvement
+save: True # enables saving of training checkpoints
+device: 0 # a single GPU, if there are other devices, change it
+workers: 8 # number of work threads 
+exist_ok : True
+pretrained: True
+lr0: 0.003 # lower to prevent overfitting
+lrf: 0.25 # 0.2-0.3 decay slowly for stability
+momentum: 0.9
+weight_decay: 0.0001
+warmup_epochs: 5 # increase warmup epochs to stabilize learning
+warmup_momentum: 0.9 # Slightly higher to prevent sudden jumps
+warmup_bias_lr: 0.05 
+cos_lr: True
+box: 8.0
+cls: 0.6
+val: True
+freeze: 10 # try to freeze early layers during training
+project: /home/rdluhu/Dokumente/object_detection_project/outputs/yolo_v5
+name: "exp_320x320_50_null"
