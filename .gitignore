@@ -7,7 +7,6 @@ detectron2/
 pretrained*/
 trained_models*/
 demo_data/
-models/
 runs/
 # samples/
 sample_result/
