@@ -7,6 +7,7 @@ import ultralytics
 from ultralytics import YOLO
 
 
+
 class YOLOv8DetectionModel:
     def __init__(self, config_path):
         # load pre-trained model
@@ -79,16 +80,17 @@ class YOLOv8DetectionModel:
         test_results = model.val(data='data.yaml', imgz=640, split='test') # on test split
         return test_results
 
-    def inference(self, image_path=None):
+    def inference(self, model_checkpoint=None, image_path=None):
         """
         Inference on arbitrary image to see the model's performance
+        model_checkpoint: the fine-tuned model's weights
         """
         pass
 
 
 # Example of using the model class
 if __name__ == '__main__':
-    config_path = 'mainprocess/benchmark/yolo_v8/config.yaml'
+    config_path = 'mainprocess/models/yolo_v8/config.yaml'
     # Create a YOLOv8x Model
     model = YOLOv8DetectionModel(config_path)
     # model.train() # trained model here

@@ -22,7 +22,7 @@ from detectron2.structures import Instances
 # dataset config
 # model configt
 """
-from mainprocess.benchmark.faster_rcnn.config_loader import load_dataset_config, load_project_config
+from mainprocess.models.faster_rcnn.config_loader import load_dataset_config, load_project_config
 
 # load the config.yaml file of the general project
 model_info = load_project_config()

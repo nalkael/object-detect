@@ -18,7 +18,7 @@ from detectron2.evaluation import COCOEvaluator, inference_on_dataset
 from detectron2.data import build_detection_test_loader
 from detectron2.utils.visualizer import Visualizer
 
-from mainprocess.benchmark.retina_net.config_loader import load_dataset_config, load_project_config
+from mainprocess.models.retina_net.config_loader import load_dataset_config, load_project_config
 
 # Some basic setup:
 # Setup detectron2 logger

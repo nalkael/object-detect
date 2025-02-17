@@ -10,23 +10,19 @@ sample_orthomosaic_file: 'dummy.tif'
 # some models path:
 
 # Faster R-CNN
-faster_rcnn: mainprocess/benchmark/faster_rcnn
+faster_rcnn: mainprocess/models/faster_rcnn
 faster_rcnn_output: outputs/faster_rcnn
 
 # RetinaNet
-retinanet: mainprocess/benchmark/retina_net
+retinanet: mainprocess/models/retina_net
 retinanet_output: outputs/retina_net
 
 # Cascade R-CNN
-cascade_rcnn: mainprocess/benchmark/cascade_rcnn
+cascade_rcnn: mainprocess/models/cascade_rcnn
 cascade_rcnn_output: outputs/cascade_rcnn
 
-# yolov5
-yolov5: mainprocess/benchmark/yolo_v5
-yolov5_output: outputs/yolo_v5
-
 # yolov8
-yolov8: mainprocess/benchmark/yolo_v8
+yolov8: mainprocess/models/yolo_v8
 yolov8_output: outputs/yolo_v8
 
 # RE-DETR...
