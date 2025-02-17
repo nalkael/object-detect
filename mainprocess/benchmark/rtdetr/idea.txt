@@ -1,1 +1,0 @@
-idea: use ultralytic
