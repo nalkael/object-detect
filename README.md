@@ -39,19 +39,18 @@ and install the project as a package
 
 This project contains belowing models as benchmark:
 - [Faster R-CNN](https://arxiv.org/abs/1506.01497)
-- [YOLOv5](https://arxiv.org/html/2407.20892v1) (**Y**ou **O**nly **L**ook **O**nce)
-- [YOLOv8]
+- [YOLOv8](https://arxiv.org/html/2407.20892v1) (**Y**ou **O**nly **L**ook **O**nce)
 - [RetinaNet](https://arxiv.org/abs/1708.02002)
 - [Cascade R-CNN](https://arxiv.org/abs/1712.00726)
 
-Few-Shot Detection Models based on prompting:
+Few-Shot Detection Models:
 
 
 SAHI Framwork is applied in this project:
 - [How to detect small objects in large images](https://blog.ml6.eu/how-to-detect-small-objects-in-very-large-images-70234bab0f98)
 
 ### TODO
-Few-shot detection
+Few-shot object detection model
 
 tutorial
 
