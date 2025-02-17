@@ -79,6 +79,7 @@ class YOLOv8DetectionModel:
             split = 'test'
             )
         test_results = model.val(data='data.yaml', imgz=640, split='test') # on test split
+        # deal the results
         
         return test_results
 
