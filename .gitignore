@@ -10,6 +10,7 @@ demo_data/
 runs/
 # samples/
 sample_result/
+defrcn*/
 
 # big files
 *.synctex.gz*

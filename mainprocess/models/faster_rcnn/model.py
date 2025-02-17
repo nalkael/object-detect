@@ -96,10 +96,10 @@ cfg.DATASETS.TEST = ("valid_dataset",)
 cfg.DATALOADER.NUM_WORKERS = 4
 # Let training initialize from model zoo
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")
-cfg.SOLVER.IMS_PER_BATCH = 16 # adjust depending on GPU memory
+cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
-cfg.SOLVER.MAX_ITER = 30000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (20000, 25000)  # When to decrease learning rate
+cfg.SOLVER.MAX_ITER = 10000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
+cfg.SOLVER.STEPS =  (9000, 9500)  # When to decrease learning rate
 cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 
@@ -133,7 +133,7 @@ cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
 # NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
 cfg.TEST.EVAL_PERIOD = 1000 # validate after certain interations
-cfg.MODEL.BACKBONE.FREEZE_AT = 3
+cfg.MODEL.BACKBONE.FREEZE_AT = 4
 cfg.OUTPUT_DIR = model_info['faster_rcnn_output']
 
 # make sure the folder exist
@@ -154,7 +154,8 @@ print("Start Training Model...")
 start_time = time.time()
 trainer.train()
 end_time = time.time()
-print(f"Training ends in {end_time - start_time} seconds...")
+training_time = end_time - start_time
+print(f"Training ends in {(training_time/60):.2f} min.")
 # end of training
 
 """

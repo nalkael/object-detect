@@ -51,6 +51,8 @@ Few-Shot Detection Models:
 SAHI Framwork is applied in this project:
 - [How to detect small objects in large images](https://blog.ml6.eu/how-to-detect-small-objects-in-very-large-images-70234bab0f98)
 
+### Some Common Errors 
+
 ### TODO
 Few-shot object detection model
 

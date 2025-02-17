@@ -80,7 +80,7 @@ class YOLOv8DetectionModel:
             )
         test_results = model.val(data='data.yaml', imgz=640, split='test') # on test split
         # deal the results
-        
+
         return test_results
 
     def inference(self, model_checkpoint=None, image_path=None):
@@ -96,6 +96,7 @@ if __name__ == '__main__':
     config_path = 'mainprocess/models/yolo_v8/config.yaml'
     # Create a YOLOv8s Model
     model = YOLOv8DetectionModel(config_path)
-    # model.train() # trained model here
+    model.train() # trained model here
+    print(f"Training ends in {(model.process_time/60):.2f} min.")
     # after training, inference model on test set and get the results
 
