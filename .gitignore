@@ -3,7 +3,7 @@ results*/
 datasets/
 data/
 output*/
-detectron2/
+detectron2*/
 pretrained*/
 trained_models*/
 demo_data/

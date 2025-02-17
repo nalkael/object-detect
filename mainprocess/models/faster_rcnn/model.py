@@ -20,8 +20,8 @@ from detectron2.utils.visualizer import Visualizer
 from detectron2.utils.events import EventStorage
 
 # load config of dataset and model path
-from mainprocess.benchmark.faster_rcnn.config_loader import load_dataset_config, load_project_config
-from mainprocess.benchmark.faster_rcnn.dataset_registration import register_my_dataset
+from mainprocess.models.faster_rcnn.config_loader import load_dataset_config, load_project_config
+from mainprocess.models.faster_rcnn.dataset_registration import register_my_dataset
 
 # Some basic setup:
 # Setup detectron2 logger

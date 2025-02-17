@@ -33,6 +33,8 @@ Install them with pip: (assume you are in the root directory of the project)
 
 and also install [Detectron2](https://github.com/facebookresearch/detectron2):
 >python -m pip install -e detectron2
+(If it throws a error "No Moduel named xxx", use install command below instead)
+>pip install --no-build-isolation 'git+https://github.com/facebookresearch/detectron2.git'
 
 and install the project as a package
 >pip install -e .
