@@ -87,7 +87,7 @@ visualize_dataset(test_dicts)
 
 # Load Detectron2 base configuration (Faster R-CNN)
 cfg = get_cfg()
-cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml"))
+cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
 
 # update config for fine-tuning
 cfg.DATASETS.TRAIN = ("train_dataset",)
@@ -95,7 +95,7 @@ cfg.DATASETS.TEST = ("valid_dataset",)
 
 cfg.DATALOADER.NUM_WORKERS = 4
 # Let training initialize from model zoo
-cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml")
+cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")
 cfg.SOLVER.IMS_PER_BATCH = 16 # adjust depending on GPU memory
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
 cfg.SOLVER.MAX_ITER = 30000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
@@ -104,11 +104,9 @@ cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 
 """
-Class Imbalance Handling
+TODO Class Imbalance Handling
 """
-# If some classes are rare, re-weight the loss:
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 512  # Increase for better sampling
-# cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.25  # Increase if too few positive samples
 
 #######################################################
 # some stragdy to prevent overfitting
@@ -135,6 +133,7 @@ cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
 # NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
 cfg.TEST.EVAL_PERIOD = 1000 # validate after certain interations
+cfg.MODEL.BACKBONE.FREEZE_AT = 3
 cfg.OUTPUT_DIR = model_info['faster_rcnn_output']
 
 # make sure the folder exist

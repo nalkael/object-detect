@@ -6,15 +6,16 @@ from time import process_time
 import ultralytics
 from ultralytics import YOLO
 
-
-
 class YOLOv8DetectionModel:
     def __init__(self, config_path):
         # load pre-trained model
         # load configuration from YAML file
         self.config = self.load_config(config_path)
 
-        # self.model = YOLO("yolov8x.pt")
+        # self.model = YOLO("yolov8s.pt")
+        # YOLOv8s model would be great for small objects detection
+        # since my dataset is small, so I choose a small version
+        # larger model is more prone to overfitting and to capturing noise as well
         self.model = YOLO(self.config["model"])
 
         # extract hyperparameters from config file
@@ -78,6 +79,7 @@ class YOLOv8DetectionModel:
             split = 'test'
             )
         test_results = model.val(data='data.yaml', imgz=640, split='test') # on test split
+        
         return test_results
 
     def inference(self, model_checkpoint=None, image_path=None):
@@ -91,7 +93,7 @@ class YOLOv8DetectionModel:
 # Example of using the model class
 if __name__ == '__main__':
     config_path = 'mainprocess/models/yolo_v8/config.yaml'
-    # Create a YOLOv8x Model
+    # Create a YOLOv8s Model
     model = YOLOv8DetectionModel(config_path)
     # model.train() # trained model here
     # after training, inference model on test set and get the results
