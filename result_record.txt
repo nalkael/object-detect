@@ -1,50 +1,21 @@
 faster r-cnn: version 1
-trained on 320x320 with 50% null sample 
+trained on 640x640 with 20% null sample 
 
-model hyperparameters:
-cfg.DATALOADER.NUM_WORKERS = 2
-# Let training initialize from model zoo
-cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml")
-cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory
-cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
-cfg.SOLVER.MAX_ITER = 20000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (15000, 18000)  # When to decrease learning rate
-cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
-cfg.SOLVER.WARMUP_ITERS = 2000  # Warmup phase to stabilize training
 
-"""
-Class Imbalance Handling
-"""
-# If some classes are rare, re-weight the loss:
-cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 512  # Increase for better sampling
-# cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.25  # Increase if too few positive samples
+Removed 181 images with no usable annotations. 701 images left.
+[02/17 17:55:07 d2.data.build]: Distribution of instances among all 8 categories:
+|   category    | #instances   |   category    | #instances   |   category    | #instances   |
+|:-------------:|:-------------|:-------------:|:-------------|:-------------:|:-------------|
+|  gas_deckel   | 118          | kanal_deckel  | 288          | kanal_decke.. | 10           |
+| regenwasser.. | 348          | unterflur_h.. | 54           | versorgungs.. | 89           |
+| versorgungs.. | 9            | wasser_deckel | 229          |               |              |
+|     total     | 1145         |               |              |               |              |
+[02/17 17:55:07 d2.data.dataset_mapper]: 
+[DatasetMapper] Augmentations used in training: 
+[RandomCrop(crop_type='relative_range', crop_size=[0.9, 1.0]), ResizeShortestEdge(short_edge_length=(576.0, 704.0), max_size=1333, sample_style='choice'), RandomFlip()]
 
-#######################################################
-# some stragdy to prevent overfitting
-cfg.SOLVER.WEIGHT_DECAY = 0.0001  # Reduce overfitting
-cfg.SOLVER.BASE_LR = 0.0005  # Lower LR since the dataset is small
-# freeze the backbone layers (only ROI heads train) to prevents overfitting on small datasets
-cfg.MODEL.BACKBONE.FREEZE_AT = 2 # Freeze first 2 backbone stages (there are 5 layers)
-# Apply Data Augmentation
-cfg.INPUT.RANDOM_FLIP = "horizontal"
-cfg.INPUT.CROP.ENABLED = True
-cfg.INPUT.CROP.SIZE = [0.8, 1.0]  # Random cropping
-cfg.INPUT.MIN_SIZE_TRAIN = (256, 384)  # Keep training scale close to dataset. Multi-scale training
-cfg.INPUT.MIN_SIZE_TEST = 320  # Test image size
 
-# ANCHOR_SIZES for Small Objects
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128, 256]]
-
-# Use a Feature Pyramid Network (FPN)
-# If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
-cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals
-
-#######################################################
-#cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
-cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
-# NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
-cfg.TEST.EVAL_PERIOD = 1000 # validate after certain interations
-
+#############################################################
 
 faster r-cnn: version 2
 

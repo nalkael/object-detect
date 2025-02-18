@@ -1,4 +1,4 @@
-model: yolov8s.pt # pre-trained model type, yolov8s, yolov8m would be great for small objects detection
+model: yolov8x.pt # pre-trained model type, yolov8s, yolov8m would be great for small objects detection
 data: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/640x640_20_null_yolo/data.yaml
 epochs: 300 # Increase epochs to compensate for limited data
 batch: 16
@@ -20,6 +20,7 @@ cos_lr: True
 box: 8.0
 cls: 0.6
 val: True
-freeze: 8 # try to freeze early layers during training
+freeze: 10 # try to freeze early layers during training
 project: /home/rdluhu/Dokumente/object_detection_project/outputs/yolo_v8
 name: "exp_640x640_20_null"
+best_model: "/home/rdluhu/Dokumente/object_detection_project/trained_models/yolov8/best.pt"

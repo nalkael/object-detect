@@ -27,12 +27,14 @@ class YOLOv8DetectionModel:
         self.lrf = self.config['lrf']        
         self.momentum = self.config['momentum']
         self.freeeze = self.config['freeze']
+        self.patience = self.config['patience']
 
         self.workers = self.config['workers']
         self.project = self.config['project']
         self.name = self.config['name']
         
         self.process_time = 0.0
+        self.best_model = None
 
     def load_config(self, config_path):
         with open(config_path, "r") as file:
@@ -57,7 +59,8 @@ class YOLOv8DetectionModel:
             momentum = self.momentum,
             workers = self.workers, 
             project = self.project,
-            name = self.name, 
+            name = self.name,
+            patience = self.patience,  
             val = True # Ensure validation runs during training
         )
         end_time = process_time()
@@ -73,15 +76,17 @@ class YOLOv8DetectionModel:
 
         dataset_test = test_data_path if test_data_path else self.data
         print(f"Evaluating the model on {dataset_test}")
+        self.best_model = self.config['best_model']
+        self.model = YOLO(self.best_model)
         results = self.model.val(
             data=dataset_test,
             imgsz = self.image_size,
-            split = 'test'
+            split = 'test',
+            project = self.project,
             )
-        test_results = model.val(data='data.yaml', imgz=640, split='test') # on test split
+        # test_results = model.val(data='data.yaml', imgz=640, split='test') # on test split
         # deal the results
-
-        return test_results
+        return results
 
     def inference(self, model_checkpoint=None, image_path=None):
         """
@@ -94,9 +99,10 @@ class YOLOv8DetectionModel:
 # Example of using the model class
 if __name__ == '__main__':
     config_path = 'mainprocess/models/yolo_v8/config.yaml'
-    # Create a YOLOv8s Model
+    # Create a YOLOv8 Model
     model = YOLOv8DetectionModel(config_path)
-    model.train() # trained model here
+    # model.train() # trained model here
     print(f"Training ends in {(model.process_time/60):.2f} min.")
     # after training, inference model on test set and get the results
+    model.evaluate()
 

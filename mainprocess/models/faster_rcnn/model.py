@@ -87,7 +87,7 @@ visualize_dataset(test_dicts)
 
 # Load Detectron2 base configuration (Faster R-CNN)
 cfg = get_cfg()
-cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"))
+cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml"))
 
 # update config for fine-tuning
 cfg.DATASETS.TRAIN = ("train_dataset",)
@@ -95,34 +95,35 @@ cfg.DATASETS.TEST = ("valid_dataset",)
 
 cfg.DATALOADER.NUM_WORKERS = 4
 # Let training initialize from model zoo
-cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml")
+cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml")
 cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
-cfg.SOLVER.MAX_ITER = 10000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (9000, 9500)  # When to decrease learning rate
+cfg.SOLVER.MAX_ITER = 20000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
+cfg.SOLVER.STEPS =  (18000, 19000)  # When to decrease learning rate
 cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 
 """
 TODO Class Imbalance Handling
 """
-cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 512  # Increase for better sampling
+cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128  # for better sampling
 
 #######################################################
 # some stragdy to prevent overfitting
 cfg.SOLVER.WEIGHT_DECAY = 0.0001  # Reduce overfitting
 cfg.SOLVER.BASE_LR = 0.0005  # Lower LR since the dataset is small
 # freeze the backbone layers (only ROI heads train) to prevents overfitting on small datasets
-cfg.MODEL.BACKBONE.FREEZE_AT = 2 # Freeze first 2 backbone stages (there are 5 layers)
+cfg.MODEL.BACKBONE.FREEZE_AT = 3 # Freeze first several backbone stages (there are 5 layers)
 # Apply Data Augmentation
 cfg.INPUT.RANDOM_FLIP = "horizontal"
 cfg.INPUT.CROP.ENABLED = True
-cfg.INPUT.CROP.SIZE = [0.8, 1.0]  # Random cropping
-cfg.INPUT.MIN_SIZE_TRAIN = (256, 384)  # Keep training scale close to dataset. Multi-scale training
-cfg.INPUT.MIN_SIZE_TEST = 320  # Test image size
+cfg.INPUT.CROP.SIZE = [0.9, 1.0]  # Random cropping
+
+cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
+cfg.INPUT.MIN_SIZE_TRAIN = (cfg.INPUT.MIN_SIZE_TEST * 0.9, cfg.INPUT.MIN_SIZE_TEST * 1.1)  # Keep training scale close to dataset. Multi-scale training
 
 # ANCHOR_SIZES for Small Objects
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128, 256]]
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]
 
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
@@ -133,7 +134,7 @@ cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
 # NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
 cfg.TEST.EVAL_PERIOD = 1000 # validate after certain interations
-cfg.MODEL.BACKBONE.FREEZE_AT = 4
+
 cfg.OUTPUT_DIR = model_info['faster_rcnn_output']
 
 # make sure the folder exist
