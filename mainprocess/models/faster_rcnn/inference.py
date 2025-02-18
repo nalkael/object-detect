@@ -38,8 +38,8 @@ cfg.merge_from_file(model_info["model_config_path"])
 
 ### use hard-coded path below (just for test), but will change it later
 cfg.MODEL.WEIGHTS = os.path.join(model_info["faster_rcnn_output"], "model_final.pth")
-cfg.MODEL.ROI_HEADS.NUM_CLASSES = 7
-cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.80
+cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
 
 ### just for test, load an image for inference, should not be kept in final app
 # image_path = "datasets/dataset_coco/320X320_20_null_coco/test/tile_14976_14976_png.rf.55e26ddef6dc92420d2659836e1d55a7.jpg"
