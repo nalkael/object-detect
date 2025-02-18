@@ -17,7 +17,11 @@ from detectron2.data.datasets import register_coco_instances
 from detectron2.evaluation import COCOEvaluator, inference_on_dataset
 from detectron2.data import build_detection_test_loader
 from detectron2.utils.visualizer import Visualizer
+
 from detectron2.utils.events import EventStorage
+from detectron2.engine import hooks # import hook
+
+from detectron2.data import build_detection_train_loader # pass augmentation list into the DataLoader
 
 # load config of dataset and model path
 from mainprocess.models.faster_rcnn.config_loader import load_dataset_config, load_project_config
@@ -113,7 +117,7 @@ cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128  # for better sampling
 cfg.SOLVER.WEIGHT_DECAY = 0.0001  # Reduce overfitting
 cfg.SOLVER.BASE_LR = 0.0005  # Lower LR since the dataset is small
 # freeze the backbone layers (only ROI heads train) to prevents overfitting on small datasets
-cfg.MODEL.BACKBONE.FREEZE_AT = 3 # Freeze first several backbone stages (there are 5 layers)
+cfg.MODEL.BACKBONE.FREEZE_AT = 5 # Freeze first several backbone stages (there are 5 layers)
 # Apply Data Augmentation
 cfg.INPUT.RANDOM_FLIP = "horizontal"
 cfg.INPUT.CROP.ENABLED = True

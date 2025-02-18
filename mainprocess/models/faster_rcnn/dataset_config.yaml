@@ -10,10 +10,10 @@ test_annotation: "datasets/dataset_coco/640x640_20_null_coco/test/_annotations.c
 test_image_dir: "datasets/dataset_coco/640x640_20_null_coco/test"
 
 novel_classes:
-  - "gas_schieberdeckel"
-  - "kanal_schachtdeckel"
-  - "kanal_deckel_quad"
-  - "regenwassereinlass"
-  - "unterflur_hydrant"
-  - "versorgungs_deckel"
-  - "wasser_schieberdeckel"
+  - "Gasschieberdeckel"
+  - "Kanalschachtdeckel"
+  - "Kanalschachtdeckel_Quad"
+  - "Sinkkaesten"
+  - "Unterflurhydrant"
+  - "Versorgungsschacht"
+  - "Wasserschieberdeckel"

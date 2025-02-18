@@ -2,7 +2,7 @@ CUDNN_BENCHMARK: false
 DATALOADER:
   ASPECT_RATIO_GROUPING: true
   FILTER_EMPTY_ANNOTATIONS: true
-  NUM_WORKERS: 2
+  NUM_WORKERS: 4
   REPEAT_SQRT: true
   REPEAT_THRESHOLD: 0.0
   SAMPLER_TRAIN: TrainingSampler
@@ -22,17 +22,17 @@ INPUT:
   CROP:
     ENABLED: true
     SIZE:
-    - 0.8
+    - 0.9
     - 1.0
     TYPE: relative_range
   FORMAT: BGR
   MASK_FORMAT: polygon
   MAX_SIZE_TEST: 1333
   MAX_SIZE_TRAIN: 1333
-  MIN_SIZE_TEST: 320
+  MIN_SIZE_TEST: 640
   MIN_SIZE_TRAIN:
-  - 256
-  - 384
+  - 576.0
+  - 704.0
   MIN_SIZE_TRAIN_SAMPLING: choice
   RANDOM_FLIP: horizontal
 MODEL:
@@ -52,10 +52,9 @@ MODEL:
       - 16
       - 32
       - 64
-      - 128
-      - 256
+      - 100
   BACKBONE:
-    FREEZE_AT: 2
+    FREEZE_AT: 5
     NAME: build_resnet_fpn_backbone
   DEVICE: cuda
   FPN:
@@ -180,7 +179,7 @@ MODEL:
     USE_FED_LOSS: false
     USE_SIGMOID_CE: false
   ROI_HEADS:
-    BATCH_SIZE_PER_IMAGE: 512
+    BATCH_SIZE_PER_IMAGE: 128
     IN_FEATURES:
     - p2
     - p3
@@ -193,7 +192,7 @@ MODEL:
     - 0.5
     NAME: StandardROIHeads
     NMS_THRESH_TEST: 0.5
-    NUM_CLASSES: 8
+    NUM_CLASSES: 7
     POSITIVE_FRACTION: 0.25
     PROPOSAL_APPEND_GT: true
     SCORE_THRESH_TEST: 0.05
@@ -292,8 +291,8 @@ SOLVER:
   REFERENCE_WORLD_SIZE: 0
   RESCALE_INTERVAL: false
   STEPS:
-  - 15000
   - 18000
+  - 19000
   WARMUP_FACTOR: 0.001
   WARMUP_ITERS: 2000
   WARMUP_METHOD: linear

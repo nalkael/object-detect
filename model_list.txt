@@ -1,0 +1,10 @@
+fine-tuning models:
+
+Faster R-CNN
+RT-DETR
+YOLOv8
+
+few-shot models: 
+
+FCT
+DeFRCN

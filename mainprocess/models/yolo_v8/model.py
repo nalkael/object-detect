@@ -61,7 +61,11 @@ class YOLOv8DetectionModel:
             project = self.project,
             name = self.name,
             patience = self.patience,  
-            val = True # Ensure validation runs during training
+            val = True, # Ensure validation runs during training
+            # some augmentation during training
+            mosaic=1.0, # creates synthetic images by combining multipe images (default value)
+            mixup=0.2
+
         )
         end_time = process_time()
         self.process_time = end_time - start_time
@@ -101,8 +105,8 @@ if __name__ == '__main__':
     config_path = 'mainprocess/models/yolo_v8/config.yaml'
     # Create a YOLOv8 Model
     model = YOLOv8DetectionModel(config_path)
-    # model.train() # trained model here
+    model.train() # trained model here
     print(f"Training ends in {(model.process_time/60):.2f} min.")
     # after training, inference model on test set and get the results
-    model.evaluate()
+    # model.evaluate()
 
