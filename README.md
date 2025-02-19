@@ -39,14 +39,12 @@ and also install [Detectron2](https://github.com/facebookresearch/detectron2):
 and install the project as a package
 >pip install -e .
 
-This project contains belowing models as benchmark:
+This project contains belowing models:
 - [Faster R-CNN](https://arxiv.org/abs/1506.01497)
-- [YOLOv8](https://arxiv.org/html/2407.20892v1) (**Y**ou **O**nly **L**ook **O**nce)
-- [RetinaNet](https://arxiv.org/abs/1708.02002)
 - [Cascade R-CNN](https://arxiv.org/abs/1712.00726)
+- [YOLOv8](https://arxiv.org/html/2407.20892v1) (**Y**ou **O**nly **L**ook **O**nce)
 
 Few-Shot Detection Models:
-
 
 SAHI Framwork is applied in this project:
 - [How to detect small objects in large images](https://blog.ml6.eu/how-to-detect-small-objects-in-very-large-images-70234bab0f98)

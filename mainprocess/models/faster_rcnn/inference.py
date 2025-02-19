@@ -37,7 +37,7 @@ cfg = get_cfg()
 cfg.merge_from_file(model_info["model_config_path"])
 
 ### use hard-coded path below (just for test), but will change it later
-cfg.MODEL.WEIGHTS = os.path.join(model_info["faster_rcnn_output"], "model_final.pth")
+cfg.MODEL.WEIGHTS = os.path.join(model_info["faster_rcnn_model"], "best_model.pth")
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7
 
@@ -68,7 +68,7 @@ def inference_images(image_dir: str, cfg, novel_classes):
     image_files = list(image_dir.glob("*.jpg"))
 
     # randomly select 50 images
-    num_samples = min(50, len(image_files))
+    num_samples = min(80, len(image_files))
 
     select_images = random.sample(image_files, num_samples)
 

@@ -9,6 +9,7 @@ def load_project_config(config_path="config.yaml"):
     model_info = {
         "faster_rcnn_dir": config.get("faster_rcnn", ""),
         "faster_rcnn_output": config.get("faster_rcnn_output", ""),
+        "faster_rcnn_model": config.get("faster_rcnn_model", ""),
         "dataset_config_path": os.path.join(config.get("faster_rcnn", ""), "dataset_config.yaml"),
         "model_config_path": os.path.join(config.get("faster_rcnn", ""), "model_config.yaml")
     }

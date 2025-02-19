@@ -12,6 +12,7 @@ sample_orthomosaic_file: 'dummy.tif'
 # Faster R-CNN
 faster_rcnn: mainprocess/models/faster_rcnn
 faster_rcnn_output: outputs/faster_rcnn
+faster_rcnn_model: trained_models/faster_rcnn
 
 # RetinaNet
 retinanet: mainprocess/models/retina_net
