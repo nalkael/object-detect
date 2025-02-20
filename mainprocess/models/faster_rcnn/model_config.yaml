@@ -48,7 +48,8 @@ MODEL:
     NAME: DefaultAnchorGenerator
     OFFSET: 0.0
     SIZES:
-    - - 8
+    - - 5
+      - 8
       - 16
       - 32
       - 64
@@ -192,7 +193,7 @@ MODEL:
     - 0.5
     NAME: StandardROIHeads
     NMS_THRESH_TEST: 0.5
-    NUM_CLASSES: 7
+    NUM_CLASSES: 6
     POSITIVE_FRACTION: 0.25
     PROPOSAL_APPEND_GT: true
     SCORE_THRESH_TEST: 0.05
@@ -267,7 +268,7 @@ MODEL:
     NORM: GN
     NUM_CLASSES: 54
   WEIGHTS: https://dl.fbaipublicfiles.com/detectron2/COCO-Detection/faster_rcnn_R_101_FPN_3x/137851257/model_final_f6e8b1.pkl
-OUTPUT_DIR: outputs/faster_rcnn
+OUTPUT_DIR: ./outputs/faster_rcnn
 SEED: -1
 SOLVER:
   AMP:
@@ -291,8 +292,8 @@ SOLVER:
   REFERENCE_WORLD_SIZE: 0
   RESCALE_INTERVAL: false
   STEPS:
+  - 16000
   - 18000
-  - 19000
   WARMUP_FACTOR: 0.001
   WARMUP_ITERS: 2000
   WARMUP_METHOD: linear
@@ -315,7 +316,7 @@ TEST:
     - 1100
     - 1200
   DETECTIONS_PER_IMAGE: 100
-  EVAL_PERIOD: 1000
+  EVAL_PERIOD: 100
   EXPECTED_RESULTS: []
   KEYPOINT_OKS_SIGMAS: []
   PRECISE_BN:

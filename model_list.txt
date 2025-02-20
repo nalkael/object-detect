@@ -8,3 +8,4 @@ few-shot models:
 
 FCT
 DeFRCN
+Meta Faster R-CNN

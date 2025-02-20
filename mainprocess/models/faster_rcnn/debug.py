@@ -105,7 +105,7 @@ cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_1
 cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
 cfg.SOLVER.MAX_ITER = 20000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (15000, 18000)  # When to decrease learning rate
+cfg.SOLVER.STEPS =  (16000, 18000)  # When to decrease learning rate
 cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 
@@ -143,7 +143,7 @@ cfg.TEST.EVAL_PERIOD = 100 # validate after certain interations
 
 # TODO just for test.....
 # cfg.OUTPUT_DIR = model_info['faster_rcnn_output']
-cfg.OUTPUT_DIR = './outputs/faster_rcnn_hook'
+cfg.OUTPUT_DIR = './outputs/faster_rcnn'
 
 # make sure the folder exist
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
@@ -154,7 +154,7 @@ class EarlyStoppingException(StopIteration):
     pass
 
 class EarlyStoppingHook(HookBase):
-    def __init__(self, trainer, cfg, patience=30, output_dir='./outputs/faster_rcnn_hook'):
+    def __init__(self, trainer, cfg, patience=25, output_dir='./outputs/faster_rcnn'):
         self.trainer = trainer
         self.cfg = cfg
         self.patience = patience
@@ -215,7 +215,7 @@ class EarlyStoppingHook(HookBase):
             if self.counter > self.patience:
                 print(f"Early stopping triggered! Best model at {self.best_iter} iteration. Stop training...")
                 self.trainer.storage.put_scalar("early_stopping", 1)
-                self.trainer.storage.checkpointer.save("final_model") # Save the final model
+                self.trainer.checkpointer.save("final_model") # Save the final model
                 raise EarlyStoppingException(f"Early stopping triggered after {self.patience} evaluations without improvement")
 
 
@@ -226,7 +226,7 @@ class CustomTrainer(DefaultTrainer):
     # build_evaluator is a class method...
     @classmethod
     def build_evaluator(cls, cfg, dataset_name):
-        return COCOEvaluator(dataset_name, cfg, False, output_dir='./outputs/faster_rcnn_hook')   
+        return COCOEvaluator(dataset_name, cfg, False, output_dir='./outputs/faster_rcnn')   
     
     # build_hooks is a instance method...
     # it seems incorrect to add a hook here
@@ -235,7 +235,7 @@ class CustomTrainer(DefaultTrainer):
         Add the Early Stopping Hook to the trainer
         """
         hooks = super().build_hooks()
-        hooks.append(EarlyStoppingHook(self, self.cfg, patience=30))
+        hooks.append(EarlyStoppingHook(self, self.cfg, patience=25))
         return hooks
 
 ##################################################
@@ -272,7 +272,7 @@ print(f"Config saved to {model_info['model_config_path']}")
 
 # after training, evaluate on the test set
 # save the trained model weights (for evaluation)
-cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth") # Load trained weights
+cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "best_model.pth") # Load trained weights
 cfg.DATASETS.TEST = ("test_dataset",)
 
 # setup the evaluator for the test dataset
