@@ -45,32 +45,11 @@ optimizer: 'optimizer=auto' found, ignoring 'lr0=0.01' and 'momentum=0.937' and 
 optimizer: AdamW(lr=0.000833, momentum=0.9) with parameter groups 77 weight(decay=0.0), 84 weight(decay=0.0005), 83 bias(decay=0.0)
 TensorBoard: model graph visualization added
 
-
-   Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
-    163/500      2.21G     0.6117     0.3749     0.8601         22        320: 100%|██████████| 67/67 [00:02<00:00, 25.01it/s]
-                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 12/12 [00:00<00:00, 19.53it/s
-                   all        368        485      0.696      0.563      0.608      0.463
-
-      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
-    164/500      2.28G     0.5997     0.3756     0.8612         20        320: 100%|██████████| 67/67 [00:02<00:00, 24.79it/s]
-                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 12/12 [00:00<00:00, 21.53it/s
-                   all        368        485      0.737      0.577      0.635      0.492
-
-      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
-    165/500      2.28G     0.5964     0.3882     0.8511         22        320: 100%|██████████| 67/67 [00:02<00:00, 24.88it/s]
-                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 12/12 [00:00<00:00, 20.89it/s
-                   all        368        485       0.67      0.519      0.586      0.435
-
-      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
-    263/500       2.2G     0.5164     0.3064      0.837         21        320: 100%|██████████| 67/67 [00:02<00:00, 25.13it/s]
-                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 12/12 [00:00<00:00, 21.96it/s
-                   all        368        485      0.571      0.552      0.573      0.436
-
-      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
-    264/500      2.29G     0.5029     0.3012      0.835         21        320: 100%|██████████| 67/67 [00:02<00:00, 25.07it/s]
-                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 12/12 [00:00<00:00, 22.03it/s
-                   all        368        485      0.649      0.499      0.577      0.427
-EarlyStopping: Training stopped early as no improvement observed in last 100 epochs. Best results observed at epoch 164, best model saved as best.pt.
-To update EarlyStopping(patience=100) pass a new patience value, i.e. `patience=300` or use `patience=0` to disable EarlyStopping.
-
-264 epochs completed in 0.280 hours.
+#################################################
+train: Scanning /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/640x640_yolo/train/labels... 65
+train: New cache created: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/640x640_yolo/train/labels.cache
+val: Scanning /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/640x640_yolo/valid/labels... 317 
+val: New cache created: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/640x640_yolo/valid/labels.cache
+Plotting labels to /home/rdluhu/Dokumente/object_detection_project/outputs/yolo_v8/exp_640x640_yolo/labels.jpg... 
+optimizer: 'optimizer=auto' found, ignoring 'lr0=0.003' and 'momentum=0.9' and determining best 'optimizer', 'lr0' and 'momentum' automatically... 
+optimizer: AdamW(lr=0.001, momentum=0.9) with parameter groups 97 weight(decay=0.0), 104 weight(decay=0.0005), 103 bias(decay=0.0)

@@ -64,8 +64,7 @@ class YOLOv8DetectionModel:
             val = True, # Ensure validation runs during training
             # some augmentation during training
             mosaic=1.0, # creates synthetic images by combining multipe images (default value)
-            mixup=0.2
-
+            mixup=0.2, # mixup data augmentation
         )
         end_time = process_time()
         self.process_time = end_time - start_time
@@ -90,6 +89,8 @@ class YOLOv8DetectionModel:
             )
         # test_results = model.val(data='data.yaml', imgz=640, split='test') # on test split
         # deal the results
+        print(f"Finished evaluation on {dataset_test}")
+        print(f"Results: {results}")
         return results
 
     def inference(self, model_checkpoint=None, image_path=None):
@@ -105,8 +106,8 @@ if __name__ == '__main__':
     config_path = 'mainprocess/models/yolo_v8/config.yaml'
     # Create a YOLOv8 Model
     model = YOLOv8DetectionModel(config_path)
-    model.train() # trained model here
+    # model.train() # trained model here
     print(f"Training ends in {(model.process_time/60):.2f} min.")
     # after training, inference model on test set and get the results
-    # model.evaluate()
+    model.evaluate()
 

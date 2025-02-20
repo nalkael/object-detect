@@ -1,8 +1,6 @@
 import torch
 import torchvision.transforms.v2 as tr
 from torchvision.io import read_image
-import matplotlib.pyplot as plt
-
 from pathlib import Path
 
 def display_tensor_augmentation(tensor_image_original, tensor_image_transformed):
