@@ -39,12 +39,13 @@ and also install [Detectron2](https://github.com/facebookresearch/detectron2):
 and install the project as a package
 >pip install -e .
 
-This project contains belowing models:
+This project contains models:
 - [Faster R-CNN](https://arxiv.org/abs/1506.01497)
 - [Cascade R-CNN](https://arxiv.org/abs/1712.00726)
 - [YOLOv8](https://arxiv.org/html/2407.20892v1) (**Y**ou **O**nly **L**ook **O**nce)
 
-Few-Shot Detection Models:
+Few-Shot Detection models:
+- [Meta Faster R-CNN](https://arxiv.org/abs/2104.07719)
 
 SAHI Framwork is applied in this project:
 - [How to detect small objects in large images](https://blog.ml6.eu/how-to-detect-small-objects-in-very-large-images-70234bab0f98)
