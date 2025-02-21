@@ -9,6 +9,7 @@ def load_project_config(config_path="config.yaml"):
     model_info = {
         "cascade_rcnn_dir": config.get("cascade_rcnn", ""),
         "cascade_rcnn_output": config.get("cascade_rcnn_output", ""),
+        "cascade_rcnn_model": config.get("cascade_rcnn_model", ""),
         "dataset_config_path": os.path.join(config.get("cascade_rcnn", ""), "dataset_config.yaml"),
         "model_config_path": os.path.join(config.get("cascade_rcnn", ""), "model_config.yaml")
     }

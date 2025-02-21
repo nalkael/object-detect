@@ -22,7 +22,7 @@ from detectron2.structures import Instances
 # dataset config
 # model configt
 """
-from mainprocess.models.faster_rcnn.config_loader import load_dataset_config, load_project_config
+from mainprocess.models.cascade_rcnn.config_loader import load_dataset_config, load_project_config
 
 # load the config.yaml file of the general project
 model_info = load_project_config()
@@ -37,7 +37,7 @@ cfg = get_cfg()
 cfg.merge_from_file(model_info["model_config_path"])
 
 ### use hard-coded path below (just for test), but will change it later
-cfg.MODEL.WEIGHTS = os.path.join(model_info["faster_rcnn_model"], "best_model.pth")
+cfg.MODEL.WEIGHTS = os.path.join(model_info["cascade_rcnn_model"], "best_model.pth")
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
 

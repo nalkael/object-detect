@@ -7,7 +7,7 @@ from detectron2.data.datasets import register_coco_instances
 from detectron2.data import MetadataCatalog, DatasetCatalog
 
 # load config of dataset and model path
-from mainprocess.benchmark.faster_rcnn.config_loader import load_dataset_config, load_project_config
+from mainprocess.models.cascade_rcnn.config_loader import load_dataset_config, load_project_config
 
 """
 # register datasets

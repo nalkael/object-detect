@@ -17,10 +17,12 @@ faster_rcnn_model: trained_models/faster_rcnn
 # RetinaNet
 retinanet: mainprocess/models/retina_net
 retinanet_output: outputs/retina_net
+retinanet_model: trained_models/retina_net
 
 # Cascade R-CNN
 cascade_rcnn: mainprocess/models/cascade_rcnn
 cascade_rcnn_output: outputs/cascade_rcnn
+cascade_rcnn_model: trained_models/cascade_rcnn
 
 # yolov8
 yolov8: mainprocess/models/yolo_v8
