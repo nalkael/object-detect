@@ -18,14 +18,14 @@ detection_model = AutoDetectionModel.from_pretrained(
     model_path=model_weights_path,
     config_path=model_config_path,
     confidence_threshold=0.7,
-    image_size=800, # resize for inference
+    image_size=640, # resize for inference
     device="cuda:0" if torch.cuda.is_available() else "cpu",
 )
 
 print("start inference on sample image....")
 # run inference to have a test
 result = get_sliced_prediction(
-    read_image("/home/rdluhu/Dokumente/object_detection_project/sample_result/geoservice.png"),
+    read_image("/home/rdluhu/Dokumente/image_data/orthomosaic_output/tile_35000_65000_254.png"),
     detection_model,
     slice_height=640,
     slice_width=640,

@@ -1,0 +1,1 @@
+﻿fosd config

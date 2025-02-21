@@ -1,5 +1,6 @@
 fine-tuning models:
 
+Cascade R-CNN
 Faster R-CNN
 RT-DETR
 YOLOv8
