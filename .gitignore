@@ -1,6 +1,7 @@
 output_plots/
 results*/
-datasets/
+dataset_coco/
+dataset_yolo/
 data/
 output*/
 detectron2*/
