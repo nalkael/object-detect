@@ -6,7 +6,7 @@ from mainprocess.models.faster_rcnn.dataset_registration import register_my_data
 from mainprocess.models.faster_rcnn.config_loader import load_dataset_config, load_project_config
 
 # must register dataset before run the script
-register_my_dataset()
+# register_my_dataset()
 
 # use the absolute path for the test, will modify later as relative path
 model_config_path = "trained_models/faster_rcnn/model_config.yaml"
@@ -18,7 +18,7 @@ detection_model = AutoDetectionModel.from_pretrained(
     model_path=model_weights_path,
     config_path=model_config_path,
     confidence_threshold=0.7,
-    image_size=800, # resize for inference
+    image_size=640, # resize for inference
     device="cuda:0" if torch.cuda.is_available() else "cpu",
 )
 
@@ -29,8 +29,8 @@ result = get_sliced_prediction(
     detection_model,
     slice_height=640,
     slice_width=640,
-    overlap_height_ratio=0.2,
-    overlap_width_ratio=0.2,
+    overlap_height_ratio=0.3,
+    overlap_width_ratio=0.3,
 )
 
 result.export_visuals(export_dir="sample_result")

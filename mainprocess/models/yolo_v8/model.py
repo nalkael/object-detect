@@ -98,6 +98,8 @@ class YOLOv8DetectionModel:
         Inference on arbitrary image to see the model's performance
         model_checkpoint: the fine-tuned model's weights
         """
+        if image_path is None:
+            raise FileNotFoundError("")
         pass
 
 
@@ -106,8 +108,8 @@ if __name__ == '__main__':
     config_path = 'mainprocess/models/yolo_v8/config.yaml'
     # Create a YOLOv8 Model
     model = YOLOv8DetectionModel(config_path)
-    # model.train() # trained model here
+    model.train() # trained model here
     print(f"Training ends in {(model.process_time/60):.2f} min.")
     # after training, inference model on test set and get the results
-    model.evaluate()
+    # model.evaluate()
 
