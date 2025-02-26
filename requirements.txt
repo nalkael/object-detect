@@ -1,11 +1,10 @@
+sahi
 albumentations
 datasets
-detectron2
 importlib-metadata
 jaraco.collections
 object-detection-project
 pip-chill
-sahi
 scikit-learn
 torchaudio
 transformers
