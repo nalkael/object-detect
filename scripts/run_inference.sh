@@ -3,7 +3,7 @@
 # check if required parameters are provided
 if [ "$#" -lt 3 ]; then
     echo "Usage: $0 <model_type> <image_path> <output_dir> [overlap] [conf_threshold] [image_size]"
-    echo "Model types: yolov8, faster_rcnn, retina_net, ..." 
+    echo "choose a model in yolov8, faster_rcnn, retina_net, cascade_rcnn, rt_detr..."
     exit 1
 fi
 
@@ -46,7 +46,7 @@ case "$MODEL_TYPE" in
         ;;
     *)
         echo "Invalid model type."
-        echo "choose a model in yolov8, faster_rcnn, retina_net, cascade_rcnn, rt-detr..."
+        echo "choose a model in yolov8, faster_rcnn, retina_net, cascade_rcnn, rt_detr..."
         exit 1
         ;;
 esac

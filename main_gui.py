@@ -20,12 +20,12 @@ class ObjectDetectionMainApp(QWidget):
 
         # Dropdown box for model selection
         self.model_dropbox = QComboBox(self)
-        models_list = ["SSD300", "Faster R-CNN", "YOLOv5", "RetineNet", "Cascade R-CNN"] # extensive in future
+        models_list = ["Faster R-CNN", "YOLOv8", "Cascade R-CNN", "RetinaNet", "RT-DETR"] # extensive in future
         self.model_dropbox.addItems(models_list)
         layout.addWidget(self.model_dropbox)
 
         # Button to select an image or from a folder
-        self.selectInputData_button = QPushButton("Select Input Image or Folder", self)
+        self.selectInputData_button = QPushButton("Select Input Image", self)
         self.selectInputData_button.clicked.connect(self.select_input)
         layout.addWidget(self.selectInputData_button)
 
@@ -70,13 +70,13 @@ class ObjectDetectionMainApp(QWidget):
         # check if it is input from a single image or from a folder
         # TODO 
 
-        # Select either from folder or an image file
-        file_or_folder = QFileDialog.getExistingDirectory(self, "Select Folder", options=options)
-        if not file_or_folder: # If no folder selected, allow image selection:
-            file_or_folder, _ = QFileDialog.getOpenFileName(self, "Select Image", "", "Images (*.png *.jpg *.jpeg)", options=options)
-        
-        if file_or_folder:
-            self.input_path = file_or_folder
+        # Select an image file for detection / inference
+        # img_path = QFileDialog.getOpenFileName(self, "Select Image File", "", "Images (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*)", options=options)
+        img_path, _ = QFileDialog.getOpenFileName(self, "Select Image File", "", 
+                                                   "Images (*.png *.jpg *.jpeg *.bmp *.gif);;All Files (*)", 
+                                                   options=options)
+        if img_path:
+            self.input_path = img_path
             self.inputData_path_label.setText(f"Selected Path: {self.input_path}")
 
     def exec_detection(self):
@@ -87,17 +87,21 @@ class ObjectDetectionMainApp(QWidget):
         selected_model = self.model_dropbox.currentText()
         print(f"using {selected_model} object detection model...")
         # dict to refer different scripts 
-        model_detection_scripts = {
-            "YOLOv5": "model_yolov5.py",
-            "Faster R-CNN": "model_fasterrcnn.py",
-            "SSD300" : "model_ssd.py",
-            "RetinaNet": "model_retinanet.py",
-            "Cascade R-CNN": "model_cascadercnn.py",
+        model_types = {
+            "YOLO v8": "yolov8",
+            "Faster R-CNN": "faster_rcnn",
+            "Cascade R-CNN": "cascade_rcnn",
+            "RetinaNet": "retina_net",
+            "RE-DETR": "rt_detr"
             # extensive in future
         }
 
-        # Map the selected model to its respective Python script
-        script_to_run = model_detection_scripts[selected_model]
+        # Map the selected model to its respective name 
+        # Get the directory of the image
+        self.output_dir = os.path.dirname(self.input_path) 
+
+        # Define script location (inside the 'scripts' subfolder)
+        detection_script = os.path.join("scripts", "run_inference.sh") 
 
         # Since it's the detection model, the model should have been already trained
         # Just use it directly in the detection application
@@ -105,7 +109,9 @@ class ObjectDetectionMainApp(QWidget):
             # Execute selected model script, passing the input path
             # If the subscript runs without issues, it continues and process the data
             # subprocess.run(["python", script_to_run, self.input_path, self.output_path, "--verbose"], check=True)
-            subprocess.run(["python", script_to_run, self.input_path, "--verbose"], check=True)
+            subprocess.run([
+                "bash", str(detection_script), model_types[selected_model], self.input_path, self.output_dir
+                ], check=True)
 
             # Show a success message after the subprocess finished smoothly
             QMessageBox.information(self, "Success", f"Detection completed using {selected_model}. Results saved in output.txt")
