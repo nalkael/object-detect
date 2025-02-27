@@ -10,7 +10,7 @@ from mainprocess.models.retina_net.config_loader import load_dataset_config, loa
 import argparse
 
 
-def run_sahi_inference(image_path, model_config_path, model_weights_path, output_dir=None, overlap=0.3, confidence_threshold=0.5, image_size=640):
+def run_sahi_inference(image_path, model_config_path, model_weights_path, output_dir=None, overlap=0.3, conf=0.5, image_size=640):
     # load faster r-cnn model
     # must register dataset before run the script
     register_my_dataset()
@@ -24,7 +24,7 @@ def run_sahi_inference(image_path, model_config_path, model_weights_path, output
         model_type='detectron2',
         model_path=model_weights_path,
         config_path=model_config_path,
-        confidence_threshold=0.5,
+        confidence_threshold=conf,
         image_size=640, # resize for inference
         device="cuda:0" if torch.cuda.is_available() else "cpu",
     )

@@ -17,7 +17,7 @@ import argparse
 # use the absolute path for the test, will modify later as relative path
 # model_config_path = "trained_models/faster_rcnn/model_config.yaml"
 
-def run_sahi_inference(image_path, model_weights_path='yolo8x.pt', output_dir=None, overlap=0.3, confidence_threshold=0.5, image_size=640):
+def run_sahi_inference(image_path, model_weights_path='yolo8x.pt', output_dir=None, overlap=0.3, conf=0.5, image_size=640):
     # load yolov8 model
     model = YOLO(model_weights_path)
     print("Model class names:", model.names)
@@ -26,7 +26,7 @@ def run_sahi_inference(image_path, model_weights_path='yolo8x.pt', output_dir=No
     detection_model = AutoDetectionModel.from_pretrained(
         model_type='yolov8',
         model_path=model_weights_path,
-        confidence_threshold=0.5,
+        confidence_threshold=conf,
         image_size=640, # resize for inference
         device="cuda:0" if torch.cuda.is_available() else "cpu",
     )

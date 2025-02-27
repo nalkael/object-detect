@@ -28,6 +28,7 @@ case "$MODEL_TYPE" in
     yolov8)
         PYTHON_SCRIPT="$SCRIPT_DIR/yolov8_predict.py"
         MODEL_WEIGHTS="$MODEL_DIR/yolo_v8/best.pt"
+        CONF_THRESHOLD=0.5
         # Run the selected Python script
         python "$PYTHON_SCRIPT" "$IMAGE_PATH" "$MODEL_WEIGHTS" "$OUTPUT_DIR" --overlap "$OVERLAP" --conf "$CONF_THRESHOLD" --img_size "$IMAGE_SIZE"
 
@@ -36,18 +37,21 @@ case "$MODEL_TYPE" in
         PYTHON_SCRIPT="$SCRIPT_DIR/faster_rcnn_predict.py"
         MODEL_WEIGHTS="$MODEL_DIR/faster_rcnn/best_model.pth"
         MODEL_CONFIG="$MODEL_DIR/faster_rcnn/model_config.yaml"
+        CONF_THRESHOLD=0.6
         python "$PYTHON_SCRIPT" "$IMAGE_PATH" "$MODEL_CONFIG" "$MODEL_WEIGHTS" "$OUTPUT_DIR" --overlap "$OVERLAP" --conf "$CONF_THRESHOLD" --img_size "$IMAGE_SIZE"
         ;;
     cascade_rcnn)
         PYTHON_SCRIPT="$SCRIPT_DIR/cascade_rcnn_predict.py"
         MODEL_WEIGHTS="$MODEL_DIR/cascade_rcnn/best_model.pth"
         MODEL_CONFIG="$MODEL_DIR/cascade_rcnn/model_config.yaml"
+        CONF_THRESHOLD=0.6
         python "$PYTHON_SCRIPT" "$IMAGE_PATH" "$MODEL_CONFIG" "$MODEL_WEIGHTS" "$OUTPUT_DIR" --overlap "$OVERLAP" --conf "$CONF_THRESHOLD" --img_size "$IMAGE_SIZE"
         ;;
     retina_net)
         PYTHON_SCRIPT="$SCRIPT_DIR/retinanet_predict.py"
         MODEL_WEIGHTS="$MODEL_DIR/retina_net/best_model.pth"
         MODEL_CONFIG="$MODEL_DIR/retina_net/model_config.yaml"
+        CONF_THRESHOLD=0.5
         python "$PYTHON_SCRIPT" "$IMAGE_PATH" "$MODEL_CONFIG" "$MODEL_WEIGHTS" "$OUTPUT_DIR" --overlap "$OVERLAP" --conf "$CONF_THRESHOLD" --img_size "$IMAGE_SIZE"
         ;;
     *)
