@@ -88,7 +88,7 @@ class ObjectDetectionMainApp(QWidget):
         print(f"using {selected_model} object detection model...")
         # dict to refer different scripts 
         model_types = {
-            "YOLO v8": "yolov8",
+            "YOLOv8": "yolov8",
             "Faster R-CNN": "faster_rcnn",
             "Cascade R-CNN": "cascade_rcnn",
             "RetinaNet": "retina_net",
