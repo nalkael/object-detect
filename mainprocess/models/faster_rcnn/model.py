@@ -239,7 +239,7 @@ class CustomTrainer(DefaultTrainer):
         return hooks
 
 ##################################################
-# define a custom trainer class with Hook
+# TODO: define a custom trainer class with some other metrics bzw. loss function
 class MyTrainer(DefaultTrainer):
     pass
 

@@ -6,6 +6,7 @@ jaraco.collections
 object-detection-project
 pip-chill
 pyqt5
+rasterio
 sahi
 scikit-learn
 torchaudio

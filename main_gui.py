@@ -114,7 +114,7 @@ class ObjectDetectionMainApp(QWidget):
                 ], check=True)
 
             # Show a success message after the subprocess finished smoothly
-            QMessageBox.information(self, "Success", f"Detection completed using {selected_model}. Results saved in output.txt")
+            QMessageBox.information(self, "Success", f"Detection completed using {selected_model}. Results saved...")
 
         except subprocess.CalledProcessError as e:
             # If an error occurs during execution, throw out an exception

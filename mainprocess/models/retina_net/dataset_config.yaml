@@ -1,0 +1,18 @@
+dataset_dir: "datasets/dataset_coco"
+dataset_name: "dataset_coco"
+dataset_type: "coco"
+
+train_annotation: "datasets/dataset_coco/640x640_coco/train/_annotations.coco.json"
+train_image_dir: "datasets/dataset_coco/640x640_coco/train"
+valid_annotation: "datasets/dataset_coco/640x640_coco/valid/_annotations.coco.json"
+valid_image_dir: "datasets/dataset_coco/640x640_coco/valid"
+test_annotation: "datasets/dataset_coco/640x640_coco/test/_annotations.coco.json"
+test_image_dir: "datasets/dataset_coco/640x640_coco/test"
+
+novel_classes:
+  - "Gasschieberdeckel"
+  - "Kanalschachtdeckel"
+  - "Sinkkaesten"
+  - "Unterflurhydrant"
+  - "Versorgungsschacht"
+  - "Wasserschieberdeckel"

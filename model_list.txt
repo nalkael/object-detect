@@ -2,11 +2,12 @@ fine-tuning models:
 
 Cascade R-CNN
 Faster R-CNN
+RetinaNet
 RT-DETR
 YOLOv8
 
-few-shot models: 
+few-shot object detection models: 
 
 FCT
-DeFRCN
 Meta Faster R-CNN
+ovdsat

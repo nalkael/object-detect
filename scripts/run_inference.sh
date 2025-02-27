@@ -44,6 +44,12 @@ case "$MODEL_TYPE" in
         MODEL_CONFIG="$MODEL_DIR/cascade_rcnn/model_config.yaml"
         python "$PYTHON_SCRIPT" "$IMAGE_PATH" "$MODEL_CONFIG" "$MODEL_WEIGHTS" "$OUTPUT_DIR" --overlap "$OVERLAP" --conf "$CONF_THRESHOLD" --img_size "$IMAGE_SIZE"
         ;;
+    retina_net)
+        PYTHON_SCRIPT="$SCRIPT_DIR/retinanet_predict.py"
+        MODEL_WEIGHTS="$MODEL_DIR/retina_net/best_model.pth"
+        MODEL_CONFIG="$MODEL_DIR/retina_net/model_config.yaml"
+        python "$PYTHON_SCRIPT" "$IMAGE_PATH" "$MODEL_CONFIG" "$MODEL_WEIGHTS" "$OUTPUT_DIR" --overlap "$OVERLAP" --conf "$CONF_THRESHOLD" --img_size "$IMAGE_SIZE"
+        ;;
     *)
         echo "Invalid model type."
         echo "choose a model in yolov8, faster_rcnn, retina_net, cascade_rcnn, rt_detr..."
