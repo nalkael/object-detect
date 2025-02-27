@@ -92,7 +92,7 @@ class ObjectDetectionMainApp(QWidget):
             "Faster R-CNN": "faster_rcnn",
             "Cascade R-CNN": "cascade_rcnn",
             "RetinaNet": "retina_net",
-            "RE-DETR": "rt_detr"
+            "RT-DETR": "rt_detr"
             # extensive in future
         }
 
