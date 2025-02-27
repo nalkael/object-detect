@@ -6,7 +6,6 @@ data/
 output*/
 detectron2*/
 pretrained*/
-trained_models*/
 demo_data/
 runs/
 # samples/
@@ -18,6 +17,7 @@ defrcn*/
 *.pickle
 *.tif
 *.pt
+*.pth
 
 # latex
 *.aux
