@@ -2,14 +2,15 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 """
-Created on Thursday, April 14, 2022
+Modified on Thursday, March 04, 2025
 
 This script is a simplified version of the training script in detectron2/tools.
 
-@author: Guangxing Han
+@author: Huaixin Luo
 """
 
 import os
+import torch
 
 from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.config import get_cfg
@@ -22,9 +23,9 @@ from detectron2.evaluation import (
     verify_results,
 )
 
-from metafr.meta_faster_rcnn.config import get_cfg
-from metafr.meta_faster_rcnn.data import DatasetMapperWithSupportCOCO, DatasetMapperWithSupportVOC
+from metafr.meta_faster_rcnn.config.config import get_cfg
 from metafr.meta_faster_rcnn.data.build import build_detection_train_loader, build_detection_test_loader
+from metafr.meta_faster_rcnn.data import DatasetMapperWithSupportCOCO, DatasetMapperWithSupportVOC
 from metafr.meta_faster_rcnn.solver import build_optimizer
 from metafr.meta_faster_rcnn.evaluation import COCOEvaluator, PascalVOCDetectionEvaluator
 
@@ -167,46 +168,46 @@ class Trainer(DefaultTrainer):
         return results
 
 
-def setup(args):
+def setup():
     """
     Create configs and perform basic setups.
     """
     cfg = get_cfg()
-    cfg.merge_from_file(args.config_file)
-    cfg.merge_from_list(args.opts)
-    cfg.freeze()
-    default_setup(cfg, args)
-
-    rank = comm.get_rank()
-    setup_logger(cfg.OUTPUT_DIR, distributed_rank=rank, name="meta_faster_rcnn")
+    cfg.merge_from_file("metafr/configs/fsod/1shot_finetune_coco_resnet101.yaml") # set config file manually
+    cfg.MODEL.WEIGHTS = "outputs/meta_faster_rcnn/Meta_Faster_RCNN_model_final_coco.pth" # Set weights from pretrained model
+    cfg.SOLVER.IMS_PER_BATCH = 8  # Set batch size manually
+    cfg.OUTPUT_DIR = "outputs/meta_faster_rcnn/1shot_finetune_coco_resnet101"
+    cfg.freeze() # make configuration immutable
+    # cfg.defrost()  # Unfreeze the config
+    
+    setup_logger(cfg.OUTPUT_DIR, distributed_rank=0, name="meta_faster_rcnn")
 
     return cfg
 
 
-def main(args):
-    cfg = setup(args)
+def main(eval_only=False, resume=True):
+    """
+    Main function to run training or evaluation.
+    :param eval_only: If True, run evaluation only.
+    :param resume: If True, resume training from checkpoint.
+    """
+    cfg = setup()
 
-    if args.eval_only:
+    if eval_only:
         model = Trainer.build_model(cfg)
         DetectionCheckpointer(model, save_dir=cfg.OUTPUT_DIR).resume_or_load(
-            cfg.MODEL.WEIGHTS, resume=args.resume
+            cfg.MODEL.WEIGHTS, resume=resume
         )
         res = Trainer.test(cfg, model)
         return res
 
+    print("Starting training...")
     trainer = Trainer(cfg)
-    trainer.resume_or_load(resume=args.resume)
+    trainer.resume_or_load(resume=resume)
     return trainer.train()
 
 
 if __name__ == "__main__":
-    args = default_argument_parser().parse_args()
-    print("Command Line Args:", args)
-    launch(
-        main,
-        args.num_gpus,
-        num_machines=args.num_machines,
-        machine_rank=args.machine_rank,
-        dist_url=args.dist_url,
-        args=(args,),
-    )
+    torch.cuda.set_device(0) # only one GPU is used
+    eval_mode = False
+    main(eval_only=eval_mode)

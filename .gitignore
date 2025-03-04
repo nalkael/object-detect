@@ -2,7 +2,6 @@ output_plots/
 results*/
 dataset_coco/
 dataset_yolo/
-data/
 output*/
 detectron2*/
 pretrained*/
@@ -160,6 +159,3 @@ dmypy.json
 
 # Mac-OS specific
 .DS_Store
-
-# torchvision datasets
-data
