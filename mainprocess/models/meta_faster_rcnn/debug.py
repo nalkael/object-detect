@@ -23,11 +23,11 @@ from detectron2.evaluation import (
     verify_results,
 )
 
-from metafr.meta_faster_rcnn.config.config import get_cfg
-from metafr.meta_faster_rcnn.data.build import build_detection_train_loader, build_detection_test_loader
-from metafr.meta_faster_rcnn.data import DatasetMapperWithSupportCOCO, DatasetMapperWithSupportVOC
-from metafr.meta_faster_rcnn.solver import build_optimizer
-from metafr.meta_faster_rcnn.evaluation import COCOEvaluator, PascalVOCDetectionEvaluator
+from meta_faster_rcnn.config.config import get_cfg
+from meta_faster_rcnn.data.build import build_detection_train_loader, build_detection_test_loader
+from meta_faster_rcnn.data import DatasetMapperWithSupportCOCO, DatasetMapperWithSupportVOC
+from meta_faster_rcnn.solver import build_optimizer
+from meta_faster_rcnn.evaluation import COCOEvaluator, PascalVOCDetectionEvaluator
 
 import bisect
 import copy
@@ -174,8 +174,8 @@ def setup():
     """
     cfg = get_cfg()
     cfg.merge_from_file("metafr/configs/fsod/1shot_finetune_coco_resnet101.yaml") # set config file manually
-    cfg.MODEL.WEIGHTS = "outputs/meta_faster_rcnn/Meta_Faster_RCNN_model_final_coco.pth" # Set weights from pretrained model
-    cfg.SOLVER.IMS_PER_BATCH = 8  # Set batch size manually
+    cfg.MODEL.WEIGHTS = "outputs/meta_faster_rcnn/Meta_Faster_RCNN_model_final_coco_fpn.pth" # Set weights from pretrained model
+    cfg.SOLVER.IMS_PER_BATCH = 4  # Set batch size manually
     cfg.OUTPUT_DIR = "outputs/meta_faster_rcnn/1shot_finetune_coco_resnet101"
     cfg.freeze() # make configuration immutable
     # cfg.defrost()  # Unfreeze the config
@@ -205,6 +205,7 @@ def main(eval_only=False, resume=True):
     trainer = Trainer(cfg)
     trainer.resume_or_load(resume=resume)
     return trainer.train()
+
 
 
 if __name__ == "__main__":

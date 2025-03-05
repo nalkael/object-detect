@@ -159,3 +159,6 @@ dmypy.json
 
 # Mac-OS specific
 .DS_Store
+
+
+model_list.txt
