@@ -8,6 +8,6 @@ YOLOv8
 
 few-shot object detection models: 
 
+DeFRCN
 FCT
-Meta Faster R-CNN
 ovdsat
