@@ -22,11 +22,11 @@ from detectron2.evaluation import (
     verify_results,
 )
 
-from metafr.meta_faster_rcnn.config import get_cfg
-from metafr.meta_faster_rcnn.data import DatasetMapperWithSupportCOCO, DatasetMapperWithSupportVOC
-from metafr.meta_faster_rcnn.data.build import build_detection_train_loader, build_detection_test_loader
-from metafr.meta_faster_rcnn.solver import build_optimizer
-from metafr.meta_faster_rcnn.evaluation import COCOEvaluator, PascalVOCDetectionEvaluator
+from meta_faster_rcnn.config import get_cfg
+from meta_faster_rcnn.data import DatasetMapperWithSupportCOCO, DatasetMapperWithSupportVOC
+from meta_faster_rcnn.data.build import build_detection_train_loader, build_detection_test_loader
+from meta_faster_rcnn.solver import build_optimizer
+from meta_faster_rcnn.evaluation import COCOEvaluator, PascalVOCDetectionEvaluator
 
 import bisect
 import copy
