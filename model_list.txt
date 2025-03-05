@@ -8,6 +8,5 @@ YOLOv8
 
 few-shot object detection models: 
 
-DeFRCN
-FCT
 ovdsat
+CDFSOD
