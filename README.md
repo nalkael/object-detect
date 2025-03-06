@@ -24,7 +24,7 @@ end
 
 ### Preparing your environment
 
-Get yourself a Python>=3.10 environment. Using a  [virtualenv](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment)  is recommended but not required.
+Get yourself a Python=3.9 environment. Using a  [virtualenv](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#creating-a-virtual-environment)  is recommended but not required.
 
 You'll need a few tools to run scripts in this distribution. They are specified in the requirements.txt file.
 
@@ -35,6 +35,8 @@ and also install [Detectron2](https://github.com/facebookresearch/detectron2):
 >python -m pip install -e detectron2
 (If it throws a error "No Moduel named xxx", use install command below instead)
 >pip install --no-build-isolation 'git+https://github.com/facebookresearch/detectron2.git'
+or
+>pip install --no-build-isolation -e detectron2
 
 and install the project as a package
 >pip install -e .
@@ -45,7 +47,7 @@ This project contains models:
 - [YOLOv8](https://arxiv.org/html/2407.20892v1) (**Y**ou **O**nly **L**ook **O**nce)
 
 Few-Shot Detection models:
-- [Meta Faster R-CNN](https://arxiv.org/abs/2104.07719)
+-
 - 
 
 SAHI Framwork is applied in this project:

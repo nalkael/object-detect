@@ -9,3 +9,4 @@ YOLOv8
 few-shot object detection models: 
 
 ovdsat
+QA-FewDet
