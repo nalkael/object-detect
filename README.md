@@ -45,10 +45,11 @@ This project contains models:
 - [Faster R-CNN](https://arxiv.org/abs/1506.01497)
 - [Cascade R-CNN](https://arxiv.org/abs/1712.00726)
 - [YOLOv8](https://arxiv.org/html/2407.20892v1) (**Y**ou **O**nly **L**ook **O**nce)
+- [RetinaNet]
+- [RT-DETR]
 
 Few-Shot Detection models:
--
-- 
+- [FsDet(TFA)]
 
 SAHI Framwork is applied in this project:
 - [How to detect small objects in large images](https://blog.ml6.eu/how-to-detect-small-objects-in-very-large-images-70234bab0f98)
