@@ -20,10 +20,10 @@ GLOBAL:
   HACK: 1.0
 INPUT:
   CROP:
-    ENABLED: true
+    ENABLED: false
     SIZE:
     - 0.9
-    - 1.0
+    - 0.9
     TYPE: relative_range
   FORMAT: BGR
   MASK_FORMAT: polygon
@@ -283,7 +283,7 @@ SOLVER:
     ENABLED: false
     NORM_TYPE: 2.0
   GAMMA: 0.1
-  IMS_PER_BATCH: 4
+  IMS_PER_BATCH: 8
   LR_SCHEDULER_NAME: WarmupMultiStepLR
   MAX_ITER: 20000
   MOMENTUM: 0.9

@@ -77,7 +77,7 @@ valid_dicts = DatasetCatalog.get("valid_dataset")
 test_metadata = MetadataCatalog.get("test_dataset")
 test_dicts = DatasetCatalog.get("test_dataset")
 
-###########################################
+"""
 # show some sample dataset
 def visualize_dataset(dataset_dicts, num=0):
     for d in random.sample(dataset_dicts, num):
@@ -91,6 +91,7 @@ def visualize_dataset(dataset_dicts, num=0):
 visualize_dataset(train_dicts)
 visualize_dataset(valid_dicts)
 visualize_dataset(test_dicts)
+"""
 
 # Load Detectron2 base configuration (Cascade R-CNN)
 cfg = get_cfg()
@@ -103,7 +104,7 @@ cfg.DATASETS.TEST = ("valid_dataset",)
 cfg.DATALOADER.NUM_WORKERS = 4
 # Let training initialize from model zoo
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("Misc/cascade_mask_rcnn_R_50_FPN_3x.yaml")
-cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory
+cfg.SOLVER.IMS_PER_BATCH = 8 # adjust depending on GPU memory (higher value means more time consuming)
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
 cfg.SOLVER.MAX_ITER = 20000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
 cfg.SOLVER.STEPS =  (16000, 18000)  # When to decrease learning rate
@@ -124,8 +125,8 @@ cfg.SOLVER.BASE_LR = 0.0005  # Lower LR since the dataset is small
 cfg.MODEL.BACKBONE.FREEZE_AT = 5 # Freeze first several backbone stages (there are 5 layers)
 # Apply Data Augmentation
 cfg.INPUT.RANDOM_FLIP = "horizontal"
-cfg.INPUT.CROP.ENABLED = True
-cfg.INPUT.CROP.SIZE = [0.9, 1.0]  # Random cropping
+# cfg.INPUT.CROP.ENABLED = True
+# cfg.INPUT.CROP.SIZE = [0.9, 1.0]  # Random cropping
 
 cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
 cfg.INPUT.MIN_SIZE_TRAIN = (cfg.INPUT.MIN_SIZE_TEST * 0.9, cfg.INPUT.MIN_SIZE_TEST * 1.1)  # Keep training scale close to dataset. Multi-scale training
@@ -156,7 +157,7 @@ class EarlyStoppingException(StopIteration):
     pass
 
 class EarlyStoppingHook(HookBase):
-    def __init__(self, trainer, cfg, patience=20, output_dir='./outputs/cascade_rcnn'):
+    def __init__(self, trainer, cfg, patience=15, output_dir='./outputs/cascade_rcnn'):
         self.trainer = trainer
         self.cfg = cfg
         self.patience = patience
@@ -192,11 +193,13 @@ class EarlyStoppingHook(HookBase):
             val_result_file = os.path.join(val_result_dir, f'val_results_iter_{self.trainer.iter}.json')
             
             # the hook can works
+            # save the result file of evaluation on validation dataset
             with open(val_result_file, "w") as f:
                 json.dump(val_results, f, indent=4)
             
             # print("Show validation results: ", val_results)
-            val_ap = val_results["bbox"]["AP"] # Change key if needed
+            # val_ap = val_results["bbox"]["AP"] # Change key if needed
+            val_ap = self._get_smooth_ap(val_results)
             print(f"Validation AP is: {val_ap:.4f}")
 
             # check for improvement: compare on the AP value, if AP higher, means better performance
@@ -218,8 +221,22 @@ class EarlyStoppingHook(HookBase):
                 print(f"Early stopping triggered! Best model at {self.best_iter} iteration. Stop training...")
                 self.trainer.storage.put_scalar("early_stopping", 1)
                 self.trainer.checkpointer.save("final_model") # Save the final model
+                recode_file = os.path.join(val_result_dir, 'best_iteration.txt')
+                with open(recode_file, 'w') as file:
+                    file.write(f'Best model at {self.best_iter} iteration.')
                 raise EarlyStoppingException(f"Early stopping triggered after {self.patience} evaluations without improvement")
-
+    
+    # I use this to change the weights of ap parameter for smaller size object
+    def _get_smooth_ap(self, val_results):
+        val_ap = val_results["bbox"]["AP"] # Change key if needed
+        val_ap_gas = val_results["bbox"]["AP-Gasschieberdeckel"]
+        val_ap_kanal = val_results["bbox"]["AP-Kanalschachtdeckel"]
+        val_ap_sink = val_results["bbox"]["AP-Sinkkaesten"]
+        val_ap_flur = val_results["bbox"]["AP-Unterflurhydrant"]
+        val_ap_versorg = val_results["bbox"]["AP-Versorgungsschacht"]
+        val_ap_wasser = val_results["bbox"]["AP-Wasserschieberdeckel"]
+        val_smooth_ap = ((val_ap_kanal + val_ap_sink + val_ap_versorg) + 1.1 * (val_ap_gas + val_ap_wasser + val_ap_flur))/(3 + 3 * 1.1)
+        return val_smooth_ap
 
 
 ##################################################
@@ -260,6 +277,7 @@ except EarlyStoppingException as e:
 end_time = time.time()
 training_time = end_time - start_time
 print(f"Training ends in {(training_time/60):.2f} min.")
+print("Finished training of model...")
 # end of training
 
 """
@@ -286,5 +304,4 @@ print("Starting Evaluation on Test Dataset...")
 inference_on_dataset(trainer.model, val_loader, evaluator)
 test_results = inference_on_dataset(trainer.model, val_loader, evaluator)
 # print(DefaultTrainer.test(cfg, trainer.model, evaluators=[evaluator]))
-
-print("Finished training of model...")
+print("Finish Evaluation of Model...")

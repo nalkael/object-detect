@@ -25,6 +25,9 @@ from detectron2.engine import HookBase # import hook
 
 from detectron2.data import build_detection_train_loader # pass augmentation list into the DataLoader
 
+# TODO: automate hyperparameter optimization
+# TODO: maybe can apply optuna framework here(a hyperparameter optimization framework to automate hyperparameter search)
+
 # load config of dataset and model path
 from mainprocess.models.faster_rcnn.config_loader import load_dataset_config, load_project_config
 from mainprocess.models.faster_rcnn.dataset_registration import register_my_dataset
@@ -77,6 +80,7 @@ valid_dicts = DatasetCatalog.get("valid_dataset")
 test_metadata = MetadataCatalog.get("test_dataset")
 test_dicts = DatasetCatalog.get("test_dataset")
 
+"""
 # show some sample dataset
 def visualize_dataset(dataset_dicts, num=0):
     for d in random.sample(dataset_dicts, num):
@@ -90,6 +94,7 @@ def visualize_dataset(dataset_dicts, num=0):
 visualize_dataset(train_dicts)
 visualize_dataset(valid_dicts)
 visualize_dataset(test_dicts)
+"""
 
 # Load Detectron2 base configuration (Faster R-CNN)
 cfg = get_cfg()
@@ -110,7 +115,7 @@ cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 
 """
-TODO Class Imbalance Handling
+TODO: Class Imbalance Handling
 """
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128  # for better sampling
 
@@ -122,18 +127,18 @@ cfg.SOLVER.BASE_LR = 0.0005  # Lower LR since the dataset is small
 cfg.MODEL.BACKBONE.FREEZE_AT = 5 # Freeze first several backbone stages (there are 5 layers)
 # Apply Data Augmentation
 cfg.INPUT.RANDOM_FLIP = "horizontal"
-cfg.INPUT.CROP.ENABLED = True
-cfg.INPUT.CROP.SIZE = [0.9, 1.0]  # Random cropping
+# cfg.INPUT.CROP.ENABLED = True
+# cfg.INPUT.CROP.SIZE = [0.9, 1.0]  # Random cropping
 
 cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
 cfg.INPUT.MIN_SIZE_TRAIN = (cfg.INPUT.MIN_SIZE_TEST * 0.9, cfg.INPUT.MIN_SIZE_TEST * 1.1)  # Keep training scale close to dataset. Multi-scale training
 
 # ANCHOR_SIZES for Small Objects
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[5, 8, 16, 32, 64, 100]]
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[6, 8, 16, 32, 64, 100]]
 
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
-cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals
+cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals, this related to IoU
 
 #######################################################
 #cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)

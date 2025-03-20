@@ -38,7 +38,7 @@ and also install [Detectron2](https://github.com/facebookresearch/detectron2):
 or
 >pip install --no-build-isolation -e detectron2
 
-and install the project as a package
+and install the project as a package (otherweise scripts cannot recognize the project root path)
 >pip install -e .
 
 This project contains models:
