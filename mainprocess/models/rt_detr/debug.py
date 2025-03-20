@@ -1,15 +1,14 @@
-import cv2
-import numpy as np
-import torch
-import requests
+import ultralytics
+from ultralytics import RTDETR
 
+# Load a COCO-pretrained RT-DETR-x model
+model = RTDETR("rtdetr-x.pt")
+# Display model information
+model.info()
 
-from datasets import load_dataset
-from transformers import RTDetrImageProcessor, RTDetrForObjectDetection
-
-# Load a COCO-pretrained RT-DETR-l model
-image_processor = RTDetrImageProcessor.from_pretrained("PekingU/rtdetr_r18vd")
-model = RTDetrForObjectDetection.from_pretrained("PekingU/rtdetr_r18vd")
-# Display model information (optional)
-
-
+model.train(
+    data='/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/640x640_yolo/data.yaml',
+    epochs=50,
+    freeze=20,
+    imgsz=640
+)
