@@ -56,6 +56,9 @@ register_coco_instances("valid_dataset", {}, dataset_info["valid_json"], dataset
 register_coco_instances("test_dataset", {}, dataset_info["test_json"], dataset_info["test_images"])
 
 # Assign class names to metadata
+metadata = MetadataCatalog.get("train_dataset")
+print("novel class name: ", metadata.thing_classes)
+
 MetadataCatalog.get("train_dataset").thing_classes = novel_classes
 MetadataCatalog.get("valid_dataset").thing_classes = novel_classes
 MetadataCatalog.get("test_dataset").thing_classes = novel_classes
@@ -112,9 +115,11 @@ cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 cfg.MODEL.MASK_ON = False  # No mask prediction needed
 # cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # Number of classes
+
 """
 TODO Class Imbalance Handling
 """
+
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128  # for better sampling
 
 #######################################################
@@ -165,6 +170,7 @@ class EarlyStoppingHook(HookBase):
         self.best_iter = 0
         self.counter = 0
         self.output_dir = output_dir
+        self.output_dir = cfg.OUTPUT_DIR # './outputs/cascade_rcnn'
         # Ensure output directory exists
         os.makedirs(self.output_dir, exist_ok=True)
 

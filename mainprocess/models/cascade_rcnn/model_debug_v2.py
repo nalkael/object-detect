@@ -35,7 +35,6 @@ import detectron2
 from detectron2.utils.logger import setup_logger
 setup_logger()
 
-
 # Load the config
 # dataset config
 # model configt
@@ -56,12 +55,14 @@ register_coco_instances("valid_dataset", {}, dataset_info["valid_json"], dataset
 register_coco_instances("test_dataset", {}, dataset_info["test_json"], dataset_info["test_images"])
 
 # Assign class names to metadata
+metadata = MetadataCatalog.get("train_dataset")
+print("novel class name: ", metadata.thing_classes)
+
 MetadataCatalog.get("train_dataset").thing_classes = novel_classes
 MetadataCatalog.get("valid_dataset").thing_classes = novel_classes
 MetadataCatalog.get("test_dataset").thing_classes = novel_classes
 
 print("Datasets registered successfully!")
-
 
 # register_my_dataset()
 
@@ -112,9 +113,11 @@ cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 cfg.MODEL.MASK_ON = False  # No mask prediction needed
 # cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # Number of classes
+
 """
 TODO Class Imbalance Handling
 """
+
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128  # for better sampling
 
 #######################################################
@@ -165,6 +168,7 @@ class EarlyStoppingHook(HookBase):
         self.best_iter = 0
         self.counter = 0
         self.output_dir = output_dir
+        self.output_dir = cfg.OUTPUT_DIR # './outputs/cascade_rcnn'
         # Ensure output directory exists
         os.makedirs(self.output_dir, exist_ok=True)
 
@@ -238,6 +242,15 @@ class EarlyStoppingHook(HookBase):
         val_smooth_ap = ((val_ap_kanal + val_ap_sink + val_ap_versorg) + 1.1 * (val_ap_gas + val_ap_wasser + val_ap_flur))/(3 + 3 * 1.1)
         return val_smooth_ap
 
+##################################################
+# Create a Custom Evaluator
+class CustomCOCOEvaluator(COCOEvaluator):
+    def evaluate(self):
+        results = super().evaluate() # Get default COCO metrics
+        # TODO: maybe can implement a custom evaluator
+        return results
+        # Load COCO evaluation results
+
 
 ##################################################
 # Define a custom trainer class for evaluation 
@@ -261,7 +274,7 @@ class CustomTrainer(DefaultTrainer):
 # define a custom trainer class with Hook
 class MyTrainer(DefaultTrainer):
     pass
-
+###################################################
 
 # Train the model
 trainer = CustomTrainer(cfg)
@@ -269,11 +282,12 @@ trainer.resume_or_load(resume=False)
 print("Start Training Model...")
 start_time = time.time()
 
+"""
 try:
     trainer.train()
 except EarlyStoppingException as e:
     print(str(e))
-
+"""
 end_time = time.time()
 training_time = end_time - start_time
 print(f"Training ends in {(training_time/60):.2f} min.")
@@ -295,13 +309,15 @@ print(f"Config saved to {model_info['model_config_path']}")
 cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "best_model.pth") # Load trained weights
 cfg.DATASETS.TEST = ("test_dataset",)
 
+# create a predictor to run the evaluation
+predictor = DefaultPredictor(cfg)
 # setup the evaluator for the test dataset
 evaluator = COCOEvaluator("test_dataset", cfg, False, cfg.OUTPUT_DIR)
 val_loader = build_detection_test_loader(cfg, "test_dataset")
 
 # run evaluation using the trained model
 print("Starting Evaluation on Test Dataset...")
-inference_on_dataset(trainer.model, val_loader, evaluator)
-test_results = inference_on_dataset(trainer.model, val_loader, evaluator)
-# print(DefaultTrainer.test(cfg, trainer.model, evaluators=[evaluator]))
+inference_on_dataset(predictor.model, val_loader, evaluator)
+test_results = inference_on_dataset(predictor.model, val_loader, evaluator)
+# print(DefaultTrainer.test(cfg, predictor.model, evaluators=[evaluator]))
 print("Finish Evaluation of Model...")

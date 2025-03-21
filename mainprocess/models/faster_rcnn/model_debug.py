@@ -25,9 +25,12 @@ from detectron2.engine import HookBase # import hook
 
 from detectron2.data import build_detection_train_loader # pass augmentation list into the DataLoader
 
+# TODO: automate hyperparameter optimization
+# TODO: maybe can apply optuna framework here(a hyperparameter optimization framework to automate hyperparameter search)
+
 # load config of dataset and model path
-from mainprocess.models.cascade_rcnn.config_loader import load_dataset_config, load_project_config
-from mainprocess.models.cascade_rcnn.dataset_registration import register_my_dataset
+from mainprocess.models.faster_rcnn.config_loader import load_dataset_config, load_project_config
+from mainprocess.models.faster_rcnn.dataset_registration import register_my_dataset
 
 # Some basic setup:
 # Setup detectron2 logger
@@ -43,10 +46,10 @@ setup_logger()
 # load the config.yaml file of the general project
 model_info = load_project_config()
 
-# load the dataset_config.yaml file of the Cascade R-CNN model
+# load the dataset_config.yaml file of the Faster R-CNN model
 dataset_info = load_dataset_config(model_info["dataset_config_path"])
 
-# load the model_condig.yaml file of the Cascade R-CNN model
+# load the model_condig.yaml file of the Faster R-CNN model
 novel_classes = dataset_info["novel_classes"]
 print("Novel classes:", novel_classes)
 
@@ -93,9 +96,9 @@ visualize_dataset(valid_dicts)
 visualize_dataset(test_dicts)
 """
 
-# Load Detectron2 base configuration (Cascade R-CNN)
+# Load Detectron2 base configuration (Faster R-CNN)
 cfg = get_cfg()
-cfg.merge_from_file(model_zoo.get_config_file("Misc/cascade_mask_rcnn_R_50_FPN_3x.yaml"))
+cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml"))
 
 # update config for fine-tuning
 cfg.DATASETS.TRAIN = ("train_dataset",)
@@ -103,17 +106,16 @@ cfg.DATASETS.TEST = ("valid_dataset",)
 
 cfg.DATALOADER.NUM_WORKERS = 4
 # Let training initialize from model zoo
-cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("Misc/cascade_mask_rcnn_R_50_FPN_3x.yaml")
-cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory (higher value means more time consuming)
+cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml")
+cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
 cfg.SOLVER.MAX_ITER = 20000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
 cfg.SOLVER.STEPS =  (16000, 18000)  # When to decrease learning rate
 cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
-cfg.MODEL.MASK_ON = False  # No mask prediction needed
-# cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # Number of classes
+
 """
-TODO Class Imbalance Handling
+TODO: Class Imbalance Handling
 """
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128  # for better sampling
 
@@ -132,11 +134,11 @@ cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
 cfg.INPUT.MIN_SIZE_TRAIN = (cfg.INPUT.MIN_SIZE_TEST * 0.9, cfg.INPUT.MIN_SIZE_TEST * 1.1)  # Keep training scale close to dataset. Multi-scale training
 
 # ANCHOR_SIZES for Small Objects
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[5, 8, 16, 32, 64, 100]]
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[6, 8, 16, 32, 64, 100]]
 
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
-cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals
+cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals, this related to IoU
 
 #######################################################
 #cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
@@ -145,8 +147,8 @@ cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.
 cfg.TEST.EVAL_PERIOD = 100 # validate after certain interations
 
 # TODO just for test.....
-# cfg.OUTPUT_DIR = model_info['cascade_rcnn_output']
-cfg.OUTPUT_DIR = './outputs/cascade_rcnn'
+# cfg.OUTPUT_DIR = model_info['faster_rcnn_output']
+cfg.OUTPUT_DIR = './outputs/faster_rcnn'
 
 # make sure the folder exist
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
@@ -157,7 +159,7 @@ class EarlyStoppingException(StopIteration):
     pass
 
 class EarlyStoppingHook(HookBase):
-    def __init__(self, trainer, cfg, patience=15, output_dir='./outputs/cascade_rcnn'):
+    def __init__(self, trainer, cfg, patience=25, output_dir='./outputs/faster_rcnn'):
         self.trainer = trainer
         self.cfg = cfg
         self.patience = patience
@@ -193,13 +195,11 @@ class EarlyStoppingHook(HookBase):
             val_result_file = os.path.join(val_result_dir, f'val_results_iter_{self.trainer.iter}.json')
             
             # the hook can works
-            # save the result file of evaluation on validation dataset
             with open(val_result_file, "w") as f:
                 json.dump(val_results, f, indent=4)
             
             # print("Show validation results: ", val_results)
-            # val_ap = val_results["bbox"]["AP"] # Change key if needed
-            val_ap = self._get_smooth_ap(val_results)
+            val_ap = val_results["bbox"]["AP"] # Change key if needed
             print(f"Validation AP is: {val_ap:.4f}")
 
             # check for improvement: compare on the AP value, if AP higher, means better performance
@@ -221,22 +221,8 @@ class EarlyStoppingHook(HookBase):
                 print(f"Early stopping triggered! Best model at {self.best_iter} iteration. Stop training...")
                 self.trainer.storage.put_scalar("early_stopping", 1)
                 self.trainer.checkpointer.save("final_model") # Save the final model
-                recode_file = os.path.join(val_result_dir, 'best_iteration.txt')
-                with open(recode_file, 'w') as file:
-                    file.write(f'Best model at {self.best_iter} iteration.')
                 raise EarlyStoppingException(f"Early stopping triggered after {self.patience} evaluations without improvement")
-    
-    # I use this to change the weights of ap parameter for smaller size object
-    def _get_smooth_ap(self, val_results):
-        val_ap = val_results["bbox"]["AP"] # Change key if needed
-        val_ap_gas = val_results["bbox"]["AP-Gasschieberdeckel"]
-        val_ap_kanal = val_results["bbox"]["AP-Kanalschachtdeckel"]
-        val_ap_sink = val_results["bbox"]["AP-Sinkkaesten"]
-        val_ap_flur = val_results["bbox"]["AP-Unterflurhydrant"]
-        val_ap_versorg = val_results["bbox"]["AP-Versorgungsschacht"]
-        val_ap_wasser = val_results["bbox"]["AP-Wasserschieberdeckel"]
-        val_smooth_ap = ((val_ap_kanal + val_ap_sink + val_ap_versorg) + 1.1 * (val_ap_gas + val_ap_wasser + val_ap_flur))/(3 + 3 * 1.1)
-        return val_smooth_ap
+
 
 
 ##################################################
@@ -245,7 +231,7 @@ class CustomTrainer(DefaultTrainer):
     # build_evaluator is a class method...
     @classmethod
     def build_evaluator(cls, cfg, dataset_name):
-        return COCOEvaluator(dataset_name, cfg, False, output_dir='./outputs/cascade_rcnn')   
+        return COCOEvaluator(dataset_name, cfg, False, output_dir='./outputs/faster_rcnn')   
     
     # build_hooks is a instance method...
     # it seems incorrect to add a hook here
@@ -254,11 +240,11 @@ class CustomTrainer(DefaultTrainer):
         Add the Early Stopping Hook to the trainer
         """
         hooks = super().build_hooks()
-        hooks.append(EarlyStoppingHook(self, self.cfg, patience=20))
+        hooks.append(EarlyStoppingHook(self, self.cfg, patience=25))
         return hooks
 
 ##################################################
-# define a custom trainer class with Hook
+# TODO: define a custom trainer class with some other metrics bzw. loss function
 class MyTrainer(DefaultTrainer):
     pass
 
@@ -277,7 +263,6 @@ except EarlyStoppingException as e:
 end_time = time.time()
 training_time = end_time - start_time
 print(f"Training ends in {(training_time/60):.2f} min.")
-print("Finished training of model...")
 # end of training
 
 """
@@ -304,4 +289,5 @@ print("Starting Evaluation on Test Dataset...")
 inference_on_dataset(trainer.model, val_loader, evaluator)
 test_results = inference_on_dataset(trainer.model, val_loader, evaluator)
 # print(DefaultTrainer.test(cfg, trainer.model, evaluators=[evaluator]))
-print("Finish Evaluation of Model...")
+
+print("Finished training of model...")

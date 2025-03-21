@@ -255,12 +255,11 @@ trainer.resume_or_load(resume=False)
 print("Start Training Model...")
 start_time = time.time()
 
-"""
 try:
     trainer.train()
 except EarlyStoppingException as e:
     print(str(e))
-"""
+
 end_time = time.time()
 training_time = end_time - start_time
 print(f"Training ends in {(training_time/60):.2f} min.")
@@ -281,14 +280,16 @@ print(f"Config saved to {model_info['model_config_path']}")
 cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "best_model.pth") # Load trained weights
 cfg.DATASETS.TEST = ("test_dataset",)
 
+# create a predictor to run the evaluation
+predictor = DefaultPredictor(cfg)
 # setup the evaluator for the test dataset
 evaluator = COCOEvaluator("test_dataset", cfg, False, cfg.OUTPUT_DIR)
 val_loader = build_detection_test_loader(cfg, "test_dataset")
 
 # run evaluation using the trained model
 print("Starting Evaluation on Test Dataset...")
-inference_on_dataset(trainer.model, val_loader, evaluator)
-test_results = inference_on_dataset(trainer.model, val_loader, evaluator)
-# print(DefaultTrainer.test(cfg, trainer.model, evaluators=[evaluator]))
+inference_on_dataset(predictor.model, val_loader, evaluator)
+test_results = inference_on_dataset(predictor.model, val_loader, evaluator)
+# print(DefaultTrainer.test(cfg, predictor.model, evaluators=[evaluator]))
 
 print("Finished training of model...")

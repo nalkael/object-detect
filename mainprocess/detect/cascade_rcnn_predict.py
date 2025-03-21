@@ -68,7 +68,7 @@ if __name__ == "__main__":
     parser.add_argument("output_dir", type=str, help="Directory to save results.")
     parser.add_argument("--overlap", type=float, default=0.3, help="Overlap ration to slice images.")
     parser.add_argument("--conf", type=float, default=0.5, help="Confidence threshold.")
-    parser.add_argument("--img_size", type=int, default=640, help="Image size for inference.")
+    parser.add_argument("--img_size", type=int, default=640, help="Image size for slicing.")
     
     args = parser.parse_args()
     run_sahi_inference(args.image_path, args.model_config, args.model_weights, args.output_dir, args.overlap, args.conf, args.img_size)
