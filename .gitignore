@@ -9,6 +9,7 @@ demo_data/
 datasets/
 orthomosaic*/
 runs/
+trained_models/
 # samples/
 sample_result/
 defrcn*/

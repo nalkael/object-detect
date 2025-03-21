@@ -1,4 +1,4 @@
-fine-tuning models:
+standard object detection models:
 
 Cascade R-CNN
 Faster R-CNN
@@ -7,6 +7,9 @@ RT-DETR
 YOLOv8
 
 few-shot object detection models: 
+TFA
 
-ovdsat
-QA-FewDet
+not yet implemented:
+# ovdsat
+# QA-FewDet
+# Meta Faster R-CNN
