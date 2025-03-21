@@ -4,6 +4,7 @@ jaraco.collections
 object-detection-project
 pip-chill
 pylabel
+pyqt5
 sahi
 torchaudio
 transformers
