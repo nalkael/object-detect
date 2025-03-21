@@ -1,14 +1,10 @@
 albumentations
-datasets
 detectron2
-importlib-metadata
 jaraco.collections
 object-detection-project
 pip-chill
-pyqt5
-rasterio
+pylabel
 sahi
-scikit-learn
 torchaudio
 transformers
 ultralytics
