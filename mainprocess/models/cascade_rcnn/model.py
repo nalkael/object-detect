@@ -77,22 +77,6 @@ valid_dicts = DatasetCatalog.get("valid_dataset")
 test_metadata = MetadataCatalog.get("test_dataset")
 test_dicts = DatasetCatalog.get("test_dataset")
 
-"""
-# show some sample dataset
-def visualize_dataset(dataset_dicts, num=0):
-    for d in random.sample(dataset_dicts, num):
-        img = cv2.imread(d["file_name"])
-        visualizer = Visualizer(img[:, :, ::-1], metadata=train_metadata)
-        vis = visualizer.draw_dataset_dict(d)
-        cv2.imshow("Sample", vis.get_image()[:, :, ::-1])
-        cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-visualize_dataset(train_dicts)
-visualize_dataset(valid_dicts)
-visualize_dataset(test_dicts)
-"""
-
 # Load Detectron2 base configuration (Cascade R-CNN)
 cfg = get_cfg()
 cfg.merge_from_file(model_zoo.get_config_file("Misc/cascade_mask_rcnn_R_50_FPN_3x.yaml"))
@@ -295,13 +279,16 @@ print(f"Config saved to {model_info['model_config_path']}")
 cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "best_model.pth") # Load trained weights
 cfg.DATASETS.TEST = ("test_dataset",)
 
+# create a predictor to run the evaluation
+predictor = DefaultPredictor(cfg)
+
 # setup the evaluator for the test dataset
 evaluator = COCOEvaluator("test_dataset", cfg, False, cfg.OUTPUT_DIR)
 val_loader = build_detection_test_loader(cfg, "test_dataset")
 
 # run evaluation using the trained model
 print("Starting Evaluation on Test Dataset...")
-inference_on_dataset(trainer.model, val_loader, evaluator)
-test_results = inference_on_dataset(trainer.model, val_loader, evaluator)
-# print(DefaultTrainer.test(cfg, trainer.model, evaluators=[evaluator]))
+inference_on_dataset(predictor.model, val_loader, evaluator)
+test_results = inference_on_dataset(predictor.model, val_loader, evaluator)
+# TODO: record the results
 print("Finish Evaluation of Model...")

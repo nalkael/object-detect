@@ -1,0 +1,15 @@
+albumentations
+detectron2
+jaraco.collections
+labelimg
+natsort
+object-detection-project
+osam
+pip-chill
+pylabel
+pysocks
+sahi
+scikit-image
+torchaudio
+transformers
+ultralytics

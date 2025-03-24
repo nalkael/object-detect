@@ -23,20 +23,20 @@ def convert_voc_to_coco(voc_dir, image_dir, json_path):
     }
 
     # define custom classes index
-    dataset.df["cat_id"] = dataset.df["cat_name"].map(custom_classes_mapping)
+    dataset.df["category_id"] = dataset.df["cat_name"].map(custom_classes_mapping)
 
-    # print(dataset.df[['img_filename', 'cat_id', 'cat_name']].head(10))
+    print(dataset.df[['img_filename', 'category_id', 'cat_name']].head(10))
 
     # set output json path
     dataset.path_to_annotations = json_path
 
     # export as COCO format
-    dataset.export.ExportToCoco(output_path=json_path)
+    dataset.export.ExportToCoco(output_path=json_path, cat_id_index=1)
     print(f"Pascal VOC annotation is converted to COCO format.")
 
 if __name__ == "__main__":
     # Test mode: run with present paths
-    TEST_MODE = False # set to False to disable test
+    TEST_MODE = True # set to False to disable test
     if TEST_MODE:
         dataset = importer.ImportVOC(path="/home/rd-computing/ortho_image_sliced/tile/large_tile/20221123_Fehrenbachallee", path_to_images="/home/rd-computing/ortho_image_sliced/tile/large_tile/20221123_Fehrenbachallee")
         print(dataset.analyze.num_classes)
