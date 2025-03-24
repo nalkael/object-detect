@@ -73,3 +73,4 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     run_sahi_inference(args.image_path, args.model_weights, args.output_dir, args.overlap, args.conf, args.img_size)
+    
