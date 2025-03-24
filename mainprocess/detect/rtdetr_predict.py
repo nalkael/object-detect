@@ -49,13 +49,13 @@ def run_sahi_inference(image_path, model_weights_path='rtdetr-x.pt', output_dir=
 
     # write the prediction as json
     result_json = result.to_coco_annotations()
-    result_filename = os.path.splitext(os.path.basename(image_path))[0] + "_results_yolov8.json"
+    result_filename = os.path.splitext(os.path.basename(image_path))[0] + "_results_rtdetr.json"
     json_path = os.path.join(output_dir, result_filename)
     with open(json_path, "w") as f:
         json.dump(result_json, f, indent=4)
 
     # Save visualization
-    image_pred_visual = os.path.splitext(os.path.basename(image_path))[0] + "_predict_yolov8"
+    image_pred_visual = os.path.splitext(os.path.basename(image_path))[0] + "_predict_rtdetr"
     result.export_visuals(export_dir=output_dir, file_name=image_pred_visual)
     print(f"Results saved: {json_path} and visualization in {output_dir}")
     print("Finish inference...")
