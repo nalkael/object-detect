@@ -12,7 +12,6 @@ runs/
 trained_models/
 # samples/
 sample_result/
-defrcn*/
 
 # big files
 *.synctex.gz*
