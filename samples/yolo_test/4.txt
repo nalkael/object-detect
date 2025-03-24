@@ -1,0 +1,61 @@
+ultralytics.engine.results.Results object with attributes:
+
+boxes: ultralytics.engine.results.Boxes object
+keypoints: None
+masks: None
+names: {0: 'Gasschieberdeckel', 1: 'Kanalschachtdeckel', 2: 'Sinkkaesten', 3: 'Unterflurhydrant', 4: 'Versorgungsschacht', 5: 'Wasserschieberdeckel'}
+obb: None
+orig_img: array([[[ 50,  87,  71],
+        [ 66, 103,  87],
+        [ 70, 106,  90],
+        ...,
+        [119,  92,  78],
+        [116,  89,  75],
+        [ 93,  66,  52]],
+
+       [[ 76, 113,  97],
+        [ 69, 106,  90],
+        [ 56,  92,  76],
+        ...,
+        [112,  85,  71],
+        [116,  89,  75],
+        [ 93,  66,  52]],
+
+       [[ 73, 110,  94],
+        [ 54,  91,  75],
+        [ 34,  70,  54],
+        ...,
+        [128, 101,  87],
+        [131, 104,  90],
+        [101,  74,  60]],
+
+       ...,
+
+       [[146, 137, 140],
+        [187, 180, 183],
+        [219, 216, 218],
+        ...,
+        [147, 142, 141],
+        [163, 158, 157],
+        [185, 180, 179]],
+
+       [[176, 165, 168],
+        [206, 197, 200],
+        [226, 221, 223],
+        ...,
+        [138, 133, 132],
+        [144, 139, 138],
+        [158, 153, 152]],
+
+       [[179, 168, 171],
+        [178, 169, 172],
+        [174, 167, 170],
+        ...,
+        [144, 139, 138],
+        [147, 142, 141],
+        [158, 153, 152]]], dtype=uint8)
+orig_shape: (640, 640)
+path: '/home/rdluhu/Dokumente/object_detection_project/samples/yolo_test/4.jpg'
+probs: None
+save_dir: '/home/rdluhu/Dokumente/object_detection_project/runs/detect/predict2'
+speed: {'preprocess': 1.801983999030199, 'inference': 13.29871200141497, 'postprocess': 0.6667050001851749}
