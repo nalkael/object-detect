@@ -54,7 +54,6 @@ This project contains models:
 
 Few-Shot Detection models:
 - [FsDet(TFA)]
-- [DeFRCN]
 
 SAHI Framwork is applied in this project:
 - [How to detect small objects in large images](https://blog.ml6.eu/how-to-detect-small-objects-in-very-large-images-70234bab0f98)

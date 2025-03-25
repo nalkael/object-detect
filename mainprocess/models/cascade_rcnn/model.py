@@ -182,8 +182,7 @@ class EarlyStoppingHook(HookBase):
                 json.dump(val_results, f, indent=4)
             
             # print("Show validation results: ", val_results)
-            # val_ap = val_results["bbox"]["AP"] # Change key if needed
-            val_ap = self._get_smooth_ap(val_results)
+            val_ap = val_results["bbox"]["AP"] # Change key if needed
             print(f"Validation AP is: {val_ap:.4f}")
 
             # check for improvement: compare on the AP value, if AP higher, means better performance
@@ -208,20 +207,7 @@ class EarlyStoppingHook(HookBase):
                 recode_file = os.path.join(val_result_dir, 'best_iteration.txt')
                 with open(recode_file, 'w') as file:
                     file.write(f'Best model at {self.best_iter} iteration.')
-                raise EarlyStoppingException(f"Early stopping triggered after {self.patience} evaluations without improvement")
-    
-    # I use this to change the weights of ap parameter for smaller size object
-    def _get_smooth_ap(self, val_results):
-        val_ap = val_results["bbox"]["AP"] # Change key if needed
-        val_ap_gas = val_results["bbox"]["AP-Gasschieberdeckel"]
-        val_ap_kanal = val_results["bbox"]["AP-Kanalschachtdeckel"]
-        val_ap_sink = val_results["bbox"]["AP-Sinkkaesten"]
-        val_ap_flur = val_results["bbox"]["AP-Unterflurhydrant"]
-        val_ap_versorg = val_results["bbox"]["AP-Versorgungsschacht"]
-        val_ap_wasser = val_results["bbox"]["AP-Wasserschieberdeckel"]
-        val_smooth_ap = ((val_ap_kanal + val_ap_sink + val_ap_versorg) + 1.1 * (val_ap_gas + val_ap_wasser + val_ap_flur))/(3 + 3 * 1.1)
-        return val_smooth_ap
-
+                # raise EarlyStoppingException(f"Early stopping triggered after {self.patience} evaluations without improvement")
 
 ##################################################
 # Define a custom trainer class for evaluation 

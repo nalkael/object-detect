@@ -36,6 +36,9 @@ def visualize_dataset(dataset_name, num=50):
     cv2.destroyAllWindows()
 
 
-# have a simple test
-register_my_dataset('test', '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/640x640_coco/test/_annotations.coco.json', '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/640x640_coco/test')
+# have a simple test here
+register_my_dataset(
+    'test', '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/640x640_coco/test/_annotations.coco.json', 
+    '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/640x640_coco/test'
+    )
 visualize_dataset('test')
