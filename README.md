@@ -45,6 +45,10 @@ or
 and install the project as a package (otherweise scripts cannot recognize the project root path)
 >pip install -e .
 
+### Preparing your dataset
+
+dataset can be labelled with LabelImg
+
 This project contains models:
 - [Faster R-CNN](https://arxiv.org/abs/1506.01497)
 - [Cascade R-CNN](https://arxiv.org/abs/1712.00726)

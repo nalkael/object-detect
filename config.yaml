@@ -2,11 +2,6 @@
 orthomosaic_dir: ../image_data/orthomosaic
 orthomosaic_output_dir: ../image_data/orthomosaic_output
 
-
-# just for testing
-sample_orthomosaic_file: 'dummy.tif'
-
-
 # some models path:
 
 # Faster R-CNN
@@ -28,4 +23,6 @@ cascade_rcnn_model: trained_models/cascade_rcnn
 yolov8: mainprocess/models/yolo_v8
 yolov8_output: outputs/yolo_v8
 
-# RE-DETR...
+# RE-DETR
+yolov8: mainprocess/models/rt_detr
+yolov8_output: outputs/rtdetr
