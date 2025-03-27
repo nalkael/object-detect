@@ -1,11 +1,12 @@
 albumentations
 detectron2
-image-bbox-slicer
+imagesize
 jaraco.collections
 labelimg
 natsort
 object-detection-project
 osam
+pascal-voc-writer
 pip-chill
 pylabel
 pysocks
