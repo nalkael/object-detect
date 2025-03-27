@@ -22,7 +22,7 @@ def register_my_dataset(dataset_name, dataset_json, dataset_dir):
     print("Datasets registered successfully!")
 
 
-def visualize_dataset_random(dataset_name, num=50):
+def visualize_dataset_random(dataset_name, num=60):
     
     # get datasets from registered dataset name in Detectron2
     dataset_dicts = DatasetCatalog.get(dataset_name)
@@ -40,7 +40,7 @@ def visualize_dataset_random(dataset_name, num=50):
 # have a simple test here
 
 # Load the COCO JSON file
-with open("datasets/merged_datasets/train/merged_annotations.json", "r") as f:
+with open("datasets/merged_datasets/test/merged_annotations.json", "r") as f:
     coco_data = json.load(f)
 
 # Extract category information
@@ -53,7 +53,7 @@ category_dict = {cat["id"]: cat["name"] for cat in categories}
 print("COCO Categories:", category_dict)
 
 register_my_dataset(
-    'merged_train', 'datasets/merged_datasets/train/merged_annotations.json', 
-    'datasets/merged_datasets/train/images'
+    'merged_train', 'datasets/merged_datasets/test/merged_annotations.json', 
+    'datasets/merged_datasets/test/images'
     )
-# visualize_dataset_random('merged_train')
+visualize_dataset_random('merged_train')

@@ -24,12 +24,12 @@ dataset2_path = "/home/rdluhu/Dokumente/object_detection_project/datasets/datase
 output_path = "/home/rdluhu/Dokumente/object_detection_project/datasets/merged_datasets"
 
 
-json1_path = os.path.join(dataset1_path, "training_annotations_coco/simd_train_coco.json") # SIMD train coco annotation
-json2_path = os.path.join(dataset2_path, "train/_annotations.coco.json") # our dataset train coco annotation
-images1_path = os.path.join(dataset1_path, "training") # 
-images2_path = os.path.join(dataset2_path, "train")
-merged_images_path = os.path.join(output_path, "train/images")
-merged_json_path = os.path.join(output_path, "train/merged_annotations.json")
+json1_path = os.path.join(dataset1_path, "validation_annotations_coco/simd_valid_coco.json") # SIMD train coco annotation
+json2_path = os.path.join(dataset2_path, "valid/_annotations.coco.json") # our dataset train coco annotation
+images1_path = os.path.join(dataset1_path, "validation") # 
+images2_path = os.path.join(dataset2_path, "valid")
+merged_images_path = os.path.join(output_path, "valid/images")
+merged_json_path = os.path.join(output_path, "valid/merged_annotations.json")
 
 
 # make sure output dir exist
