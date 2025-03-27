@@ -19,9 +19,11 @@ import imagesize
 
 YOLO_DARKNET_SUB_DIR = "YOLO_darknet"
 
+# you have to change classes to meet own needs
 classes = [
-    "matricula",
-    "cara"
+    'car', 'truck', 'van', 'longvehicle', 'bus', 'airliner',
+    'propeller', 'trainer', 'chartered', 'fighter', 'other', 
+    'stairtruck', 'pushbacktruck', 'helicopter', 'boat'
 ]
 
 
@@ -235,7 +237,7 @@ def main(opt):
 
         for index, label in enumerate(classes):
             categories = {
-                "supercategory": "Defect",
+                "supercategory": "Orthomosaic", # this line could be modified
                 "id": index + 1,  # ID starts with '1' .
                 "name": label,
             }
