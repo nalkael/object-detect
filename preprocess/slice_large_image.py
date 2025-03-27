@@ -4,7 +4,7 @@ import os
 
 import sahi
 
-def read_and_slice_tiff(image_path, output_dir, tile_size=512, overlap_ration=0.0):
+def read_and_slice_tiff(image_path, output_dir, tile_size=640, overlap_ration=0.0):
     """
     Read a large TIFF / GeoTIFF file and divide it into slices with overlap 
     and save them as separate files

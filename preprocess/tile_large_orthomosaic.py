@@ -16,7 +16,7 @@ def tile_large_orthomosaic(orthomosaic_path, output_dir, tile_size = 10000):
 
      # show file size
     file_size = os.path.getsize(orthomosaic_path)
-    file_size_mb = file_size / (1024 * 1024)
+    file_size_mb = file_size / (640 * 640)
     print(f"Orthomosaic file size: {file_size_mb:.2f} MB")
 
     # read the orthomosaic

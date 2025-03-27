@@ -26,3 +26,4 @@ categories1 = {cat["name"]: cat["id"] for cat in coco1["categories"]}
 categories2 = {cat["name"]: cat["id"] for cat in coco2["categories"]}
 
 print(categories1)
+print(categories2)

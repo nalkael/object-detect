@@ -9,7 +9,7 @@ import sys
 
 
 # directory of orthomosaic images
-orthomosaic_folder = '../orthomosaic'
+orthomosaic_folder = './orthomosaic'
 
 
 # show information of image file
@@ -173,7 +173,7 @@ if __name__ == '__main__':
         overlap_ration = float(args[4])
         extract_tiles(image_path, output_dir, tile_width, tile_height, overlap_ration)
     else:
-        orthomosaic_folder = '../orthomosaic'
+        orthomosaic_folder = './orthomosaic'
         process_images(orthomosaic_folder)
     # Calculate the processing time
     end_time = time.time()
