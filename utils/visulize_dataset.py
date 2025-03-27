@@ -3,6 +3,7 @@ a simple utility to show visulization of dataset in coco format (Detectron2)
 # TODO: extende the utility to show dataset in yolo format
 """
 import cv2
+import json
 import random
 from detectron2.data import MetadataCatalog, DatasetCatalog
 from detectron2.data.datasets import register_coco_instances
@@ -21,7 +22,7 @@ def register_my_dataset(dataset_name, dataset_json, dataset_dir):
     print("Datasets registered successfully!")
 
 
-def visualize_dataset(dataset_name, num=50):
+def visualize_dataset_random(dataset_name, num=50):
     
     # get datasets from registered dataset name in Detectron2
     dataset_dicts = DatasetCatalog.get(dataset_name)
@@ -37,8 +38,22 @@ def visualize_dataset(dataset_name, num=50):
 
 
 # have a simple test here
+
+# Load the COCO JSON file
+with open("datasets/merged_datasets/train/merged_annotations.json", "r") as f:
+    coco_data = json.load(f)
+
+# Extract category information
+categories = coco_data.get("categories", [])
+
+# Create a mapping of category IDs to category names
+category_dict = {cat["id"]: cat["name"] for cat in categories}
+
+# Print category mapping
+print("COCO Categories:", category_dict)
+
 register_my_dataset(
-    'test', '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/640x640_coco/test/_annotations.coco.json', 
-    '/home/rdluhu/Dokumente/object_detection_project/datasets/dataset_coco/640x640_coco/test'
+    'merged_train', 'datasets/merged_datasets/train/merged_annotations.json', 
+    'datasets/merged_datasets/train/images'
     )
-visualize_dataset('test')
+# visualize_dataset_random('merged_train')

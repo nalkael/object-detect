@@ -13,8 +13,8 @@ trained_models/
 # samples/
 sample_result/
 VisDrone2019*/
-DIOR*/
-SIMD*/
+DIOR/
+SIMD/
 
 # big files
 *.synctex.gz*
