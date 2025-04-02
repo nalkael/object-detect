@@ -88,6 +88,7 @@ class YOLOv8DetectionModel:
             project = self.project,
             )
         # test_results = model.val(data='data.yaml', imgz=640, split='test') # on test split
+        test_results = model.val(data='data.yaml', imgz=640) # test on valid split
         # deal the results
         print(f"Finished evaluation on {dataset_test}")
         print(f"Results: {results}")
@@ -111,5 +112,4 @@ if __name__ == '__main__':
     model.train() # trained model here
     print(f"Training ends in {(model.process_time/60):.2f} min.")
     # after training, inference model on test set and get the results
-    # model.evaluate()
-
+    # 

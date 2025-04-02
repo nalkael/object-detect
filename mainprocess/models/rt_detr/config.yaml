@@ -1,12 +1,12 @@
 model: rtdetr-x.pt # pre-trained model type, yolov8s, yolov8m would be great for small objects detection
-data: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/640x640_yolo/data.yaml
-epochs: 200 # Increase epochs to compensate for limited data
-batch: 16
+data: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/data.yaml
+epochs: 150 # Increase epochs to compensate for limited data
+batch: 8
 imgsz: 800 # increase image size to help detect small objects
 patience: 300 # number of epochs to wait without improvement # set a high value to disable early stopping
 save: True # enables saving of training checkpoints
 device: 0 # a single GPU, if there are other devices, change it
-workers: 4 # number of work threads 
+workers: 8 # number of work threads 
 exist_ok : True
 pretrained: True
 lr0: 0.003 # lower to prevent overfitting
@@ -20,7 +20,7 @@ cos_lr: True
 box: 8.0
 cls: 0.6
 val: True
-freeze: 10 # try to freeze early layers during training
+freeze: 15 # try to freeze early layers during training
 project: /home/rdluhu/Dokumente/object_detection_project/outputs/rtdetr
-name: "exp_640x640_rtdetr"
+name: "exp_rtdetr"
 best_model: "/home/rdluhu/Dokumente/object_detection_project/trained_models/rtdetr/best.pt"

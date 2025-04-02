@@ -1,5 +1,5 @@
 train: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/train/images
-val: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/valid/images
+val: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/test/images
 test: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/test/images
 
 # train: ../train/images
