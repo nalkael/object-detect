@@ -115,7 +115,7 @@ cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
 cfg.INPUT.MIN_SIZE_TRAIN = (640,)  # Keep training scale close to dataset. Multi-scale training
 
 # ANCHOR_SIZES for Small Objects
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]
+# cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]
 
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:

@@ -67,18 +67,6 @@ class YOLOv8DetectionModel:
             # mixup=0.2, # mixup data augmentation
             optimizer='SGD',
             # Augmentation parameters (set to 0 to disable)
-            mosaic = 0.0,      # Disable mosaic augmentation
-            mixup = 0.0,       # Disable mixup augmentation
-            hsv_h = 0.0,       # Disable HSV hue augmentation
-            hsv_s = 0.0,       # Disable HSV saturation augmentation
-            hsv_v = 0.0,       # Disable HSV value augmentation
-            degrees = 0.0,     # Disable rotate
-            flipud = 0.0,      # Disable up-down flip
-            fliplr = 0.0,      # Disable left-right flip
-            translate = 0.0,   # Disable translation
-            scale = 0.0,       # Disable scaling
-            shear = 0.0,       # Disable shearing
-            perspective = 0.0, # Disable perspective transform
         )
         end_time = process_time()
         self.process_time = end_time - start_time

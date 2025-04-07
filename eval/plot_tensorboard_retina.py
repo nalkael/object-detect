@@ -6,23 +6,34 @@ from tensorboard.backend.event_processing.event_accumulator import EventAccumula
 import matplotlib.pyplot as plt
 
 # load event file
-event_file = "outputs/yolo_v8/exp_yolo/events.out.tfevents.1744029006.PC-RD-343.62251.0"
+event_file = "outputs/retina_net_202504071701/events.out.tfevents.1744038095.PC-RD-343.89297.0"
 
 event_acc = EventAccumulator(event_file)
 event_acc.Reload() # load all data
 
 print("Available metrics:", event_acc.Tags()['scalars'])
 
-
 base_metrics = [
-    'train/box_loss',
-    'metrics/mAP50(B)', 
-    'metrics/mAP50-95(B)',
+    'total_loss',
+    'bbox/AP', 
+    'bbox/AP50', 
+    'bbox/AP75', 
+    'bbox/APs', 
+    'bbox/APm',
 ]
 
 class_ap_metrcis = [
-    'metrics/mAP50(B)', 
-    'metrics/mAP50-95(B)',
+    'bbox/AP',
+    'bbox/AP50', 
+    'bbox/AP75',
+    'bbox/APs', 
+    'bbox/APm',
+    'bbox/AP-Gasschieberdeckel', 
+    'bbox/AP-Kanalschachtdeckel', 
+    'bbox/AP-Sinkkaesten', 
+    'bbox/AP-Unterflurhydrant', 
+    'bbox/AP-Versorgungsschacht', 
+    'bbox/AP-Wasserschieberdeckel',
 ]
 
 desired_metrics = class_ap_metrcis
@@ -32,8 +43,16 @@ metric_data = {}
 
 # Custom labels for the metrics (shorten as needed)
 custom_ap_labels = {
-    'metrics/mAP50(B)': 'AP50',
-    'metrics/mAP50-95(B)': 'AP50-95',
+    'bbox/AP': 'mAP',
+    'bbox/AP50': 'AP50',
+    'bbox/AP75': 'AP75',
+    # Example for per-class APs - adjust based on your class names
+    'bbox/AP-Gasschieberdeckel': 'AP (Gas)',
+    'bbox/AP-Kanalschachtdeckel': 'AP (Manhole)',
+    'bbox/AP-Sinkkaesten': 'AP (Sink)',
+    'bbox/AP-Unterflurhydrant': 'AP(Hydrant)', 
+    'bbox/AP-Versorgungsschacht' : 'AP(Utility)', 
+    'bbox/AP-Wasserschieberdeckel': 'AP(Water)',
     # Add more as needed based on your event file
 }
 
@@ -73,25 +92,17 @@ plt.show()
 # --- Plot 2: Loss ---
 
 loss_metrics = [
-    'train/box_loss',
-    'train/cls_loss',
-    'train/dfl_loss',
-    'val/box_loss', 
-    'val/cls_loss', 
-    'val/dfl_loss'
+    'total_loss',
+    'loss_cls',
+    'loss_box_reg',
     ]
 
 metric_data = {}
 
 custom_loss_labels = {
-    'train/box_loss': 'Train Box Regression Loss',
-    'train/cls_loss':  'Train Classification Loss',
-    'train/dfl_loss': 'Train Distribute Focal Loss',
-
-    'val/box_loss': 'Val Box Regression Loss',
-    'val/cls_loss':  'Val Classification Loss',
-    'val/dfl_loss': 'Val Distribute Focal Loss',
-    }
+    'total_loss' : 'Total Loss',
+    'loss_cls': 'Classification Loss',
+    'loss_box_reg': 'Box Regression Loss',}
 
 # Extract data for each metric
 for metric in loss_metrics:

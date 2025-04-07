@@ -36,7 +36,6 @@ import detectron2
 from detectron2.utils.logger import setup_logger
 setup_logger()
 
-
 # Load the config
 # dataset config
 # model configt
@@ -91,7 +90,7 @@ cfg.DATALOADER.NUM_WORKERS = 4
 # Let training initialize from model zoo
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/retinanet_R_101_FPN_3x.yaml")
 cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory
-cfg.SOLVER.BASE_LR = 0.002  # pick a good LR
+cfg.SOLVER.BASE_LR = 0.001  # pick a good LR
 cfg.SOLVER.MAX_ITER = 25000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
 cfg.SOLVER.STEPS =  (15000, 20000)  # When to decrease learning rate
 cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
@@ -122,8 +121,8 @@ cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
 cfg.INPUT.MIN_SIZE_TRAIN = (640, )  # Keep training scale close to dataset. Multi-scale training
 
 # ANCHOR_SIZES for Small Objects
-sizes = [[x, x * 2**(1.0/3), x * 2**(2.0/3)] for x in [8, 16, 32, 64, 128]]
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = sizes
+# sizes = [[x, x * 2**(1.0/3), x * 2**(2.0/3)] for x in [8, 16, 32, 64, 128]]
+# cfg.MODEL.ANCHOR_GENERATOR.SIZES = sizes
 
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
@@ -293,7 +292,7 @@ from postprocess.set_trained_model import set_model_files
 
 print("Set trained model weights and config...")
 model_dir = model_info['retinanet_model']
-best_model = os.path.join(cfg.OUTPUT_DIR, "best_model.pth")
+best_model = os.path.join(cfg.OUTPUT_DIR, "model_final.pth")
 model_config = model_info['model_config_path']
 set_model_files(model_config, model_dir)
 set_model_files(best_model, model_dir)

@@ -6,7 +6,7 @@ import pickle
 from supervision.metrics import F1Score, Precision, Recall, MeanAveragePrecision, MeanAverageRecall
 
 # load trained model weights
-model = YOLO("trained_models/yolo_v8/exp_yolo/weights/best.pt")
+model = YOLO("outputs/yolo_v8/exp_yolo2_without_augmentation/weights/best.pt")
 
 # load yolo dataset for test
 test_dataset = sv.DetectionDataset.from_yolo(
@@ -28,7 +28,7 @@ for image_path, _, ground_truth in test_dataset:
     image = cv2.imread(image_path)
 
     # use yolov8 to do the inference
-    results = model.predict(image, conf=0.5, visualize=True)
+    results = model.predict(image, conf=0.5)
     pred_detections = sv.Detections.from_ultralytics(results[0]) # convert to supervision format
 
     predictions.append(pred_detections)

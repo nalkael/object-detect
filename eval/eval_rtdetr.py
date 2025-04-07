@@ -1,12 +1,12 @@
 import supervision as sv
-from ultralytics import YOLO
+from ultralytics import RTDETR
 import cv2
 import numpy as np
 import pickle
 from supervision.metrics import F1Score, Precision, Recall
 
 # load trained model weights
-model = YOLO("trained_models/yolo_v8/exp_yolo/weights/best.pt")
+model = RTDETR("outputs/rtdetr/exp_rtdetr/weights/best.pt")
 
 # load yolo dataset for test
 test_dataset = sv.DetectionDataset.from_yolo(

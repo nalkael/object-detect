@@ -8,7 +8,7 @@ from supervision.metrics import F1Score, Precision, Recall, MeanAveragePrecision
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
 
-# load Detectron2 model: Cascade R-CNN
+# load Detectron2 model: Faster R-CNN
 cfg = get_cfg()
 cfg.merge_from_file("mainprocess/models/faster_rcnn/model_config.yaml")
 cfg.MODEL.WEIGHTS = "outputs/faster_rcnn_202504071326/model_0023499.pth" # cascade model without augmentation

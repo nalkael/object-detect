@@ -8,10 +8,10 @@ from supervision.metrics import F1Score, Precision, Recall, MeanAveragePrecision
 from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
 
-# load Detectron2 model: Cascade R-CNN
+# load Detectron2 model: RetinaNet
 cfg = get_cfg()
-cfg.merge_from_file("mainprocess/models/cascade_rcnn/model_config.yaml")
-cfg.MODEL.WEIGHTS = "outputs/cascade_rcnn_202504071119/model_0020999.pth" # cascade model without augmentation
+cfg.merge_from_file("mainprocess/models/retina_net/model_config.yaml")
+cfg.MODEL.WEIGHTS = "outputs/retina_net_202504071701/model_0013499.pth" # cascade model without augmentation
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
 
 predictor = DefaultPredictor(cfg)
