@@ -6,6 +6,7 @@ import numpy as np
 import cv2
 import time
 import json
+from datetime import datetime
 
 import detectron2
 
@@ -90,7 +91,7 @@ cfg.DATALOADER.NUM_WORKERS = 4
 # Let training initialize from model zoo
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/retinanet_R_101_FPN_3x.yaml")
 cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory
-cfg.SOLVER.BASE_LR = 0.005  # pick a good LR
+cfg.SOLVER.BASE_LR = 0.002  # pick a good LR
 cfg.SOLVER.MAX_ITER = 25000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
 cfg.SOLVER.STEPS =  (15000, 20000)  # When to decrease learning rate
 cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
@@ -116,15 +117,13 @@ cfg.SOLVER.BASE_LR = 0.001  # Lower LR since the dataset is small
 # freeze the backbone layers (only ROI heads train) to prevents overfitting on small datasets
 cfg.MODEL.BACKBONE.FREEZE_AT = 5 # Freeze first several backbone stages (there are 5 layers)
 # Apply Data Augmentation
-# cfg.INPUT.RANDOM_FLIP = "horizontal"
-# cfg.INPUT.CROP.ENABLED = True
-# cfg.INPUT.CROP.SIZE = [0.95, 1.0]  # Random cropping
 
 cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
-cfg.INPUT.MIN_SIZE_TRAIN = 640  # Keep training scale close to dataset. Multi-scale training
+cfg.INPUT.MIN_SIZE_TRAIN = (640, )  # Keep training scale close to dataset. Multi-scale training
 
 # ANCHOR_SIZES for Small Objects
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[5, 8, 16, 32, 64, 128]]
+sizes = [[x, x * 2**(1.0/3), x * 2**(2.0/3)] for x in [8, 16, 32, 64, 128]]
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = sizes
 
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:

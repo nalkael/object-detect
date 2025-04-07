@@ -109,13 +109,10 @@ cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stab
 # There are 5 stages in ResNet. The first is a convolution, and the following
 # stages are each group of residual
 cfg.MODEL.BACKBONE.FREEZE_AT = 5 # Freeze first several backbone stages (there are 5 layers)
-# Apply Data Augmentation
-# cfg.INPUT.RANDOM_FLIP = "horizontal"
-# cfg.INPUT.CROP.ENABLED = True
-# cfg.INPUT.CROP.SIZE = [0.9, 1.0]  # Random cropping
+# TODO Apply Data Augmentation
 
 cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
-cfg.INPUT.MIN_SIZE_TRAIN = 640  # Keep training scale close to dataset. Multi-scale training
+cfg.INPUT.MIN_SIZE_TRAIN = (640,)  # Keep training scale close to dataset. Multi-scale training
 
 # ANCHOR_SIZES for Small Objects
 cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]

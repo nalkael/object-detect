@@ -12,7 +12,7 @@ DATASETS:
   PROPOSAL_FILES_TEST: []
   PROPOSAL_FILES_TRAIN: []
   TEST:
-  - test_dataset
+  - valid_dataset
   TRAIN:
   - train_dataset
 FLOAT32_PRECISION: ''
@@ -30,9 +30,7 @@ INPUT:
   MAX_SIZE_TEST: 1333
   MAX_SIZE_TRAIN: 1333
   MIN_SIZE_TEST: 640
-  MIN_SIZE_TRAIN:
-  - 640.0
-  - 704.0
+  MIN_SIZE_TRAIN: (640,)
   MIN_SIZE_TRAIN_SAMPLING: choice
   RANDOM_FLIP: horizontal
 MODEL:
@@ -52,7 +50,7 @@ MODEL:
       - 16
       - 32
       - 64
-      - 96
+      - 128
   BACKBONE:
     FREEZE_AT: 5
     NAME: build_resnet_fpn_backbone
@@ -246,7 +244,7 @@ MODEL:
     - 0.3
     - 0.7
     LOSS_WEIGHT: 1.0
-    NMS_THRESH: 0.6
+    NMS_THRESH: 0.7
     POSITIVE_FRACTION: 0.5
     POST_NMS_TOPK_TEST: 1000
     POST_NMS_TOPK_TRAIN: 1000
@@ -267,7 +265,7 @@ MODEL:
     NORM: GN
     NUM_CLASSES: 54
   WEIGHTS: https://dl.fbaipublicfiles.com/detectron2/COCO-Detection/faster_rcnn_R_101_FPN_3x/137851257/model_final_f6e8b1.pkl
-OUTPUT_DIR: ./outputs/faster_rcnn_202504031634
+OUTPUT_DIR: ./outputs/faster_rcnn_202504071326
 SEED: -1
 SOLVER:
   AMP:
@@ -284,17 +282,17 @@ SOLVER:
   GAMMA: 0.1
   IMS_PER_BATCH: 4
   LR_SCHEDULER_NAME: WarmupMultiStepLR
-  MAX_ITER: 20000
+  MAX_ITER: 25000
   MOMENTUM: 0.9
   NESTEROV: false
   NUM_DECAYS: 3
   REFERENCE_WORLD_SIZE: 0
   RESCALE_INTERVAL: false
   STEPS:
-  - 16000
-  - 18000
+  - 15000
+  - 20000
   WARMUP_FACTOR: 0.001
-  WARMUP_ITERS: 2000
+  WARMUP_ITERS: 2500
   WARMUP_METHOD: linear
   WEIGHT_DECAY: 0.0001
   WEIGHT_DECAY_BIAS: null

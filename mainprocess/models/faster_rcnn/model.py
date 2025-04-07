@@ -56,12 +56,12 @@ print("Novel classes:", novel_classes)
 
 # register datasets
 register_coco_instances("train_dataset", {}, dataset_info["train_json"], dataset_info["train_images"])
-# register_coco_instances("valid_dataset", {}, dataset_info["valid_json"], dataset_info["valid_images"])
+register_coco_instances("valid_dataset", {}, dataset_info["valid_json"], dataset_info["valid_images"])
 register_coco_instances("test_dataset", {}, dataset_info["test_json"], dataset_info["test_images"])
 
 # Assign class names to metadata
 MetadataCatalog.get("train_dataset").thing_classes = novel_classes
-# MetadataCatalog.get("valid_dataset").thing_classes = novel_classes
+MetadataCatalog.get("valid_dataset").thing_classes = novel_classes
 MetadataCatalog.get("test_dataset").thing_classes = novel_classes
 
 print("Datasets registered successfully!")
@@ -75,7 +75,7 @@ cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_101_
 
 # update config for fine-tuning
 cfg.DATASETS.TRAIN = ("train_dataset",)
-cfg.DATASETS.TEST = ("test_dataset",)
+cfg.DATASETS.TEST = ("valid_dataset",)
 
 cfg.DATALOADER.NUM_WORKERS = 4
 # Let training initialize from model zoo
@@ -106,12 +106,9 @@ cfg.SOLVER.BASE_LR = 0.0005  # Lower LR since the dataset is small
 # freeze the backbone layers (only ROI heads train) to prevents overfitting on small datasets
 cfg.MODEL.BACKBONE.FREEZE_AT = 5 # Freeze first several backbone stages (there are 5 layers)
 # Apply Data Augmentation
-# cfg.INPUT.RANDOM_FLIP = "horizontal"
-# cfg.INPUT.CROP.ENABLED = True
-# cfg.INPUT.CROP.SIZE = [0.9, 1.0]  # Random cropping
 
 cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
-cfg.INPUT.MIN_SIZE_TRAIN = 640 # Keep training scale close to dataset. Multi-scale training
+cfg.INPUT.MIN_SIZE_TRAIN = (640, ) # Keep training scale close to dataset. Multi-scale training
 
 # ANCHOR_SIZES for Small Objects, since our dataset contains only small objects < 96 x 96
 cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]

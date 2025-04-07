@@ -10,7 +10,7 @@ workers: 8 # number of work threads
 exist_ok : True
 pretrained: True
 lr0: 0.005 # lower to prevent overfitting
-lrf: 0.01 # 0.2-0.3 decay slowly for stability
+lrf: 0.01 # decay slowly for stability
 momentum: 0.9
 weight_decay: 0.0001
 warmup_epochs: 5 # increase warmup epochs to stabilize learning

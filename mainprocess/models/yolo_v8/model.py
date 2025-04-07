@@ -26,7 +26,7 @@ class YOLOv8DetectionModel:
         self.lr0 = self.config['lr0']
         self.lrf = self.config['lrf']        
         self.momentum = self.config['momentum']
-        self.freeeze = self.config['freeze']
+        self.freeze = self.config['freeze']
         self.patience = self.config['patience']
 
         self.workers = self.config['workers']
@@ -53,7 +53,7 @@ class YOLOv8DetectionModel:
             epochs = self.epochs,
             batch = self.batch_size,
             imgsz = self.image_size,
-            freeze = self.freeeze,
+            freeze = self.freeze,
             lr0 = self.lr0,
             lrf = self.lrf,
             momentum = self.momentum,
@@ -66,7 +66,19 @@ class YOLOv8DetectionModel:
             # mosaic=1.0, # creates synthetic images by combining multipe images (default value)
             # mixup=0.2, # mixup data augmentation
             optimizer='SGD',
-            augment=False
+            # Augmentation parameters (set to 0 to disable)
+            mosaic = 0.0,      # Disable mosaic augmentation
+            mixup = 0.0,       # Disable mixup augmentation
+            hsv_h = 0.0,       # Disable HSV hue augmentation
+            hsv_s = 0.0,       # Disable HSV saturation augmentation
+            hsv_v = 0.0,       # Disable HSV value augmentation
+            degrees = 0.0,     # Disable rotate
+            flipud = 0.0,      # Disable up-down flip
+            fliplr = 0.0,      # Disable left-right flip
+            translate = 0.0,   # Disable translation
+            scale = 0.0,       # Disable scaling
+            shear = 0.0,       # Disable shearing
+            perspective = 0.0, # Disable perspective transform
         )
         end_time = process_time()
         self.process_time = end_time - start_time
