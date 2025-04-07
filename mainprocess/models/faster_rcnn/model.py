@@ -81,9 +81,9 @@ cfg.DATALOADER.NUM_WORKERS = 4
 # Let training initialize from model zoo
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml")
 cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory
-cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
-cfg.SOLVER.MAX_ITER = 20000   # you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (16000, 18000)  # When to decrease learning rate
+cfg.SOLVER.BASE_LR = 0.005  # pick a good LR
+cfg.SOLVER.MAX_ITER = 25000   # you will need to train longer for a practical dataset
+cfg.SOLVER.STEPS =  (15000, 20000)  # When to decrease learning rate
 cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 
@@ -118,7 +118,7 @@ cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]
 
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
-cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals, this related to IoU
+cfg.MODEL.RPN.NMS_THRESH = 0.7  # Default is 0.7, lower means more proposals, this related to IoU
 
 #######################################################
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
