@@ -102,7 +102,7 @@ cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128  # for better sampling
 cfg.SOLVER.WEIGHT_DECAY = 0.0001  # Reduce overfitting
 cfg.SOLVER.BASE_LR = 0.0025  # Lower LR since the dataset is small
 cfg.SOLVER.MAX_ITER = 25000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (15000, 20000)  # When to decrease learning rate
+cfg.SOLVER.STEPS =  (15000, )  # When to decrease learning rate
 cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 # freeze the backbone layers (only ROI heads train) to prevents overfitting on small datasets

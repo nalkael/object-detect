@@ -83,7 +83,7 @@ cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_1
 cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory
 cfg.SOLVER.BASE_LR = 0.005  # pick a good LR
 cfg.SOLVER.MAX_ITER = 25000   # you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (15000, 20000)  # When to decrease learning rate
+cfg.SOLVER.STEPS =  (15000, )  # When to decrease learning rate
 cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 
