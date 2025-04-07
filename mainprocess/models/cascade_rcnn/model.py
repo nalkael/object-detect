@@ -79,8 +79,8 @@ cfg.DATALOADER.NUM_WORKERS = 4
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("Misc/cascade_mask_rcnn_R_50_FPN_3x.yaml")
 cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory (higher value means more time consuming)
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
-cfg.SOLVER.MAX_ITER = 20000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (10000, )  # When to decrease learning rate
+cfg.SOLVER.MAX_ITER = 25000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
+cfg.SOLVER.STEPS =  (15000, 20000)  # When to decrease learning rate
 cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 cfg.MODEL.MASK_ON = False  # No mask prediction needed
@@ -88,9 +88,9 @@ cfg.MODEL.MASK_ON = False  # No mask prediction needed
 """
 TODO Class Imbalance Handling
 """
-# cfg.DATALOADER.SAMPLER_TRAIN = "TrainingSampler"
-cfg.DATALOADER.SAMPLER_TRAIN = "RepeatFactorTrainingSampler"
-cfg.DATALOADER.REPEAT_THRESHOLD = 0.5 # imbalance repeat factor
+cfg.DATALOADER.SAMPLER_TRAIN = "TrainingSampler"
+# cfg.DATALOADER.SAMPLER_TRAIN = "RepeatFactorTrainingSampler"
+# cfg.DATALOADER.REPEAT_THRESHOLD = 0.5 # imbalance repeat factor
 
 # if include empty annotation (it is important for training)
 cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS = False
@@ -100,25 +100,29 @@ cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128  # for better sampling
 #######################################################
 # some stragdy to prevent overfitting
 cfg.SOLVER.WEIGHT_DECAY = 0.0001  # Reduce overfitting
-cfg.SOLVER.BASE_LR = 0.0005  # Lower LR since the dataset is small
+cfg.SOLVER.BASE_LR = 0.0025  # Lower LR since the dataset is small
+cfg.SOLVER.MAX_ITER = 25000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
+cfg.SOLVER.STEPS =  (15000, 20000)  # When to decrease learning rate
+cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
+cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 # freeze the backbone layers (only ROI heads train) to prevents overfitting on small datasets
 # There are 5 stages in ResNet. The first is a convolution, and the following
 # stages are each group of residual
 cfg.MODEL.BACKBONE.FREEZE_AT = 5 # Freeze first several backbone stages (there are 5 layers)
 # Apply Data Augmentation
-cfg.INPUT.RANDOM_FLIP = "horizontal"
+# cfg.INPUT.RANDOM_FLIP = "horizontal"
 # cfg.INPUT.CROP.ENABLED = True
 # cfg.INPUT.CROP.SIZE = [0.9, 1.0]  # Random cropping
 
 cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
-cfg.INPUT.MIN_SIZE_TRAIN = (cfg.INPUT.MIN_SIZE_TEST * 1.0, cfg.INPUT.MIN_SIZE_TEST * 1.1)  # Keep training scale close to dataset. Multi-scale training
+cfg.INPUT.MIN_SIZE_TRAIN = 640  # Keep training scale close to dataset. Multi-scale training
 
 # ANCHOR_SIZES for Small Objects
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 96]]
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]
 
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
-cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals
+cfg.MODEL.RPN.NMS_THRESH = 0.7  # Default is 0.7, lower means more proposals
 
 #######################################################
 #cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)

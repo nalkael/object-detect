@@ -20,7 +20,7 @@ cos_lr: True
 box: 8.0
 cls: 0.6
 val: True
-freeze: 15 # try to freeze early layers during training
+freeze: 10 # try to freeze all backbone
 project: /home/rdluhu/Dokumente/object_detection_project/outputs/yolo_v8
 name: "exp_yolo"
 best_model: "/home/rdluhu/Dokumente/object_detection_project/trained_models/yolo_v8/best.pt"

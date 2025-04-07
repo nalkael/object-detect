@@ -111,10 +111,10 @@ cfg.MODEL.BACKBONE.FREEZE_AT = 5 # Freeze first several backbone stages (there a
 # cfg.INPUT.CROP.SIZE = [0.9, 1.0]  # Random cropping
 
 cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
-cfg.INPUT.MIN_SIZE_TRAIN = (cfg.INPUT.MIN_SIZE_TEST * 1.0, cfg.INPUT.MIN_SIZE_TEST * 1.1) # Keep training scale close to dataset. Multi-scale training
+cfg.INPUT.MIN_SIZE_TRAIN = 640 # Keep training scale close to dataset. Multi-scale training
 
 # ANCHOR_SIZES for Small Objects, since our dataset contains only small objects < 96 x 96
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 96]]
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 128]]
 
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
