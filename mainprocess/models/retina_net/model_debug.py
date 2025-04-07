@@ -26,12 +26,9 @@ from detectron2.engine import HookBase # import hook
 
 from detectron2.data import build_detection_train_loader # pass augmentation list into the DataLoader
 
-# TODO: automate hyperparameter optimization
-# TODO: maybe can apply optuna framework here(a hyperparameter optimization framework to automate hyperparameter search)
-
 # load config of dataset and model path
-from mainprocess.models.faster_rcnn.config_loader import load_dataset_config, load_project_config
-from mainprocess.models.faster_rcnn.dataset_registration import register_my_dataset
+from mainprocess.models.retina_net.config_loader import load_dataset_config, load_project_config
+from mainprocess.models.retina_net.dataset_registration import register_my_dataset
 
 # Some basic setup:
 # Setup detectron2 logger
@@ -47,21 +44,21 @@ setup_logger()
 # load the config.yaml file of the general project
 model_info = load_project_config()
 
-# load the dataset_config.yaml file of the Faster R-CNN model
+# load the dataset_config.yaml file of the Cascade R-CNN model
 dataset_info = load_dataset_config(model_info["dataset_config_path"])
 
-# load the model_condig.yaml file of the Faster R-CNN model
+# load the model_condig.yaml file of the Cascade R-CNN model
 novel_classes = dataset_info["novel_classes"]
 print("Novel classes:", novel_classes)
 
 # register datasets
 register_coco_instances("train_dataset", {}, dataset_info["train_json"], dataset_info["train_images"])
-# register_coco_instances("valid_dataset", {}, dataset_info["valid_json"], dataset_info["valid_images"])
+register_coco_instances("valid_dataset", {}, dataset_info["valid_json"], dataset_info["valid_images"])
 register_coco_instances("test_dataset", {}, dataset_info["test_json"], dataset_info["test_images"])
 
 # Assign class names to metadata
 MetadataCatalog.get("train_dataset").thing_classes = novel_classes
-# MetadataCatalog.get("valid_dataset").thing_classes = novel_classes
+MetadataCatalog.get("valid_dataset").thing_classes = novel_classes
 MetadataCatalog.get("test_dataset").thing_classes = novel_classes
 
 print("Datasets registered successfully!")
@@ -69,30 +66,44 @@ print("Datasets registered successfully!")
 
 # register_my_dataset()
 
-# Load Detectron2 base configuration (Faster R-CNN)
+# visualize training dataset
+train_metadata = MetadataCatalog.get("train_dataset")
+train_dicts = DatasetCatalog.get("train_dataset")
+
+# visualize training dataset
+valid_metadata = MetadataCatalog.get("valid_dataset")
+valid_dicts = DatasetCatalog.get("valid_dataset")
+
+# visualize test dataset
+test_metadata = MetadataCatalog.get("test_dataset")
+test_dicts = DatasetCatalog.get("test_dataset")
+
+# Load Detectron2 base configuration (Cascade R-CNN)
 cfg = get_cfg()
-cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml"))
+# https://github.com/facebookresearch/detectron2/blob/main/configs/COCO-Detection/retinanet_R_101_FPN_3x.yaml
+cfg.merge_from_file(model_zoo.get_config_file("COCO-Detection/retinanet_R_101_FPN_3x.yaml"))
 
 # update config for fine-tuning
 cfg.DATASETS.TRAIN = ("train_dataset",)
-cfg.DATASETS.TEST = ("test_dataset",)
+cfg.DATASETS.TEST = ("valid_dataset",)
 
 cfg.DATALOADER.NUM_WORKERS = 4
 # Let training initialize from model zoo
-cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml")
+cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-Detection/retinanet_R_101_FPN_3x.yaml")
 cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory
-cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
-cfg.SOLVER.MAX_ITER = 20000   # you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (16000, 18000)  # When to decrease learning rate
+cfg.SOLVER.BASE_LR = 0.0005  # pick a good LR
+cfg.SOLVER.MAX_ITER = 20000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
+cfg.SOLVER.STEPS =  (10000, )  # When to decrease learning rate
 cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
-
+cfg.MODEL.MASK_ON = False  # No mask prediction needed
+# cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # Number of classes
 """
-TODO: Class Imbalance Handling
+TODO Class Imbalance Handling
 """
 cfg.DATALOADER.SAMPLER_TRAIN = "TrainingSampler"
 # cfg.DATALOADER.SAMPLER_TRAIN = "RepeatFactorTrainingSampler"
-# cfg.DATALOADER.REPEAT_THRESHOLD = 0.5 # imbalance
+cfg.DATALOADER.REPEAT_THRESHOLD = 0.5 # imbalance repeat factor
 
 # if include empty annotation (it is important for training)
 cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS = False
@@ -102,37 +113,36 @@ cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128  # for better sampling
 #######################################################
 # some stragdy to prevent overfitting
 cfg.SOLVER.WEIGHT_DECAY = 0.0001  # Reduce overfitting
-cfg.SOLVER.BASE_LR = 0.0005  # Lower LR since the dataset is small
+cfg.SOLVER.BASE_LR = 0.0025  # Lower LR since the dataset is small
 # freeze the backbone layers (only ROI heads train) to prevents overfitting on small datasets
 cfg.MODEL.BACKBONE.FREEZE_AT = 5 # Freeze first several backbone stages (there are 5 layers)
 # Apply Data Augmentation
-# cfg.INPUT.RANDOM_FLIP = "horizontal"
+cfg.INPUT.RANDOM_FLIP = "horizontal"
 # cfg.INPUT.CROP.ENABLED = True
-# cfg.INPUT.CROP.SIZE = [0.9, 1.0]  # Random cropping
+# cfg.INPUT.CROP.SIZE = [0.95, 1.0]  # Random cropping
 
 cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
-cfg.INPUT.MIN_SIZE_TRAIN = (cfg.INPUT.MIN_SIZE_TEST * 1.0, cfg.INPUT.MIN_SIZE_TEST * 1.1) # Keep training scale close to dataset. Multi-scale training
+cfg.INPUT.MIN_SIZE_TRAIN = (cfg.INPUT.MIN_SIZE_TEST * 1.0, cfg.INPUT.MIN_SIZE_TEST * 1.1)  # Keep training scale close to dataset. Multi-scale training
 
-# ANCHOR_SIZES for Small Objects, since our dataset contains only small objects < 96 x 96
+# ANCHOR_SIZES for Small Objects
 cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 96]]
 
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
-cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals, this related to IoU
+cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals
 
 #######################################################
-cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
+#cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
+cfg.MODEL.RETINANET.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
 # NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
 
 cfg.TEST.EVAL_PERIOD = 500 # validate after certain interations
 cfg.SOLVER.CHECKPOINT_PERIOD = 500
 
 # TODO just for test.....
-# cfg.OUTPUT_DIR = model_info['faster_rcnn_output']
-# get current date and time (format: YYYYMMDDHHMM)
+# cfg.OUTPUT_DIR = model_info['retinanet_output']
 timestamp = datetime.now().strftime("%Y%m%d%H%M")
-cfg.OUTPUT_DIR = f"./outputs/faster_rcnn_{timestamp}"
-
+cfg.OUTPUT_DIR = f"./outputs/retina_net_{timestamp}"
 log_path = os.path.join(cfg.OUTPUT_DIR, "training_log.txt")
 setup_logger(output=log_path)
 
@@ -144,16 +154,15 @@ class EarlyStoppingException(StopIteration):
     print("Early stopping takes into effect...")
     pass
 
-# I tried the hook in the experiment, but disabled it in the final version
 class EarlyStoppingHook(HookBase):
-    def __init__(self, trainer, cfg, patience=25, output_dir=None):
+    def __init__(self, trainer, cfg, patience=20, output_dir=None):
         self.trainer = trainer
         self.cfg = cfg
         self.patience = patience
         self.best_val_ap = 0.0
         self.best_iter = 0
         self.counter = 0
-        self.output_dir = self.cfg.OUTPUT_DIR
+        self.output_dir = cfg.OUTPUT_DIR
         # Ensure output directory exists
         os.makedirs(self.output_dir, exist_ok=True)
 
@@ -208,7 +217,8 @@ class EarlyStoppingHook(HookBase):
                 print(f"Early stopping triggered! Best model at {self.best_iter} iteration. Stop training...")
                 self.trainer.storage.put_scalar("early_stopping", 1)
                 self.trainer.checkpointer.save("final_model") # Save the final model
-                raise EarlyStoppingException(f"Early stopping triggered after {self.patience} evaluations without improvement")
+                # disable the early stopping if wanna observe the entire training curve
+                # raise EarlyStoppingException(f"Early stopping triggered after {self.patience} evaluations without improvement")
 
 
 
@@ -226,9 +236,9 @@ class CustomTrainer(DefaultTrainer):
         """
         Add the Early Stopping Hook to the trainer
         """
+        # I disabled the hook here, because I want test it more simply
         hooks = super().build_hooks()
-        # disable the hook
-        # hooks.append(EarlyStoppingHook(self, self.cfg, patience=25))
+        # hooks.append(EarlyStoppingHook(self, self.cfg, patience=20))
         return hooks
 
 ##################################################
@@ -241,7 +251,7 @@ start_time = time.time()
 
 try:
     trainer.train()
-except EarlyStoppingException as e:
+except Exception as e:
     print(str(e))
 
 end_time = time.time()
@@ -249,15 +259,15 @@ training_time = end_time - start_time
 print(f"Training ends in {(training_time/60):.2f} min.")
 # end of training
 
-
-# Save config to persist file after training
-# The saved file is also used by inference stage
+"""
+Save config to persist file after training
+The saved file is also used by inference stage
+"""
 # write the dumped string manually to a file
 with open(model_info['model_config_path'], "w") as file:
     file.write(cfg.dump())
 
 print(f"Config saved to {model_info['model_config_path']}")
-
 
 # after training, evaluate on the test set
 # save the trained model weights (for evaluation)
@@ -266,6 +276,7 @@ cfg.DATASETS.TEST = ("test_dataset",)
 
 # create a predictor to run the evaluation
 predictor = DefaultPredictor(cfg)
+
 # setup the evaluator for the test dataset
 evaluator = COCOEvaluator("test_dataset", cfg, False, cfg.OUTPUT_DIR)
 val_loader = build_detection_test_loader(cfg, "test_dataset")
@@ -276,4 +287,19 @@ inference_on_dataset(predictor.model, val_loader, evaluator)
 test_results = inference_on_dataset(predictor.model, val_loader, evaluator)
 # print(DefaultTrainer.test(cfg, predictor.model, evaluators=[evaluator]))
 
-print("Finished training of model...")
+print("Finished evaluation of model...")
+
+##########################################
+"""
+# copy the relevant files to appropriate folder
+# TODO: it's better to add some exeception check here...
+from postprocess.set_trained_model import set_model_files
+
+print("Set trained model weights and config...")
+model_dir = model_info['retinanet_model']
+best_model = os.path.join(cfg.OUTPUT_DIR, "best_model.pth")
+model_config = model_info['model_config_path']
+set_model_files(model_config, model_dir)
+set_model_files(best_model, model_dir)
+print("Finished...")
+"""

@@ -6,6 +6,7 @@ import numpy as np
 import cv2
 import time
 import json
+from datetime import datetime
 
 import detectron2
 
@@ -51,7 +52,7 @@ print("Novel classes:", novel_classes)
 
 # register datasets
 register_coco_instances("train_dataset", {}, dataset_info["train_json"], dataset_info["train_images"])
-register_coco_instances("valid_dataset", {}, dataset_info["valid_json"], dataset_info["valid_images"])
+# register_coco_instances("valid_dataset", {}, dataset_info["valid_json"], dataset_info["valid_images"])
 register_coco_instances("test_dataset", {}, dataset_info["test_json"], dataset_info["test_images"])
 
 # Assign class names to metadata
@@ -59,40 +60,12 @@ metadata = MetadataCatalog.get("train_dataset")
 print("novel class name: ", metadata.thing_classes)
 
 MetadataCatalog.get("train_dataset").thing_classes = novel_classes
-MetadataCatalog.get("valid_dataset").thing_classes = novel_classes
+# MetadataCatalog.get("valid_dataset").thing_classes = novel_classes
 MetadataCatalog.get("test_dataset").thing_classes = novel_classes
 
 print("Datasets registered successfully!")
 
 # register_my_dataset()
-
-# visualize training dataset
-train_metadata = MetadataCatalog.get("train_dataset")
-train_dicts = DatasetCatalog.get("train_dataset")
-
-# visualize training dataset
-valid_metadata = MetadataCatalog.get("valid_dataset")
-valid_dicts = DatasetCatalog.get("valid_dataset")
-
-# visualize test dataset
-test_metadata = MetadataCatalog.get("test_dataset")
-test_dicts = DatasetCatalog.get("test_dataset")
-
-"""
-# show some sample dataset
-def visualize_dataset(dataset_dicts, num=0):
-    for d in random.sample(dataset_dicts, num):
-        img = cv2.imread(d["file_name"])
-        visualizer = Visualizer(img[:, :, ::-1], metadata=train_metadata)
-        vis = visualizer.draw_dataset_dict(d)
-        cv2.imshow("Sample", vis.get_image()[:, :, ::-1])
-        cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-visualize_dataset(train_dicts)
-visualize_dataset(valid_dicts)
-visualize_dataset(test_dicts)
-"""
 
 # Load Detectron2 base configuration (Cascade R-CNN)
 cfg = get_cfg()
@@ -100,7 +73,7 @@ cfg.merge_from_file(model_zoo.get_config_file("Misc/cascade_mask_rcnn_R_50_FPN_3
 
 # update config for fine-tuning
 cfg.DATASETS.TRAIN = ("train_dataset",)
-cfg.DATASETS.TEST = ("valid_dataset",)
+cfg.DATASETS.TEST = ("test_dataset",)
 
 cfg.DATALOADER.NUM_WORKERS = 4
 # Let training initialize from model zoo
@@ -117,7 +90,8 @@ cfg.MODEL.MASK_ON = False  # No mask prediction needed
 """
 TODO Class Imbalance Handling
 """
-
+cfg.DATALOADER.SAMPLER_TRAIN = "RepeatFactorTrainingSampler"
+cfg.DATALOADER.REPEAT_THRESHOLD = 0.01
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128  # for better sampling
 
 #######################################################
@@ -132,10 +106,10 @@ cfg.INPUT.RANDOM_FLIP = "horizontal"
 # cfg.INPUT.CROP.SIZE = [0.9, 1.0]  # Random cropping
 
 cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
-cfg.INPUT.MIN_SIZE_TRAIN = (cfg.INPUT.MIN_SIZE_TEST * 0.9, cfg.INPUT.MIN_SIZE_TEST * 1.1)  # Keep training scale close to dataset. Multi-scale training
+cfg.INPUT.MIN_SIZE_TRAIN = cfg.INPUT.MIN_SIZE_TEST  # Keep training scale close to dataset. Multi-scale training
 
 # ANCHOR_SIZES for Small Objects
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[5, 8, 16, 32, 64, 100]]
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 96]]
 
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
@@ -145,11 +119,19 @@ cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals
 #cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
 # NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
-cfg.TEST.EVAL_PERIOD = 100 # validate after certain interations
+
+cfg.TEST.EVAL_PERIOD = 500 # validate after certain interations
+cfg.SOLVER.CHECKPOINT_PERIOD = 500
 
 # TODO just for test.....
 # cfg.OUTPUT_DIR = model_info['cascade_rcnn_output']
-cfg.OUTPUT_DIR = './outputs/cascade_rcnn'
+
+timestamp = datetime.now().strftime("%Y%m%d%H%M")
+cfg.OUTPUT_DIR = f"./outputs/cascade_rcnn_{timestamp}"
+
+# save log
+log_path = os.path.join(cfg.OUTPUT_DIR, "training_log.txt")
+setup_logger(output=log_path)
 
 # make sure the folder exist
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
@@ -202,8 +184,8 @@ class EarlyStoppingHook(HookBase):
                 json.dump(val_results, f, indent=4)
             
             # print("Show validation results: ", val_results)
-            # val_ap = val_results["bbox"]["AP"] # Change key if needed
-            val_ap = self._get_smooth_ap(val_results)
+            val_ap = val_results["bbox"]["AP"] # Change key if needed
+            # val_ap = self._get_smooth_ap(val_results)
             print(f"Validation AP is: {val_ap:.4f}")
 
             # check for improvement: compare on the AP value, if AP higher, means better performance
@@ -229,27 +211,6 @@ class EarlyStoppingHook(HookBase):
                 with open(recode_file, 'w') as file:
                     file.write(f'Best model at {self.best_iter} iteration.')
                 raise EarlyStoppingException(f"Early stopping triggered after {self.patience} evaluations without improvement")
-    
-    # I use this to change the weights of ap parameter for smaller size object
-    def _get_smooth_ap(self, val_results):
-        val_ap = val_results["bbox"]["AP"] # Change key if needed
-        val_ap_gas = val_results["bbox"]["AP-Gasschieberdeckel"]
-        val_ap_kanal = val_results["bbox"]["AP-Kanalschachtdeckel"]
-        val_ap_sink = val_results["bbox"]["AP-Sinkkaesten"]
-        val_ap_flur = val_results["bbox"]["AP-Unterflurhydrant"]
-        val_ap_versorg = val_results["bbox"]["AP-Versorgungsschacht"]
-        val_ap_wasser = val_results["bbox"]["AP-Wasserschieberdeckel"]
-        val_smooth_ap = ((val_ap_kanal + val_ap_sink + val_ap_versorg) + 1.1 * (val_ap_gas + val_ap_wasser + val_ap_flur))/(3 + 3 * 1.1)
-        return val_smooth_ap
-
-##################################################
-# Create a Custom Evaluator
-class CustomCOCOEvaluator(COCOEvaluator):
-    def evaluate(self):
-        results = super().evaluate() # Get default COCO metrics
-        # TODO: maybe can implement a custom evaluator
-        return results
-        # Load COCO evaluation results
 
 
 ##################################################
@@ -267,14 +228,10 @@ class CustomTrainer(DefaultTrainer):
         Add the Early Stopping Hook to the trainer
         """
         hooks = super().build_hooks()
-        hooks.append(EarlyStoppingHook(self, self.cfg, patience=20))
+        # hooks.append(EarlyStoppingHook(self, self.cfg, patience=20))
         return hooks
 
 ##################################################
-# define a custom trainer class with Hook
-class MyTrainer(DefaultTrainer):
-    pass
-###################################################
 
 # Train the model
 trainer = CustomTrainer(cfg)
@@ -282,12 +239,12 @@ trainer.resume_or_load(resume=False)
 print("Start Training Model...")
 start_time = time.time()
 
-"""
+
 try:
     trainer.train()
 except EarlyStoppingException as e:
     print(str(e))
-"""
+
 end_time = time.time()
 training_time = end_time - start_time
 print(f"Training ends in {(training_time/60):.2f} min.")
@@ -306,7 +263,7 @@ print(f"Config saved to {model_info['model_config_path']}")
 
 # after training, evaluate on the test set
 # save the trained model weights (for evaluation)
-cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "best_model.pth") # Load trained weights
+cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth") # Load trained weights
 cfg.DATASETS.TEST = ("test_dataset",)
 
 # create a predictor to run the evaluation

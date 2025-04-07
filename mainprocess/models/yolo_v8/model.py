@@ -63,8 +63,10 @@ class YOLOv8DetectionModel:
             patience = self.patience,  
             val = True, # Ensure validation runs during training
             # some augmentation during training
-            mosaic=1.0, # creates synthetic images by combining multipe images (default value)
-            mixup=0.2, # mixup data augmentation
+            # mosaic=1.0, # creates synthetic images by combining multipe images (default value)
+            # mixup=0.2, # mixup data augmentation
+            optimizer='SGD',
+            augment=False
         )
         end_time = process_time()
         self.process_time = end_time - start_time

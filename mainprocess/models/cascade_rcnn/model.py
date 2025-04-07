@@ -6,6 +6,7 @@ import numpy as np
 import cv2
 import time
 import json
+from datetime import datetime
 
 import detectron2
 
@@ -65,18 +66,6 @@ print("Datasets registered successfully!")
 
 # register_my_dataset()
 
-# visualize training dataset
-train_metadata = MetadataCatalog.get("train_dataset")
-train_dicts = DatasetCatalog.get("train_dataset")
-
-# visualize training dataset
-valid_metadata = MetadataCatalog.get("valid_dataset")
-valid_dicts = DatasetCatalog.get("valid_dataset")
-
-# visualize test dataset
-test_metadata = MetadataCatalog.get("test_dataset")
-test_dicts = DatasetCatalog.get("test_dataset")
-
 # Load Detectron2 base configuration (Cascade R-CNN)
 cfg = get_cfg()
 cfg.merge_from_file(model_zoo.get_config_file("Misc/cascade_mask_rcnn_R_50_FPN_3x.yaml"))
@@ -91,7 +80,7 @@ cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("Misc/cascade_mask_rcnn_R_50_FP
 cfg.SOLVER.IMS_PER_BATCH = 4 # adjust depending on GPU memory (higher value means more time consuming)
 cfg.SOLVER.BASE_LR = 0.0025  # pick a good LR
 cfg.SOLVER.MAX_ITER = 20000   # 300 iterations seems good enough for this toy dataset; you will need to train longer for a practical dataset
-cfg.SOLVER.STEPS =  (16000, 18000)  # When to decrease learning rate
+cfg.SOLVER.STEPS =  (10000, )  # When to decrease learning rate
 cfg.SOLVER.GAMMA = 0.1  # Scaling factor for LR reduction
 cfg.SOLVER.WARMUP_ITERS = int(0.1 * cfg.SOLVER.MAX_ITER)  # Warmup phase to stabilize training
 cfg.MODEL.MASK_ON = False  # No mask prediction needed
@@ -99,6 +88,13 @@ cfg.MODEL.MASK_ON = False  # No mask prediction needed
 """
 TODO Class Imbalance Handling
 """
+# cfg.DATALOADER.SAMPLER_TRAIN = "TrainingSampler"
+cfg.DATALOADER.SAMPLER_TRAIN = "RepeatFactorTrainingSampler"
+cfg.DATALOADER.REPEAT_THRESHOLD = 0.5 # imbalance repeat factor
+
+# if include empty annotation (it is important for training)
+cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS = False
+
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128  # for better sampling
 
 #######################################################
@@ -106,6 +102,8 @@ cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128  # for better sampling
 cfg.SOLVER.WEIGHT_DECAY = 0.0001  # Reduce overfitting
 cfg.SOLVER.BASE_LR = 0.0005  # Lower LR since the dataset is small
 # freeze the backbone layers (only ROI heads train) to prevents overfitting on small datasets
+# There are 5 stages in ResNet. The first is a convolution, and the following
+# stages are each group of residual
 cfg.MODEL.BACKBONE.FREEZE_AT = 5 # Freeze first several backbone stages (there are 5 layers)
 # Apply Data Augmentation
 cfg.INPUT.RANDOM_FLIP = "horizontal"
@@ -113,10 +111,10 @@ cfg.INPUT.RANDOM_FLIP = "horizontal"
 # cfg.INPUT.CROP.SIZE = [0.9, 1.0]  # Random cropping
 
 cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
-cfg.INPUT.MIN_SIZE_TRAIN = (cfg.INPUT.MIN_SIZE_TEST * 0.9, cfg.INPUT.MIN_SIZE_TEST * 1.1)  # Keep training scale close to dataset. Multi-scale training
+cfg.INPUT.MIN_SIZE_TRAIN = (cfg.INPUT.MIN_SIZE_TEST * 1.0, cfg.INPUT.MIN_SIZE_TEST * 1.1)  # Keep training scale close to dataset. Multi-scale training
 
 # ANCHOR_SIZES for Small Objects
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[5, 8, 16, 32, 64, 100]]
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8, 16, 32, 64, 96]]
 
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
@@ -126,11 +124,16 @@ cfg.MODEL.RPN.NMS_THRESH = 0.6  # Default is 0.7, lower means more proposals
 #cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # faster, and good enough for this toy dataset (default: 512)
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)  # (see https://detectron2.readthedocs.io/tutorials/datasets.html#update-the-config-for-new-datasets)
 # NOTE: this config means the number of classes, but a few popular unofficial tutorials incorrect uses num_classes+1 here.
-cfg.TEST.EVAL_PERIOD = 100 # validate after certain interations
+
+cfg.TEST.EVAL_PERIOD = 500 # validate after certain interations
+cfg.SOLVER.CHECKPOINT_PERIOD = 500
 
 # TODO just for test.....
 # cfg.OUTPUT_DIR = model_info['cascade_rcnn_output']
-cfg.OUTPUT_DIR = './outputs/cascade_rcnn'
+timestamp = datetime.now().strftime("%Y%m%d%H%M")
+cfg.OUTPUT_DIR = f"./outputs/cascade_rcnn_{timestamp}"
+log_path = os.path.join(cfg.OUTPUT_DIR, "training_log.txt")
+setup_logger(output=log_path)
 
 # make sure the folder exist
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
@@ -141,14 +144,14 @@ class EarlyStoppingException(StopIteration):
     pass
 
 class EarlyStoppingHook(HookBase):
-    def __init__(self, trainer, cfg, patience=15, output_dir='./outputs/cascade_rcnn'):
+    def __init__(self, trainer, cfg, patience=15, output_dir=None):
         self.trainer = trainer
         self.cfg = cfg
         self.patience = patience
         self.best_val_ap = 0.0
         self.best_iter = 0
         self.counter = 0
-        self.output_dir = output_dir
+        self.output_dir = cfg.OUTPUT_DIR
         # Ensure output directory exists
         os.makedirs(self.output_dir, exist_ok=True)
 
@@ -215,7 +218,7 @@ class CustomTrainer(DefaultTrainer):
     # build_evaluator is a class method...
     @classmethod
     def build_evaluator(cls, cfg, dataset_name):
-        return COCOEvaluator(dataset_name, cfg, False, output_dir='./outputs/cascade_rcnn')   
+        return COCOEvaluator(dataset_name, cfg, False, output_dir=cfg.OUTPUT_DIR)   
     
     # build_hooks is a instance method...
     # it seems incorrect to add a hook here
@@ -224,14 +227,10 @@ class CustomTrainer(DefaultTrainer):
         Add the Early Stopping Hook to the trainer
         """
         hooks = super().build_hooks()
-        hooks.append(EarlyStoppingHook(self, self.cfg, patience=20))
+        # hooks.append(EarlyStoppingHook(self, self.cfg, patience=20))
         return hooks
 
 ##################################################
-# define a custom trainer class with Hook
-class MyTrainer(DefaultTrainer):
-    pass
-
 
 # Train the model
 trainer = CustomTrainer(cfg)
@@ -241,7 +240,7 @@ start_time = time.time()
 
 try:
     trainer.train()
-except EarlyStoppingException as e:
+except Exception as e:
     print(str(e))
 
 end_time = time.time()
@@ -262,7 +261,7 @@ print(f"Config saved to {model_info['model_config_path']}")
 
 # after training, evaluate on the test set
 # save the trained model weights (for evaluation)
-cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "best_model.pth") # Load trained weights
+cfg.MODEL.WEIGHTS = os.path.join(cfg.OUTPUT_DIR, "model_final.pth") # Load trained weights
 cfg.DATASETS.TEST = ("test_dataset",)
 
 # create a predictor to run the evaluation
