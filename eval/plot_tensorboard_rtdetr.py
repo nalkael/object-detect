@@ -6,7 +6,7 @@ from tensorboard.backend.event_processing.event_accumulator import EventAccumula
 import matplotlib.pyplot as plt
 
 # load event file
-event_file = "outputs/yolo_v8/exp_yolo/events.out.tfevents.1744029006.PC-RD-343.62251.0"
+event_file = "outputs/rtdetr/exp_rtdetr/events.out.tfevents.1744040479.PC-RD-343.96091.0"
 
 event_acc = EventAccumulator(event_file)
 event_acc.Reload() # load all data
@@ -77,24 +77,24 @@ plt.show()
 # --- Plot 2: Loss ---
 
 loss_metrics = [
-    'train/box_loss',
+    'train/l1_loss',
     'train/cls_loss',
-    'train/dfl_loss',
-    'val/box_loss', 
+    'train/giou_loss',
+    'val/l1_loss', 
     'val/cls_loss', 
-    'val/dfl_loss'
+    'val/giou_loss'
     ]
 
 metric_data = {}
 
 custom_loss_labels = {
-    'train/box_loss': 'Train Box Regression Loss',
+    'train/l1_loss': 'Traini Box Regression L1 Loss',
     'train/cls_loss':  'Train Classification Loss',
-    'train/dfl_loss': 'Train Distribute Focal Loss',
+    'train/giou_loss': 'Train Generalized IoU Loss',
 
-    'val/box_loss': 'Val Box Regression Loss',
+    'val/l1_loss': 'Val Box Regression L1 Loss',
     'val/cls_loss':  'Val Classification Loss',
-    'val/dfl_loss': 'Val Distribute Focal Loss',
+    'val/giou_loss': 'Val Generalized IoU Loss',
     }
 
 # Extract data for each metric

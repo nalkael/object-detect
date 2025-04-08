@@ -30,7 +30,8 @@ INPUT:
   MAX_SIZE_TEST: 1333
   MAX_SIZE_TRAIN: 1333
   MIN_SIZE_TEST: 640
-  MIN_SIZE_TRAIN: (640,)
+  MIN_SIZE_TRAIN:
+  - 640
   MIN_SIZE_TRAIN_SAMPLING: choice
   RANDOM_FLIP: horizontal
 MODEL:
@@ -46,11 +47,11 @@ MODEL:
     NAME: DefaultAnchorGenerator
     OFFSET: 0.0
     SIZES:
-    - - 8
-      - 16
-      - 32
-      - 64
-      - 128
+    - - 32
+    - - 64
+    - - 128
+    - - 256
+    - - 512
   BACKBONE:
     FREEZE_AT: 5
     NAME: build_resnet_fpn_backbone
@@ -265,7 +266,7 @@ MODEL:
     NORM: GN
     NUM_CLASSES: 54
   WEIGHTS: https://dl.fbaipublicfiles.com/detectron2/Misc/cascade_mask_rcnn_R_50_FPN_3x/144998488/model_final_480dd8.pkl
-OUTPUT_DIR: ./outputs/cascade_rcnn_202504071119
+OUTPUT_DIR: ./outputs/cascade_rcnn_202504071906
 SEED: -1
 SOLVER:
   AMP:
@@ -290,7 +291,6 @@ SOLVER:
   RESCALE_INTERVAL: false
   STEPS:
   - 15000
-  - 20000
   WARMUP_FACTOR: 0.001
   WARMUP_ITERS: 2500
   WARMUP_METHOD: linear

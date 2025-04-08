@@ -1,3 +1,6 @@
+import sys
+from contextlib import redirect_stdout
+
 import supervision as sv
 from ultralytics import YOLO
 import cv2
@@ -6,7 +9,7 @@ import pickle
 from supervision.metrics import F1Score, Precision, Recall, MeanAveragePrecision, MeanAverageRecall
 
 # load trained model weights
-model = YOLO("outputs/yolo_v8/exp_yolo2_without_augmentation/weights/best.pt")
+model = YOLO("outputs/yolo_v8/exp_yolo/weights/best.pt")
 
 # load yolo dataset for test
 test_dataset = sv.DetectionDataset.from_yolo(
@@ -67,3 +70,21 @@ print(precision_result)
 map_metrics = MeanAveragePrecision()
 map_result = map_metrics.update(predictions, targets).compute()
 print(map_result)
+
+with open('yolo_results.txt', 'w') as f:
+    with redirect_stdout(f):
+        print("========== Evaluation Results ==========")
+
+        f1_result = f1_metric.update(predictions, targets).compute()
+        print(f1_result)
+
+        recal_result = recall_metrics.update(predictions, targets).compute()
+        print(recal_result)
+
+        precision_result = precision_metrics.update(predictions, targets).compute()
+        print(precision_result)
+
+        map_result = map_metrics.update(predictions, targets).compute()
+        print(map_result)
+
+print("Results have been saved to results.txt")

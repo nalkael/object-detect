@@ -1,3 +1,6 @@
+import sys
+from contextlib import redirect_stdout
+
 import supervision as sv
 from ultralytics import YOLO
 import cv2
@@ -30,7 +33,6 @@ num_classes = len(class_names)
 predictions = []
 targets =[]
 
-"""
 # Run inference and collect predictions and targets
 for image_path, _, ground_truth in test_dataset:
     image = cv2.imread(image_path)
@@ -47,12 +49,12 @@ for image_path, _, ground_truth in test_dataset:
 
 
 # save interval result into file
-with open("cascade_predictions.pkl", "wb") as f:
+with open("retina_predictions.pkl", "wb") as f:
     pickle.dump(predictions, f)
 
-with open("cascade_targets.pkl", "wb") as f:
+with open("retina_targets.pkl", "wb") as f:
     pickle.dump(targets, f)
-"""
+
 
 # load pickel files
 with open("retina_predictions.pkl", "rb") as f:
@@ -80,3 +82,20 @@ map_metrics = MeanAveragePrecision()
 map_result = map_metrics.update(predictions, targets).compute()
 print(map_result)
 
+with open('retina_results.txt', 'w') as f:
+    with redirect_stdout(f):
+        print("========== Evaluation Results ==========")
+
+        f1_result = f1_metric.update(predictions, targets).compute()
+        print(f1_result)
+
+        recal_result = recall_metrics.update(predictions, targets).compute()
+        print(recal_result)
+
+        precision_result = precision_metrics.update(predictions, targets).compute()
+        print(precision_result)
+
+        map_result = map_metrics.update(predictions, targets).compute()
+        print(map_result)
+
+print("Results have been saved to results.txt")
