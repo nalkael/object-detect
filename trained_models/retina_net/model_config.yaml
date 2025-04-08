@@ -267,7 +267,7 @@ MODEL:
     NORM: GN
     NUM_CLASSES: 54
   WEIGHTS: https://dl.fbaipublicfiles.com/detectron2/COCO-Detection/retinanet_R_101_FPN_3x/190397697/model_final_971ab9.pkl
-OUTPUT_DIR: ./outputs/retina_net_202504072010
+OUTPUT_DIR: ./outputs/retina_net_202504081327
 SEED: -1
 SOLVER:
   AMP:
