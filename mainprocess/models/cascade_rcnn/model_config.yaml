@@ -266,7 +266,7 @@ MODEL:
     NORM: GN
     NUM_CLASSES: 54
   WEIGHTS: https://dl.fbaipublicfiles.com/detectron2/Misc/cascade_mask_rcnn_R_50_FPN_3x/144998488/model_final_480dd8.pkl
-OUTPUT_DIR: ./outputs/cascade_rcnn_202504081221
+OUTPUT_DIR: ./outputs/cascade_rcnn_202504091058
 SEED: -1
 SOLVER:
   AMP:

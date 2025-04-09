@@ -120,10 +120,6 @@ cfg.MODEL.BACKBONE.FREEZE_AT = 5 # Freeze first several backbone stages (there a
 cfg.INPUT.MIN_SIZE_TEST = 640  # Test image size
 cfg.INPUT.MIN_SIZE_TRAIN = (640, )  # Keep training scale close to dataset. Multi-scale training
 
-# ANCHOR_SIZES for Small Objects
-# sizes = [[x, x * 2**(1.0/3), x * 2**(2.0/3)] for x in [8, 16, 32, 64, 128]]
-# cfg.MODEL.ANCHOR_GENERATOR.SIZES = sizes
-
 # Use a Feature Pyramid Network (FPN)
 # If small objects are often missed, lowering the Non-Maximum Suppression (NMS) threshold might help:
 cfg.MODEL.RPN.NMS_THRESH = 0.7  # Default is 0.7, lower means more proposals

@@ -1,0 +1,17 @@
+train: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/train/images
+val: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/test/images
+test: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/test/images
+
+# train: ../train/images
+# val: ../valid/images
+# test: ../test/images
+
+nc: 6 # number of classes
+names: [
+  'Gasschieberdeckel', # class 1
+  'Kanalschachtdeckel', # class 2
+  'Sinkkaesten', # class 3
+  'Unterflurhydrant', # class 4
+  'Versorgungsschacht', # class 5
+  'Wasserschieberdeckel' # class 6
+]
