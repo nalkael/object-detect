@@ -14,7 +14,7 @@ from detectron2.config import get_cfg
 # load Detectron2 model: Cascade R-CNN
 cfg = get_cfg()
 cfg.merge_from_file("mainprocess/models/cascade_rcnn/model_config.yaml")
-cfg.MODEL.WEIGHTS = "outputs/cascade_rcnn_202504071119/model_0020999.pth" # cascade model without augmentation
+cfg.MODEL.WEIGHTS = "outputs/cascade_rcnn_origin/model_0015499.pth" # cascade model without augmentation
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
 
 predictor = DefaultPredictor(cfg)
@@ -49,17 +49,17 @@ for image_path, _, ground_truth in test_dataset:
 
 
 # save interval result into file
-with open("cascade_predictions.pkl", "wb") as f:
+with open("cascade_origin_predictions.pkl", "wb") as f:
     pickle.dump(predictions, f)
 
-with open("cascade_targets.pkl", "wb") as f:
+with open("cascade_origin_targets.pkl", "wb") as f:
     pickle.dump(targets, f)
 
 # load pickel files
-with open("cascade_predictions.pkl", "rb") as f:
+with open("cascade_origin_predictions.pkl", "rb") as f:
     predictions = pickle.load(f)
 
-with open("cascade_targets.pkl", "rb") as f:
+with open("cascade_origin_targets.pkl", "rb") as f:
     targets = pickle.load(f)
 
 # calculate the F1 score for whole dataset
@@ -81,7 +81,7 @@ map_metrics = MeanAveragePrecision()
 map_result = map_metrics.update(predictions, targets).compute()
 print(map_result)
 
-with open('cascade_results.txt', 'w') as f:
+with open('cascade_origin_results.txt', 'w') as f:
     with redirect_stdout(f):
         print("========== Evaluation Results ==========")
 

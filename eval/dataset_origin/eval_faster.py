@@ -14,7 +14,7 @@ from detectron2.config import get_cfg
 # load Detectron2 model: Faster R-CNN
 cfg = get_cfg()
 cfg.merge_from_file("mainprocess/models/faster_rcnn/model_config.yaml")
-cfg.MODEL.WEIGHTS = "outputs/faster_rcnn_202504071326/model_0023499.pth" # cascade model without augmentation
+cfg.MODEL.WEIGHTS = "outputs/faster_rcnn_origin/model_0020999.pth" # cascade model without augmentation
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
 
 predictor = DefaultPredictor(cfg)
@@ -49,17 +49,17 @@ for image_path, _, ground_truth in test_dataset:
 
 
 # save interval result into file
-with open("faster_predictions.pkl", "wb") as f:
+with open("faster_origin_predictions.pkl", "wb") as f:
     pickle.dump(predictions, f)
 
-with open("faster_targets.pkl", "wb") as f:
+with open("faster_origin_targets.pkl", "wb") as f:
     pickle.dump(targets, f)
 
 # load pickel files
-with open("faster_predictions.pkl", "rb") as f:
+with open("faster_origin_predictions.pkl", "rb") as f:
     predictions = pickle.load(f)
 
-with open("faster_targets.pkl", "rb") as f:
+with open("faster_origin_targets.pkl", "rb") as f:
     targets = pickle.load(f)
 
 # calculate the F1 score for whole dataset
@@ -81,7 +81,7 @@ map_metrics = MeanAveragePrecision()
 map_result = map_metrics.update(predictions, targets).compute()
 print(map_result)
 
-with open('faster_results.txt', 'w') as f:
+with open('faster_origin_results.txt', 'w') as f:
     with redirect_stdout(f):
         print("========== Evaluation Results ==========")
 
@@ -98,4 +98,3 @@ with open('faster_results.txt', 'w') as f:
         print(map_result)
 
 print("Results have been saved to results.txt")
-
