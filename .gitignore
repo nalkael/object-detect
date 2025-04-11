@@ -15,6 +15,7 @@ sample_result/
 VisDrone2019*/
 DIOR/
 SIMD/
+clip_samples/
 
 # big files
 *.synctex.gz*

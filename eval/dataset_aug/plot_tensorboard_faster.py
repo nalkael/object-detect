@@ -6,7 +6,7 @@ from tensorboard.backend.event_processing.event_accumulator import EventAccumula
 import matplotlib.pyplot as plt
 
 # load event file
-event_file = "outputs/faster_rcnn_with_aug/events.out.tfevents.1744047590.PC-RD-343.121643.0"
+event_file = "outputs/faster_rcnn_aug/events.out.tfevents.1744191193.PC-RD-343.360704.0"
 
 event_acc = EventAccumulator(event_file)
 event_acc.Reload() # load all data
@@ -68,6 +68,38 @@ for metric in desired_metrics:
     else:
         print(f"Warning: Metric '{metric}' not found in event file.")
 
+
+# --------------------
+# find highst mAP and AP50 with corresponding iterations
+max_map = -1
+max_map_iteration = None
+max_ap50 = -1
+max_ap50_iteration = None
+
+if 'bbox/AP' in metric_data:
+    steps, values = metric_data['bbox/AP']
+    max_map = max(values)
+    max_map_index = values.index(max_map)
+    max_map_iteration = steps[max_map_index]
+
+if 'bbox/AP50' in metric_data:
+    steps, values = metric_data['bbox/AP50']
+    max_ap50 = max(values)
+    max_ap50_index = values.index(max_ap50)
+    max_ap50_iteration = steps[max_ap50_index]
+
+# Print the results
+if max_map_iteration is not None:
+    print(f"Highest mAP: {max_map:.4f} at iteration {max_map_iteration}")
+else:
+    print("mAP data not available.")
+
+if max_ap50_iteration is not None:
+    print(f"Highest AP50: {max_ap50:.4f} at iteration {max_ap50_iteration}")
+else:
+    print("AP50 data not available.")
+    
+# ---------------------------
 # Plot all metrics in one figure with different colors
 plt.figure(figsize=(16, 8))  # Wider figure: 16 inches wide, 8 inches tall
 for metric, (steps, values) in metric_data.items():

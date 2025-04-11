@@ -6,7 +6,7 @@ from tensorboard.backend.event_processing.event_accumulator import EventAccumula
 import matplotlib.pyplot as plt
 
 # load event file
-event_file = "outputs/yolo_v8/exp_yolo_with_aug/events.out.tfevents.1744050909.PC-RD-343.139847.0"
+event_file = "outputs/yolo_v8/exp_yolo_aug/events.out.tfevents.1744194594.PC-RD-343.376669.0"
 
 event_acc = EventAccumulator(event_file)
 event_acc.Reload() # load all data
@@ -52,6 +52,46 @@ for metric in desired_metrics:
         metric_data[metric] = (steps, values)
     else:
         print(f"Warning: Metric '{metric}' not found in event file.")
+
+# --------------------
+# find highst mAP and AP50 with corresponding iterations
+max_map = -1
+max_map_iteration = None
+max_ap50 = -1
+max_ap50_iteration = None
+
+if 'metrics/mAP50-95(B)' in metric_data:
+    steps, values = metric_data['metrics/mAP50-95(B)']
+    max_map = max(values)
+    max_map_index = values.index(max_map)
+    max_map_iteration = steps[max_map_index]
+
+if 'metrics/mAP50(B)' in metric_data:
+    steps, values = metric_data['metrics/mAP50(B)']
+    # max_ap50 = max(values)
+    # max_ap50_index = values.index(max_ap50)
+    # max_ap50_iteration = steps[max_ap50_index]
+    # Filter for iterations > 9000
+    valid_indices = [i for i, step in enumerate(steps) if step > 50]
+    if valid_indices:
+        filtered_values = [values[i] for i in valid_indices]
+        max_ap50 = max(filtered_values)
+        max_ap50_index = values.index(max_ap50)  # Index in original list
+        max_ap50_iteration = steps[max_ap50_index]
+    else:
+        print("No AP50 data available for iterations.")
+
+# Print the results
+if max_map_iteration is not None:
+    print(f"Highest mAP: {max_map:.4f} at iteration {max_map_iteration}")
+else:
+    print("mAP data not available.")
+
+if max_ap50_iteration is not None:
+    print(f"Highest AP50: {max_ap50:.4f} at iteration {max_ap50_iteration}")
+else:
+    print("AP50 data not available.")
+# ---------------------------
 
 # Plot all metrics in one figure with different colors
 plt.figure(figsize=(16, 8))  # Wider figure: 16 inches wide, 8 inches tall
