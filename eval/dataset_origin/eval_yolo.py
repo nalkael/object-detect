@@ -9,7 +9,8 @@ import pickle
 from supervision.metrics import F1Score, Precision, Recall, MeanAveragePrecision, MeanAverageRecall
 
 # load trained model weights
-model = YOLO("outputs/yolo_v8/exp_yolo/weights/best.pt")
+model = YOLO("outputs/yolo_v8/exp_yolo_origin/weights/best.pt")
+# model = YOLO("outputs/yolo_v8/exp_yolo_origin/best.pt")
 
 # load yolo dataset for test
 test_dataset = sv.DetectionDataset.from_yolo(

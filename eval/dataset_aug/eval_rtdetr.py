@@ -9,7 +9,8 @@ import pickle
 from supervision.metrics import F1Score, Precision, Recall, MeanAveragePrecision
 
 # load trained model weights
-model = RTDETR("outputs/rtdetr/exp_rtdetr/weights/best.pt")
+# model = RTDETR("outputs/rtdetr/exp_rtdetr/weights/best.pt")
+model = RTDETR("outputs/rtdetr/exp_rtdetr_aug/best.pt")
 
 # load yolo dataset for test
 test_dataset = sv.DetectionDataset.from_yolo(
@@ -39,18 +40,18 @@ for image_path, _, ground_truth in test_dataset:
 
 
 # save interval result into file
-with open("rtdetr_predictions.pkl", "wb") as f:
+with open("rtdetr_aug_predictions.pkl", "wb") as f:
     pickle.dump(predictions, f)
 
-with open("rtdetr_targets.pkl", "wb") as f:
+with open("rtdetr_aug_targets.pkl", "wb") as f:
     pickle.dump(targets, f)
 
 
 # load pickel files
-with open("rtdetr_predictions.pkl", "rb") as f:
+with open("rtdetr_aug_predictions.pkl", "rb") as f:
     predictions = pickle.load(f)
 
-with open("rtdetr_targets.pkl", "rb") as f:
+with open("rtdetr_aug_targets.pkl", "rb") as f:
     targets = pickle.load(f)
 
 # calculate the F1 score for whole dataset
@@ -74,7 +75,7 @@ print(map_result)
 
 
 
-with open('rtdetr_results.txt', 'w') as f:
+with open('rtdetr_aug_results.txt', 'w') as f:
     with redirect_stdout(f):
         print("========== Evaluation Results ==========")
 

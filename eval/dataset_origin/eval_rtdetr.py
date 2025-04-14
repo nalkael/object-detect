@@ -9,7 +9,7 @@ import pickle
 from supervision.metrics import F1Score, Precision, Recall, MeanAveragePrecision
 
 # load trained model weights
-model = RTDETR("outputs/rtdetr/exp_rtdetr/weights/best.pt")
+model = RTDETR("outputs/rtdetr/exp_rtdetr_origin/best.pt")
 
 # load yolo dataset for test
 test_dataset = sv.DetectionDataset.from_yolo(

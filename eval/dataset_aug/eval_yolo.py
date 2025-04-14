@@ -9,7 +9,7 @@ import pickle
 from supervision.metrics import F1Score, Precision, Recall, MeanAveragePrecision, MeanAverageRecall
 
 # load trained model weights
-model = YOLO("outputs/yolo_v8/exp_yolo/weights/best.pt")
+model = YOLO("outputs/yolo_v8/exp_yolo_aug/best.pt")
 
 # load yolo dataset for test
 test_dataset = sv.DetectionDataset.from_yolo(
@@ -39,17 +39,17 @@ for image_path, _, ground_truth in test_dataset:
 
 
 # save interval result into file
-with open("yolo_predictions.pkl", "wb") as f:
+with open("yolo_aug_predictions.pkl", "wb") as f:
     pickle.dump(predictions, f)
 
-with open("yolo_targets.pkl", "wb") as f:
+with open("yolo_aug_targets.pkl", "wb") as f:
     pickle.dump(targets, f)
 
 # load pickel files
-with open("yolo_predictions.pkl", "rb") as f:
+with open("yolo_aug_predictions.pkl", "rb") as f:
     predictions = pickle.load(f)
 
-with open("yolo_targets.pkl", "rb") as f:
+with open("yolo_aug_targets.pkl", "rb") as f:
     targets = pickle.load(f)
 
 # calculate the F1 score for whole dataset
@@ -71,7 +71,7 @@ map_metrics = MeanAveragePrecision()
 map_result = map_metrics.update(predictions, targets).compute()
 print(map_result)
 
-with open('yolo_results.txt', 'w') as f:
+with open('yolo_aug_results.txt', 'w') as f:
     with redirect_stdout(f):
         print("========== Evaluation Results ==========")
 

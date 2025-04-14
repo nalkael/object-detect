@@ -1,6 +1,6 @@
 model: rtdetr-x.pt # pre-trained model type, yolov8s, yolov8m would be great for small objects detection
 data: /home/rdluhu/Dokumente/object_detection_project/datasets/dataset_yolo/data.yaml
-epochs: 120 # Increase epochs to compensate for limited data
+epochs: 300 # Increase epochs to compensate for limited data
 batch: 4
 imgsz: 640 # increase image size to help detect small objects
 patience: 300 # number of epochs to wait without improvement # set a high value to disable early stopping
