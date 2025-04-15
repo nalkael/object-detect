@@ -22,7 +22,7 @@ from detectron2.structures import Instances
 # dataset config
 # model configt
 """
-from mainprocess.models.faster_rcnn.config_loader import load_dataset_config, load_project_config
+from mainprocess.models.cascade_rcnn.config_loader import load_dataset_config, load_project_config
 
 # load the config.yaml file of the general project
 model_info = load_project_config()
@@ -34,10 +34,11 @@ novel_classes = dataset_info["novel_classes"]
 
 # load the configuration files that I saved
 cfg = get_cfg()
-cfg.merge_from_file(model_info["model_config_path"])
+cfg.merge_from_file("mainprocess/models/cascade_rcnn/model_config.yaml")
 
 ### use hard-coded path below (just for test), but will change it later
-cfg.MODEL.WEIGHTS = os.path.join(model_info["faster_rcnn_model"], "best_model.pth")
+# cfg.MODEL.WEIGHTS = os.path.join(model_info["cascade_rcnn_model"], "best_model.pth")
+cfg.MODEL.WEIGHTS = "outputs/cascade_rcnn_aug/model_0017499.pth"
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
 
@@ -53,7 +54,7 @@ def inference_image(image_path: str, cfg, novel_classes):
     # ensure metadata contains class names
     metadata.thing_classes = novel_classes
 
-    visualizer = Visualizer(image[:, :, ::-1], metadata=metadata, scale=1.2)
+    visualizer = Visualizer(image[:, :, ::-1], metadata=metadata, scale=1.5)
     output_image = visualizer.draw_instance_predictions(outputs["instances"].to("cpu")).get_image()  # Draw predictions
     
     # Step 7: Display the results
@@ -77,4 +78,4 @@ def inference_images(image_dir: str, cfg, novel_classes):
         # key = cv2.waitKey(0)  # Wait for a key press to close the image window
 
 if __name__ == "__main__":
-    inference_image("datasets/dataset_coco/640x640_coco/test/", cfg, novel_classes)
+    inference_image("datasets/dataset_coco/test/20240228_FR_15_13_png.rf.46cb0c91b50a85150931fd96e79bb14f.jpg", cfg, novel_classes)

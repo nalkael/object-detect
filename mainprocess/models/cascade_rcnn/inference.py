@@ -37,6 +37,7 @@ cfg = get_cfg()
 cfg.merge_from_file(model_info["model_config_path"])
 
 ### use hard-coded path below (just for test), but will change it later
+# cfg.MODEL.WEIGHTS = os.path.join(model_info["cascade_rcnn_model"], "best_model.pth")
 cfg.MODEL.WEIGHTS = os.path.join(model_info["cascade_rcnn_model"], "best_model.pth")
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(novel_classes)
 cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.6
@@ -77,4 +78,4 @@ def inference_images(image_dir: str, cfg, novel_classes):
         # key = cv2.waitKey(0)  # Wait for a key press to close the image window
 
 if __name__ == "__main__":
-    inference_images("datasets/dataset_coco/640x640_coco/test/", cfg, novel_classes)
+    inference_image("datasets/dataset_coco/test/20221123_Fehrenbachallee_1_2_png.rf.5b04a057a82614f379d7eeed9b1f060c.jpg", cfg, novel_classes)

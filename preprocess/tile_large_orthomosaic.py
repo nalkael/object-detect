@@ -59,13 +59,15 @@ if __name__=='__main__':
     config_file = 'config.yaml'
     with open(config_file, 'r') as file:
         config = yaml.safe_load(file)
-    orthomosaic_path = config['sample_orthomosaic_file']
-    output_dir = config['orthomosaic_output_dir']
+    # orthomosaic_path = config['sample_orthomosaic_file']
+    # output_dir = config['orthomosaic_output_dir']
+    orthomosaic_path = "/home/rdluhu/Dokumente/20221027_FR_Habsburger_Str_transparent_mosaic_group1.tif"
+    output_dir = "/home/rdluhu/Dokumente/sample_ortho_slices"
 
     # tile the orthomosaic
     print("Tiling orthomosaic...")
     start_time = time.time()
-    tile_large_orthomosaic(orthomosaic_path, output_dir, tile_size=5000)
+    tile_large_orthomosaic(orthomosaic_path, output_dir, tile_size=1000)
     end_time = time.time()
     print("Orthomosaic tiling complete.")
     print(f"Time taken: {(end_time - start_time):.2f} seconds.")
