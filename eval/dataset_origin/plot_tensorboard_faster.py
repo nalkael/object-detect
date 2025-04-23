@@ -102,17 +102,17 @@ else:
 
 # ---------------------------
 # Plot all metrics in one figure with different colors
+# Plot 1: AP Metrics
 plt.figure(figsize=(16, 8))  # Wider figure: 16 inches wide, 8 inches tall
 for metric, (steps, values) in metric_data.items():
-    # Use custom label if available, otherwise fall back to original metric name
     label = custom_ap_labels.get(metric, metric)
     plt.plot(steps, values, label=label)
 
-plt.xlabel('Iteration')
-plt.ylabel('Average Precision (AP)')
-plt.title('Validation Metrics and Per-Class AP over Iterations')
-plt.subplots_adjust(left=0.1, right=0.8)
-plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left')  # Legend outside the plot
+plt.xlabel('Iteration', fontsize=24)  # Larger font size
+plt.ylabel('Average Precision (AP)', fontsize=24)  # Larger font size
+plt.title('Validation Metrics and Per-Class AP over Iterations', fontsize=18)  # Larger font size
+plt.subplots_adjust(left=0.15, right=0.75, top=0.9, bottom=0.15)  # Adjusted margins
+plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=20)  # Larger legend font size
 plt.grid(True)
 
 
@@ -134,8 +134,8 @@ metric_data = {}
 
 custom_loss_labels = {
     'total_loss' : 'Total Loss',
-    'loss_cls': 'Classification Loss',
-    'loss_box_reg': 'Box Regression Loss',}
+    'loss_cls': 'Class Loss',
+    'loss_box_reg': 'Box Reg Loss',}
 
 # Extract data for each metric
 for metric in loss_metrics:
@@ -152,18 +152,16 @@ for metric in loss_metrics:
 # Plot all metrics in one figure with different colors
 plt.figure(figsize=(16, 8))  # Wider figure: 16 inches wide, 8 inches tall
 for metric, (steps, values) in metric_data.items():
-    # Use custom label if available, otherwise fall back to original metric name
     label = custom_loss_labels.get(metric, metric)
     plt.plot(steps, values, label=label)
 
-plt.xlabel('Iteration')
-plt.ylabel('Loss')
-plt.title('Training Metrics over Iterations')
+plt.xlabel('Iteration', fontsize=24)  # Larger font size
+plt.ylabel('Loss', fontsize=24)  # Larger font size
+plt.title('Training Metrics over Iterations', fontsize=18)  # Larger font size
 plt.ylim(0.0, 1.0)
-plt.subplots_adjust(left=0.1, right=0.8)
-plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left')  # Legend outside the plot
+plt.subplots_adjust(left=0.15, right=0.75, top=0.9, bottom=0.15)  # Adjusted margins
+plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=20)  # Larger legend font size
 plt.grid(True)
-
 
 # Save as SVG (optional)
 plt.savefig('training_loss_metrics.svg', format='svg', bbox_inches='tight')

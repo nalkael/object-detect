@@ -100,12 +100,13 @@ for metric, (steps, values) in metric_data.items():
     label = custom_ap_labels.get(metric, metric)
     plt.plot(steps, values, label=label)
 
-plt.xlabel('Epochs')
-plt.ylabel('Average Precision (AP)')
-plt.title('Validation Metrics and Per-Class AP over Epochs')
-plt.subplots_adjust(left=0.1, right=0.8)
-plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left')  # Legend outside the plot
+plt.xlabel('Epochs', fontsize=24)  # Larger font size
+plt.ylabel('Average Precision (AP)', fontsize=24)  # Larger font size
+plt.title('Validation Metrics over Epochs', fontsize=18)  # Larger font size
+plt.subplots_adjust(left=0.15, right=0.75, top=0.9, bottom=0.15)  # Adjusted margins
+plt.legend(bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=20)  # Larger legend font size
 plt.grid(True)
+
 
 
 # Save as SVG (optional)
