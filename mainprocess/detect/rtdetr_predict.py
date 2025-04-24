@@ -67,7 +67,7 @@ if __name__ == "__main__":
     parser.add_argument("image_path", type=str, help="Path to input image.")
     parser.add_argument("model_weights", type=str, help="Path to YOLOv8 model weights.")
     parser.add_argument("output_dir", type=str, help="Directory to save results.")
-    parser.add_argument("--overlap", type=float, default=0.3, help="Overlap ration to slice images.")
+    parser.add_argument("--overlap", type=float, default=0.1, help="Overlap ration to slice images.")
     parser.add_argument("--conf", type=float, default=0.5, help="Confidence threshold.")
     parser.add_argument("--img_size", type=int, default=640, help="Image size for slicing.")
     

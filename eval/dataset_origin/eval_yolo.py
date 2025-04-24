@@ -72,6 +72,24 @@ map_metrics = MeanAveragePrecision()
 map_result = map_metrics.update(predictions, targets).compute()
 print(map_result)
 
+print("AP per class: ")
+print(map_result.ap_per_class)
+print("mAP scores: ")
+print(map_result.mAP_scores)
+
+# Calculate AP@50:95 for each class
+print("\nAP@50:95 per class:")
+ap_per_class = map_result.ap_per_class  # Shape: (num_classes, num_iou_thresholds)
+ap_per_class_50_95 = np.mean(ap_per_class, axis=1)  # Mean over IoU thresholds for each class
+
+# Print AP@50:95 for each class
+for class_id, class_name in enumerate(test_dataset.classes):
+    print(f"{class_name}: {ap_per_class_50_95[class_id]:.4f}")
+
+# Calculate and print mAP@50:95 (mean over all classes)
+map_50_95 = np.mean(ap_per_class_50_95)
+print(f"\nmAP@50:95: {map_50_95:.4f}")
+
 with open('yolo_results.txt', 'w') as f:
     with redirect_stdout(f):
         print("========== Evaluation Results ==========")
@@ -87,5 +105,23 @@ with open('yolo_results.txt', 'w') as f:
 
         map_result = map_metrics.update(predictions, targets).compute()
         print(map_result)
+
+        print("AP per class: ")
+        print(map_result.ap_per_class)
+        print("mAP scores: ")
+        print(map_result.mAP_scores)
+
+        # Calculate AP@50:95 for each class
+        print("\nAP@50:95 per class:")
+        ap_per_class = map_result.ap_per_class  # Shape: (num_classes, num_iou_thresholds)
+        ap_per_class_50_95 = np.mean(ap_per_class, axis=1)  # Mean over IoU thresholds for each class
+
+        # Print AP@50:95 for each class
+        for class_id, class_name in enumerate(test_dataset.classes):
+            print(f"{class_name}: {ap_per_class_50_95[class_id]:.4f}")
+
+        # Calculate and print mAP@50:95 (mean over all classes)
+        map_50_95 = np.mean(ap_per_class_50_95)
+        print(f"\nmAP@50:95: {map_50_95:.4f}")
 
 print("Results have been saved to results.txt")

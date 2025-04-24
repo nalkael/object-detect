@@ -25,7 +25,7 @@ print(model.names)
 detection_model = AutoDetectionModel.from_pretrained(
     model_type='yolov8',
     model_path=model_weights_path,
-    confidence_threshold=0.7,
+    confidence_threshold=0.5,
     image_size=640, # resize for inference
     device="cuda:0" if torch.cuda.is_available() else "cpu",
 )

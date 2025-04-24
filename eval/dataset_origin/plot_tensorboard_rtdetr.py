@@ -6,7 +6,7 @@ from tensorboard.backend.event_processing.event_accumulator import EventAccumula
 import matplotlib.pyplot as plt
 
 # load event file
-event_file = "outputs/rtdetr/exp_rtdetr_origin/events.out.tfevents.1744132344.PC-RD-343.308743.0"
+event_file = "outputs/rtdetr/exp_rtdetr_origin/events.out.tfevents.1745487029.PC-RD-343.24819.0"
 
 event_acc = EventAccumulator(event_file)
 event_acc.Reload() # load all data

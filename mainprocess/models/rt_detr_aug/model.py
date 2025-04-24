@@ -105,7 +105,7 @@ class RTDETRDetectionModel:
 
 # Example of using the model class
 if __name__ == '__main__':
-    config_path = 'mainprocess/models/rt_detr/config.yaml'
+    config_path = 'mainprocess/models/rt_detr_aug/config.yaml'
     # Create a RTDETR Model
     model = RTDETRDetectionModel(config_path)
     model.train() # trained model here

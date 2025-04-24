@@ -108,7 +108,7 @@ class YOLOv8DetectionModel:
 
 # Example of using the model class
 if __name__ == '__main__':
-    config_path = 'mainprocess/models/yolo_v8/config.yaml'
+    config_path = 'mainprocess/models/yolo_v8_aug/config.yaml'
     # Create a YOLOv8 Model
     model = YOLOv8DetectionModel(config_path)
     model.train() # trained model here
