@@ -56,17 +56,13 @@ This project contains models:
 - [RetinaNet]
 - [RT-DETR]
 
-Few-Shot Detection models:
-- [FsDet(TFA)]
-
 SAHI Framwork is applied in this project:
 - [How to detect small objects in large images](https://blog.ml6.eu/how-to-detect-small-objects-in-very-large-images-70234bab0f98)
 
 ### Some Common Errors 
 
-### TODO
-Few-shot object detection model
+### Inference:
 
-tutorial
+for example, inference with Cascade R-CNN:
 
-Docker
+> python tools/inference.py --model cascade_rcnn --image_path ../ortho_test_images/tile_1.png --model_weights /home/rd-computing/trained_weights/cascade_rcnn/model_final.pth --model_config /home/rd-computing/trained_weights/cascade_rcnn/model_config.yaml --output_dir /home/rdluhu/Dokumente/ortho_test_images 
