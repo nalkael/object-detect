@@ -59,8 +59,6 @@ This project contains models:
 SAHI Framwork is applied in this project:
 - [How to detect small objects in large images](https://blog.ml6.eu/how-to-detect-small-objects-in-very-large-images-70234bab0f98)
 
-### Some Common Errors 
-
 ### Inference:
 
 for Faster R-CNN, Cascade R-CNN, RETINA_NET:
@@ -73,3 +71,6 @@ for YOLOv8, RT-DETR:
 for example, inference with Cascade R-CNN:
 
 > python tools/inference.py --model cascade_rcnn --image_path ../ortho_test_images/tile_1.png --model_weights /home/rd-computing/trained_weights/cascade_rcnn/model_final.pth --model_config /home/rd-computing/trained_weights/cascade_rcnn/model_config.yaml --output_dir /home/rdluhu/Dokumente/ortho_test_images 
+
+
+### Visulize Inference Result:
