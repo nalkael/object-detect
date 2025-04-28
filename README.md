@@ -63,6 +63,13 @@ SAHI Framwork is applied in this project:
 
 ### Inference:
 
+for Faster R-CNN, Cascade R-CNN, RETINA_NET:
+> > python tools/inference.py --model [MODEL_NAME] --image_path [IMAGE_PATH] --model_weights [MODEL_WEIGHTS] --model_config [MODEL_CONFIG] --output_dir [OUTPUT_DIR] 
+
+for YOLOv8, RT-DETR:
+> > python tools/inference.py --model [MODEL_NAME] --image_path [IMAGE_PATH] --model_weights [MODEL_WEIGHTS] --output_dir [OUTPUT_DIR] 
+
+
 for example, inference with Cascade R-CNN:
 
 > python tools/inference.py --model cascade_rcnn --image_path ../ortho_test_images/tile_1.png --model_weights /home/rd-computing/trained_weights/cascade_rcnn/model_final.pth --model_config /home/rd-computing/trained_weights/cascade_rcnn/model_config.yaml --output_dir /home/rdluhu/Dokumente/ortho_test_images 
