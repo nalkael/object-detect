@@ -64,10 +64,10 @@ SAHI Framwork is applied in this project:
 ### Inference:
 
 for Faster R-CNN, Cascade R-CNN, RETINA_NET:
-> > python tools/inference.py --model [MODEL_NAME] --image_path [IMAGE_PATH] --model_weights [MODEL_WEIGHTS] --model_config [MODEL_CONFIG] --output_dir [OUTPUT_DIR] 
+> python tools/inference.py --model [MODEL_NAME] --image_path [IMAGE_PATH] --model_weights [MODEL_WEIGHTS] --model_config [MODEL_CONFIG] --output_dir [OUTPUT_DIR] 
 
 for YOLOv8, RT-DETR:
-> > python tools/inference.py --model [MODEL_NAME] --image_path [IMAGE_PATH] --model_weights [MODEL_WEIGHTS] --output_dir [OUTPUT_DIR] 
+> python tools/inference.py --model [MODEL_NAME] --image_path [IMAGE_PATH] --model_weights [MODEL_WEIGHTS] --output_dir [OUTPUT_DIR] 
 
 
 for example, inference with Cascade R-CNN:
